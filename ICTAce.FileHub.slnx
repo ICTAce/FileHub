@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
   <Project Path="Client/ICTAce.FileHub.Client.csproj" />
   <Project Path="Server/ICTAce.FileHub.Server.csproj" />
   <Project Path="Shared/ICTAce.FileHub.Shared.csproj" />
