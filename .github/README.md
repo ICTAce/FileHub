@@ -1,77 +1,124 @@
-# GitHub Copilot Chat Modes
+# GitHub Copilot Custom Chat Modes
 
-This directory contains individual instruction files for GitHub Copilot to provide specialized, context-aware assistance based on your development task.
+This directory contains custom chat modes for GitHub Copilot in Visual Studio Code. These modes provide specialized AI assistance tailored to specific development tasks in the FileHub project.
+
+## What are Custom Chat Modes?
+
+Custom chat modes (also called agents) are VS Code configurations that customize GitHub Copilot's behavior for specific tasks. When you activate a chat mode in VS Code, Copilot follows the instructions and guidelines defined in that mode's file.
 
 ## Available Chat Modes
 
-The following chat modes are available as separate files in the `copilot-modes/` directory:
+The following custom chat modes are available in the `chatmodes/` directory:
 
-### 🎨 Blazor Developer (`blazor-developer.md`)
-- **Purpose**: Building Blazor components with Syncfusion in Oqtane
-- **Activated when**: Working with `.razor` files or Blazor components
-- **Expertise**: Component lifecycle, data binding, state management, Syncfusion components, Oqtane patterns
+### 🎨 Blazor Developer (`blazor-developer.chatmode.md`)
+- **Description**: Expert in building Blazor components with Syncfusion in Oqtane CMS
+- **Best for**: Creating `.razor` components, working with Syncfusion UI components, Oqtane module development
+- **Tools**: File editing, search, codebase access
 
-### 🎨 HTML Designer (`html-designer.md`)
-- **Purpose**: Creating and styling with HTML and CSS
-- **Activated when**: Working with `.html`, `.css`, or `.scss` files
-- **Expertise**: Semantic HTML, modern CSS, responsive design, accessibility, theming
+### 🎨 HTML Designer (`html-designer.chatmode.md`)
+- **Description**: Expert in HTML5, CSS3, and modern responsive design for Oqtane themes
+- **Best for**: Styling, creating responsive layouts, implementing accessibility features
+- **Tools**: File editing, search, codebase access
 
-### 💻 .NET Backend Developer (`backend-developer.md`)
-- **Purpose**: Implementing databases and REST APIs in Oqtane
-- **Activated when**: Working with controllers, services, repositories, or Entity Framework
-- **Expertise**: Repository pattern, REST APIs, Entity Framework Core, Oqtane security
+### 💻 .NET Backend Developer (`backend-developer.chatmode.md`)
+- **Description**: Expert in .NET backend development with Entity Framework Core and REST APIs
+- **Best for**: Building controllers, services, repositories, database migrations, REST APIs
+- **Tools**: File editing, search, codebase access
 
-### 🚀 DevOps Engineer (`devops-engineer.md`)
-- **Purpose**: Setting up and managing CI/CD pipelines
-- **Activated when**: Working with `.yml`, `.yaml` files, Docker, or deployment scripts
-- **Expertise**: GitHub Actions, Docker, CI/CD, infrastructure as code, deployment strategies
+### 🚀 DevOps Engineer (`devops-engineer.chatmode.md`)
+- **Description**: Expert in CI/CD pipelines, GitHub Actions, Docker, and deployment automation
+- **Best for**: Creating workflows, Dockerfiles, deployment scripts, infrastructure as code
+- **Tools**: File editing, search, codebase access
 
-### 🧪 Tester (`tester.md`)
-- **Purpose**: Writing and executing tests
-- **Activated when**: Working with test files or testing frameworks
-- **Expertise**: BUnit (Blazor components), TUnit (unit tests), Reqnroll (BDD), test patterns
+### 🧪 Tester (`tester.chatmode.md`)
+- **Description**: Expert in testing with BUnit, TUnit, and Reqnroll
+- **Best for**: Writing unit tests, component tests, BDD scenarios, test automation
+- **Tools**: File editing, search, codebase access
 
 ## How to Use in Visual Studio Code
 
-Each chat mode is in a separate file that you can open and use with GitHub Copilot:
+### Activating a Chat Mode
 
-1. **Open the relevant mode file**: Navigate to `.github/copilot-modes/` and open the file for your current task:
-   - `blazor-developer.md` for Blazor components
-   - `html-designer.md` for HTML/CSS work
-   - `backend-developer.md` for API and database work
-   - `devops-engineer.md` for CI/CD and infrastructure
-   - `tester.md` for writing tests
+1. **Open GitHub Copilot Chat** in VS Code (View > Copilot Chat or `Ctrl+Alt+I`)
+2. **Click the mode selector** at the top of the Copilot Chat panel
+3. **Select your desired mode** from the dropdown list:
+   - Blazor Developer
+   - HTML Designer
+   - .NET Backend Developer
+   - DevOps Engineer
+   - Tester
+4. **Start chatting** - Copilot now follows the guidelines and expertise of that mode
 
-2. **Reference in Copilot Chat**: With the file open, GitHub Copilot can use it as context. You can:
-   - Use `@workspace` in Copilot Chat to reference workspace files
-   - Add the mode file to your chat context by mentioning it
-   - Keep the mode file open in a tab while working on related code
+### Switching Between Modes
 
-3. **Switch modes easily**: Simply open a different mode file when switching tasks
+- Simply select a different mode from the dropdown when you switch tasks
+- Each mode persists until you change it or restart VS Code
+- You can quickly switch between modes as you work on different parts of the codebase
 
-## Using Chat Modes
+### Using Chat Modes Effectively
 
-The chat mode files provide:
-- **Context-aware guidance**: Specialized instructions for each development domain
-- **Code examples**: Practical patterns specific to FileHub and Oqtane
-- **Best practices**: Guidelines following .NET, Blazor, and Oqtane conventions
-- **Project context**: Information about FileHub's technology stack
+1. **Select the right mode for your task**:
+   - Working on a Blazor component? Use **Blazor Developer**
+   - Styling a page? Use **HTML Designer**
+   - Building an API endpoint? Use **.NET Backend Developer**
+   - Setting up CI/CD? Use **DevOps Engineer**
+   - Writing tests? Use **Tester**
 
-## Tips
+2. **Ask specific questions**:
+   - "Create a file upload component using SfUpload"
+   - "How should I structure this REST API controller?"
+   - "Write BUnit tests for this component"
 
-- **Open the relevant mode file** before asking Copilot Chat questions about that domain
-- **Keep mode files open** in separate tabs to quickly switch between contexts
-- **Reference examples** from the mode files when asking for code suggestions
-- **Combine modes** by opening multiple files when working across domains
-- **Use comments** to describe what you want to achieve, following patterns from the mode files
+3. **Request code generation**:
+   - "Generate a repository class for File entity"
+   - "Create a GitHub Actions workflow for building and testing"
+   - "Write Reqnroll scenarios for file management"
+
+4. **Get code reviews**:
+   - "Review this Blazor component for best practices"
+   - "Check this API controller for security issues"
+   - "Improve the test coverage for this service"
+
+## Benefits
+
+✅ **Specialized expertise** for each development task  
+✅ **Context-aware suggestions** based on FileHub's tech stack  
+✅ **Consistent patterns** following Oqtane and .NET conventions  
+✅ **Comprehensive examples** for common scenarios  
+✅ **Production-ready code** with proper error handling, security, and best practices  
+✅ **Easy mode switching** as you move between different tasks  
+
+## Requirements
+
+- Visual Studio Code with GitHub Copilot extension installed
+- Active GitHub Copilot subscription
+- VS Code version 1.85 or later (for custom chat modes support)
 
 ## Customization
 
-To modify or extend these chat modes:
-1. Edit the individual files in `.github/copilot-modes/`
-2. Add new mode files for additional development contexts
-3. Update this README to document new modes
-4. Commit and push your changes
+To add or modify chat modes:
+
+1. **Edit existing modes**: Modify the `.chatmode.md` files in `.github/chatmodes/`
+2. **Add new modes**: Create a new `.chatmode.md` file with YAML frontmatter:
+   ```markdown
+   ---
+   description: "Your mode description"
+   tools: [editFiles, search, codebase]
+   model: gpt-4
+   ---
+   
+   # Your Mode Name
+   
+   Your instructions here...
+   ```
+3. **Restart VS Code**: The new modes will appear in the Copilot Chat mode selector
+4. **Share with team**: Commit changes so everyone benefits from the customizations
+
+## Learn More
+
+- [VS Code Custom Chat Modes Documentation](https://code.visualstudio.com/docs/copilot/customization/custom-chat-modes)
+- [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
+- [Awesome Copilot Chat Modes](https://github.com/dfinke/awesome-copilot-chatmodes)
 
 ## Learn More
 
