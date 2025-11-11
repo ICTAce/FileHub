@@ -1,65 +1,77 @@
 # GitHub Copilot Chat Modes
 
-This directory contains instructions for GitHub Copilot to provide context-aware assistance based on your development task.
+This directory contains individual instruction files for GitHub Copilot to provide specialized, context-aware assistance based on your development task.
 
 ## Available Chat Modes
 
-The following chat modes are automatically activated based on the files you're working with:
+The following chat modes are available as separate files in the `copilot-modes/` directory:
 
-### 🎨 Blazor Developer
+### 🎨 Blazor Developer (`blazor-developer.md`)
 - **Purpose**: Building Blazor components with Syncfusion in Oqtane
 - **Activated when**: Working with `.razor` files or Blazor components
 - **Expertise**: Component lifecycle, data binding, state management, Syncfusion components, Oqtane patterns
 
-### 🎨 HTML Designer
+### 🎨 HTML Designer (`html-designer.md`)
 - **Purpose**: Creating and styling with HTML and CSS
 - **Activated when**: Working with `.html`, `.css`, or `.scss` files
 - **Expertise**: Semantic HTML, modern CSS, responsive design, accessibility, theming
 
-### 💻 .NET Backend Developer
+### 💻 .NET Backend Developer (`backend-developer.md`)
 - **Purpose**: Implementing databases and REST APIs in Oqtane
 - **Activated when**: Working with controllers, services, repositories, or Entity Framework
 - **Expertise**: Repository pattern, REST APIs, Entity Framework Core, Oqtane security
 
-### 🚀 DevOps Engineer
+### 🚀 DevOps Engineer (`devops-engineer.md`)
 - **Purpose**: Setting up and managing CI/CD pipelines
 - **Activated when**: Working with `.yml`, `.yaml` files, Docker, or deployment scripts
 - **Expertise**: GitHub Actions, Docker, CI/CD, infrastructure as code, deployment strategies
 
-### 🧪 Tester
+### 🧪 Tester (`tester.md`)
 - **Purpose**: Writing and executing tests
 - **Activated when**: Working with test files or testing frameworks
 - **Expertise**: BUnit (Blazor components), TUnit (unit tests), Reqnroll (BDD), test patterns
 
-## How It Works
+## How to Use in Visual Studio Code
 
-GitHub Copilot automatically reads the `copilot-instructions.md` file and uses it to provide contextual assistance. The instructions are designed to:
+Each chat mode is in a separate file that you can open and use with GitHub Copilot:
 
-1. **Detect context**: Recognize which type of task you're working on based on file types and patterns
-2. **Provide specialized help**: Offer guidance specific to that domain (Blazor, backend, DevOps, etc.)
-3. **Follow best practices**: Suggest code that follows Oqtane and .NET conventions
-4. **Include examples**: Show practical examples relevant to the FileHub project
+1. **Open the relevant mode file**: Navigate to `.github/copilot-modes/` and open the file for your current task:
+   - `blazor-developer.md` for Blazor components
+   - `html-designer.md` for HTML/CSS work
+   - `backend-developer.md` for API and database work
+   - `devops-engineer.md` for CI/CD and infrastructure
+   - `tester.md` for writing tests
+
+2. **Reference in Copilot Chat**: With the file open, GitHub Copilot can use it as context. You can:
+   - Use `@workspace` in Copilot Chat to reference workspace files
+   - Add the mode file to your chat context by mentioning it
+   - Keep the mode file open in a tab while working on related code
+
+3. **Switch modes easily**: Simply open a different mode file when switching tasks
 
 ## Using Chat Modes
 
-You don't need to do anything special - just start coding! Copilot will:
-- Suggest code completions based on the current context
-- Answer questions with domain-specific knowledge when you use Copilot Chat
-- Provide examples that match the project's patterns and conventions
+The chat mode files provide:
+- **Context-aware guidance**: Specialized instructions for each development domain
+- **Code examples**: Practical patterns specific to FileHub and Oqtane
+- **Best practices**: Guidelines following .NET, Blazor, and Oqtane conventions
+- **Project context**: Information about FileHub's technology stack
 
 ## Tips
 
-- **Be specific**: The more context you provide in your code comments and file names, the better Copilot can assist
-- **Use comments**: Add comments describing what you want to achieve, and Copilot will suggest implementations
-- **Ask questions**: In Copilot Chat, ask questions about specific patterns or approaches for your current task
-- **Review suggestions**: Always review and test Copilot's suggestions to ensure they meet your needs
+- **Open the relevant mode file** before asking Copilot Chat questions about that domain
+- **Keep mode files open** in separate tabs to quickly switch between contexts
+- **Reference examples** from the mode files when asking for code suggestions
+- **Combine modes** by opening multiple files when working across domains
+- **Use comments** to describe what you want to achieve, following patterns from the mode files
 
 ## Customization
 
 To modify or extend these chat modes:
-1. Edit `.github/copilot-instructions.md`
-2. Add new sections for additional modes or update existing guidelines
-3. Commit and push your changes - GitHub Copilot will automatically use the updated instructions
+1. Edit the individual files in `.github/copilot-modes/`
+2. Add new mode files for additional development contexts
+3. Update this README to document new modes
+4. Commit and push your changes
 
 ## Learn More
 
