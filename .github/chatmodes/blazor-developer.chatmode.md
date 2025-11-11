@@ -21,9 +21,12 @@ When working with `.razor` files, Blazor components, or Syncfusion components, y
 
 ### Best Practices
 - Use Blazor best practices for component lifecycle, data binding, and state management
+- **Use code-behind files (.razor.cs)** - Keep all C# logic in separate partial classes
+- **Keep Razor files presentation-only** - Only markup, data binding, and event handlers
+- **Use component-specific CSS files (.razor.css)** - Scoped styles for each component
 - Leverage Syncfusion components for rich UI experiences (e.g., SfGrid, SfChart, SfDialog)
 - Follow Oqtane module patterns for dependency injection and service registration
-- Use `@inject` for service dependencies in components
+- Use `[Inject]` attribute for property injection in code-behind files
 - Implement proper error boundaries and loading states
 - Follow Blazor naming conventions (PascalCase for components, camelCase for parameters)
 - Use `EventCallback<T>` for component events
@@ -54,24 +57,23 @@ When working with `.razor` files, Blazor components, or Syncfusion components, y
 
 When asked to create a Blazor component, provide code like this:
 
+### FileList.razor
 ```razor
-@inject IFileService FileService
-@inject NavigationManager NavigationManager
-@inject IStringLocalizer<FileList> Localizer
-@implements IDisposable
+@page "/filehub/files"
+@inherits FileListBase
 
 <div class="file-list-container">
-    @if (isLoading)
+    @if (IsLoading)
     {
         <p>@Localizer["Loading"]...</p>
     }
-    else if (files == null || !files.Any())
+    else if (Files == null || !Files.Any())
     {
         <p>@Localizer["NoFiles"]</p>
     }
     else
     {
-        <SfGrid TValue="FileDto" DataSource="@files" AllowPaging="true" PageSettings="@pageSettings">
+        <SfGrid TValue="FileDto" DataSource="@Files" AllowPaging="true" PageSettings="@PageSettings">
             <GridColumns>
                 <GridColumn Field="@nameof(FileDto.Name)" HeaderText="@Localizer["FileName"]"></GridColumn>
                 <GridColumn Field="@nameof(FileDto.Size)" HeaderText="@Localizer["Size"]" Format="N0"></GridColumn>
@@ -80,7 +82,7 @@ When asked to create a Blazor component, provide code like this:
                     <Template>
                         @{
                             var file = (context as FileDto);
-                            <button class="btn btn-sm btn-primary" @onclick="() => DownloadFile(file.Id)">
+                            <button class="btn btn-primary" @onclick="() => DownloadFile(file.Id)">
                                 @Localizer["Download"]
                             </button>
                         }
@@ -90,51 +92,103 @@ When asked to create a Blazor component, provide code like this:
         </SfGrid>
     }
 </div>
+```
 
-@code {
-    [Parameter] public int ModuleId { get; set; }
-    
-    private List<FileDto> files;
-    private bool isLoading = true;
-    private GridPageSettings pageSettings = new GridPageSettings { PageSize = 10 };
-    
-    protected override async Task OnInitializedAsync()
+### FileList.razor.cs
+```csharp
+namespace ICTAce.FileHub.Client.Modules.FileHub
+{
+    public partial class FileListBase : ComponentBase, IDisposable
     {
-        try
+        [Inject] protected IFileService FileService { get; set; }
+        [Inject] protected NavigationManager NavigationManager { get; set; }
+        [Inject] protected IStringLocalizer<FileList> Localizer { get; set; }
+        [Inject] protected ILogger<FileList> Logger { get; set; }
+        
+        [Parameter] public int ModuleId { get; set; }
+        
+        protected List<FileDto> Files { get; set; }
+        protected bool IsLoading { get; set; } = true;
+        protected GridPageSettings PageSettings { get; set; } = new GridPageSettings { PageSize = 10 };
+        
+        protected override async Task OnInitializedAsync()
         {
-            isLoading = true;
-            files = await FileService.GetFilesByModuleIdAsync(ModuleId);
+            try
+            {
+                IsLoading = true;
+                Files = await FileService.GetFilesByModuleIdAsync(ModuleId);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error loading files for module {ModuleId}", ModuleId);
+                // Show user-friendly error message
+            }
+            finally
+            {
+                IsLoading = false;
+                StateHasChanged();
+            }
         }
-        catch (Exception ex)
+        
+        protected async Task DownloadFile(int fileId)
         {
-            // Log error and show user-friendly message
-            await LogError(ex);
+            try
+            {
+                var fileUrl = await FileService.GetFileUrlAsync(fileId);
+                NavigationManager.NavigateTo(fileUrl, true);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error downloading file {FileId}", fileId);
+            }
         }
-        finally
+        
+        public void Dispose()
         {
-            isLoading = false;
-            StateHasChanged();
+            // Clean up any subscriptions or resources
         }
-    }
-    
-    private async Task DownloadFile(int fileId)
-    {
-        try
-        {
-            var fileUrl = await FileService.GetFileUrlAsync(fileId);
-            NavigationManager.NavigateTo(fileUrl, true);
-        }
-        catch (Exception ex)
-        {
-            await LogError(ex);
-        }
-    }
-    
-    public void Dispose()
-    {
-        // Clean up any subscriptions or resources
     }
 }
 ```
 
-Always provide complete, production-ready code with proper error handling, localization, and Oqtane integration.
+### FileList.razor.css
+```css
+.file-list-container {
+    padding: var(--spacing-md);
+    background-color: var(--color-background);
+}
+
+.file-list-container p {
+    text-align: center;
+    padding: var(--spacing-lg);
+    color: var(--color-text-secondary);
+}
+
+.btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+```
+
+Always provide complete, production-ready code with proper separation of concerns:
+- **Razor file**: Presentation markup only
+- **Code-behind file (.razor.cs)**: All C# logic, properties, and methods
+- **CSS file (.razor.css)**: All component-specific styles
