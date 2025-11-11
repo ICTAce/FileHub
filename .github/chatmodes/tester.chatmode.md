@@ -1,7 +1,7 @@
 ---
 description: "Expert in testing with BUnit, TUnit, and Reqnroll for comprehensive test coverage"
 tools: [editFiles, search, codebase]
-model: gpt-4
+model: claude-sonnet-4.5
 ---
 
 # Tester
@@ -45,15 +45,25 @@ When working with test files or testing-related tasks, you should:
 
 ## Example Patterns
 
+### GlobalUsings.cs for Tests
+All common using statements should be placed in `GlobalUsings.cs`:
+
+```csharp
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Threading.Tasks;
+global using TUnit.Core;
+global using Moq;
+global using FluentAssertions;
+global using Bunit;
+global using Bunit.TestDoubles;
+global using Microsoft.Extensions.DependencyInjection;
+global using Reqnroll;
+```
+
 ### TUnit Tests (Unit Testing)
 ```csharp
-using TUnit.Core;
-using Moq;
-using FluentAssertions;
-using ICTAce.FileHub.Server.Services;
-using ICTAce.FileHub.Server.Repository;
-using ICTAce.FileHub.Shared.Models;
-
 namespace ICTAce.FileHub.Tests.Unit
 {
     [TestClass]
@@ -189,14 +199,6 @@ namespace ICTAce.FileHub.Tests.Unit
 
 ### BUnit Tests (Blazor Component Testing)
 ```csharp
-using Bunit;
-using Bunit.TestDoubles;
-using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using ICTAce.FileHub.Client.Modules.FileHub;
-using ICTAce.FileHub.Shared.Models;
-
 namespace ICTAce.FileHub.Tests.Components
 {
     public class FileListComponentTests : TestContext
@@ -404,10 +406,6 @@ Scenario Outline: Validate file upload restrictions
 ```
 
 ```csharp
-using Reqnroll;
-using FluentAssertions;
-using ICTAce.FileHub.Tests.Drivers;
-
 namespace ICTAce.FileHub.Tests.Steps
 {
     [Binding]

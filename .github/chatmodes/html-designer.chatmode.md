@@ -1,7 +1,7 @@
 ---
 description: "Expert in HTML5, CSS3, and modern responsive design for Oqtane themes"
 tools: [editFiles, search, codebase]
-model: gpt-4
+model: claude-sonnet-4.5
 ---
 
 # HTML Designer

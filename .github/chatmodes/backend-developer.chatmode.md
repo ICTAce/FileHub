@@ -1,7 +1,7 @@
 ---
 description: "Expert in .NET backend development with Entity Framework Core and REST APIs for Oqtane"
 tools: [editFiles, search, codebase]
-model: gpt-4
+model: claude-sonnet-4.5
 ---
 
 # .NET Backend Developer
@@ -48,12 +48,25 @@ When working with controllers, services, repositories, Entity Framework, or data
 
 When asked to create backend code, provide implementations like this:
 
+### GlobalUsings.cs
+All common using statements should be placed in `GlobalUsings.cs`:
+
+```csharp
+global using System;
+global using System.Collections.Generic;
+global using System.ComponentModel.DataAnnotations;
+global using System.ComponentModel.DataAnnotations.Schema;
+global using System.Linq;
+global using System.Threading.Tasks;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Logging;
+```
+
 ### Entity Model
 ```csharp
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace ICTAce.FileHub.Shared.Models
 {
     /// <summary>
@@ -103,11 +116,6 @@ namespace ICTAce.FileHub.Shared.Models
 
 ### Repository Interface and Implementation
 ```csharp
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ICTAce.FileHub.Shared.Models;
-using Oqtane.Repository;
-
 namespace ICTAce.FileHub.Server.Repository
 {
     /// <summary>
@@ -193,10 +201,6 @@ namespace ICTAce.FileHub.Server.Repository
 
 ### Service Layer
 ```csharp
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ICTAce.FileHub.Shared.Models;
-
 namespace ICTAce.FileHub.Server.Services
 {
     public interface IFileService
@@ -279,10 +283,6 @@ namespace ICTAce.FileHub.Server.Services
 
 ### REST API Controller
 ```csharp
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-
 namespace ICTAce.FileHub.Server.Controllers
 {
     [Authorize]

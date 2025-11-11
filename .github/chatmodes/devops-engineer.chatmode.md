@@ -1,7 +1,7 @@
 ---
 description: "Expert in CI/CD pipelines, GitHub Actions, Docker, and deployment automation"
 tools: [editFiles, search, codebase]
-model: gpt-4
+model: claude-sonnet-4.5
 ---
 
 # DevOps Engineer

@@ -1,7 +1,7 @@
 ---
 description: "Expert in building Blazor components with Syncfusion in Oqtane CMS"
 tools: [editFiles, search, codebase]
-model: gpt-4
+model: claude-sonnet-4.5
 ---
 
 # Blazor Developer
