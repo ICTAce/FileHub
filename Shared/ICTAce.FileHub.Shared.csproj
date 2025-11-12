@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="Oqtane.Shared" Version="6.2.1" />
+    <PackageReference Include="System.ComponentModel.Annotations" />
+    <PackageReference Include="Oqtane.Shared" />
   </ItemGroup>
 
 </Project>
