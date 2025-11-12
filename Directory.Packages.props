@@ -4,15 +4,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.11" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.11" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.11" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.11" />
-    <PackageVersion Include="Microsoft.Extensions.Localization" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Localization" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageVersion Include="System.Net.Http.Json" Version="9.0.11" />
+    <PackageVersion Include="System.Net.Http.Json" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Oqtane.Client" Version="$(OqtaneVersion)" />
     <PackageVersion Include="Oqtane.Server" Version="$(OqtaneVersion)" />
     <PackageVersion Include="Oqtane.Shared" Version="$(OqtaneVersion)" />
