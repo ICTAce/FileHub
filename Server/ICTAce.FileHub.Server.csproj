@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Version>1.0.0</Version>
     <AssemblyName>ICTAce.FileHub.Server.Oqtane</AssemblyName>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <SatelliteResourceLanguages>none</SatelliteResourceLanguages>
@@ -14,7 +12,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.11" />
+    <PackageReference Include="Oqtane.Server" Version="6.2.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,8 +20,4 @@
     <ProjectReference Include="..\Shared\ICTAce.FileHub.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Oqtane.Server" Version="6.2.1" />
-  </ItemGroup>
-	
 </Project>

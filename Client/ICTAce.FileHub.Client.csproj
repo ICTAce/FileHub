@@ -1,9 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
     <OutputType>Exe</OutputType>
-    <Version>1.0.0</Version>
     <AssemblyName>ICTAce.FileHub.Client.Oqtane</AssemblyName>
     <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
@@ -14,17 +12,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.11" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.11" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.11" />
     <PackageReference Include="System.Net.Http.Json" Version="9.0.11" />
+    <PackageReference Include="Oqtane.Client" Version="6.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\ICTAce.FileHub.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Oqtane.Client" Version="6.2.1" />
   </ItemGroup>
 
 </Project>
