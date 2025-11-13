@@ -36,7 +36,7 @@ namespace ICTAce.FileHub.Services
             }
             else
             {
-                _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {ModuleId}", ModuleId);
+                _logger.Log(Oqtane.Shared.LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {ModuleId}", ModuleId);
                 return null;
             }
         }
