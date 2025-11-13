@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-namespace Server.Tests.Data;
+namespace ICTAce.FileHub.Server.Tests.Data;
 
 public class DataGenerator : DataSourceGeneratorAttribute<int, int, int>
 {
