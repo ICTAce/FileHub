@@ -22,6 +22,7 @@
     <Project Path="Shared/ICTAce.FileHub.Shared.csproj" />
   </Folder>
   <Folder Name="/test/">
+    <Project Path="Client.Tests/Client.Tests.csproj" Id="cca10892-4ffd-4e23-9ead-0c1b480db804" />
     <Project Path="EndToEnd.Tests/ICTAce.FileHub.EndToEnd.Tests.csproj" Id="9072d052-b46d-48fb-b10b-c00738c69fad" />
     <Project Path="Server.Tests/ICTAce.FileHub.Server.Tests.csproj" Id="54bbf4f8-92a7-41f8-94a7-223ea6db7bd9" />
   </Folder>
