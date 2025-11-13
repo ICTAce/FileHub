@@ -1,9 +1,4 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Oqtane.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ICTAce.FileHub.Server
 {

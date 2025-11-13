@@ -1,10 +1,3 @@
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
-using Oqtane.Databases.Interfaces;
-using Oqtane.Migrations;
-using Oqtane.Migrations.EntityBuilders;
-
 namespace ICTAce.FileHub.Migrations.EntityBuilders
 {
     public class MyModuleEntityBuilder : AuditableBaseEntityBuilder<MyModuleEntityBuilder>

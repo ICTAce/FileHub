@@ -1,10 +1,3 @@
-using Microsoft.AspNetCore.Builder; 
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Oqtane.Infrastructure;
-using ICTAce.FileHub.Repository;
-using ICTAce.FileHub.Services;
-
 namespace ICTAce.FileHub.Startup
 {
     public class ServerStartup : IServerStartup

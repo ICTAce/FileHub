@@ -1,8 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Oqtane.Modules;
-using Oqtane.Repository;
-using Oqtane.Repository.Databases.Interfaces;
-
 namespace ICTAce.FileHub.Repository
 {
     public class Context : DBContextBase, ITransientService, IMultiDatabase

@@ -1,10 +1,3 @@
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Oqtane.Databases.Interfaces;
-using Oqtane.Migrations;
-using ICTAce.FileHub.Migrations.EntityBuilders;
-using ICTAce.FileHub.Repository;
-
 namespace ICTAce.FileHub.Migrations
 {
     [DbContext(typeof(Context))]

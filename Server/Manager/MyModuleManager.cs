@@ -1,16 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using Oqtane.Modules;
-using Oqtane.Models;
-using Oqtane.Infrastructure;
-using Oqtane.Interfaces;
-using Oqtane.Enums;
-using Oqtane.Repository;
-using ICTAce.FileHub.Repository;
-using System.Threading.Tasks;
-
 namespace ICTAce.FileHub.Manager
 {
     public class MyModuleManager : MigratableModuleBase, IInstallable, IPortable, ISearchable

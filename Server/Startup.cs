@@ -1,15 +1,3 @@
-using System;
-using System.IO;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Oqtane.Extensions;
-using Oqtane.Infrastructure;
-using Oqtane.Shared;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.Extensions.Hosting;
-
 namespace ICTAce.FileHub.Server;
 
 public class Startup

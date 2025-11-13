@@ -1,8 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Collections.Generic;
-using Oqtane.Modules;
-
 namespace ICTAce.FileHub.Repository
 {
     public interface IMyModuleRepository

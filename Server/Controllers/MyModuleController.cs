@@ -1,15 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
-using Oqtane.Shared;
-using Oqtane.Enums;
-using Oqtane.Infrastructure;
-using ICTAce.FileHub.Services;
-using Oqtane.Controllers;
-using System.Net;
-using System.Threading.Tasks;
-
 namespace ICTAce.FileHub.Controllers
 {
     [Route(ControllerRoutes.ApiRoute)]
