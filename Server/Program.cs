@@ -1,42 +1,36 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Oqtane.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ICTAce.FileHub.Server
+namespace ICTAce.FileHub.Server;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        // defer server startup to Oqtane - do not modify
+        var host = BuildWebHost(args);
+        var databaseManager = host.Services.GetService<IDatabaseManager>();
+        var install = databaseManager.Install();
+        if (!string.IsNullOrEmpty(install.Message))
         {
-            // defer server startup to Oqtane - do not modify
-            var host = BuildWebHost(args);
-            var databaseManager = host.Services.GetService<IDatabaseManager>();
-            var install = databaseManager.Install();
-            if (!string.IsNullOrEmpty(install.Message))
+            var filelogger = host.Services.GetRequiredService<ILogger<Program>>();
+            if (filelogger != null)
             {
-                var filelogger = host.Services.GetRequiredService<ILogger<Program>>();
-                if (filelogger != null)
-                {
-                    filelogger.LogError($"[ICTAce.FileHub.Server.Program.Main] {install.Message}");
-                }
-            }
-            else
-            {
-                host.Run();
+                filelogger.LogError($"[ICTAce.FileHub.Server.Program.Main] {install.Message}");
             }
         }
-
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseConfiguration(new ConfigurationBuilder()
-                    .AddCommandLine(args)
-                    .AddEnvironmentVariables()
-                    .Build())
-                .UseStartup<Startup>()
-                .ConfigureLocalizationSettings()
-                .Build();
+        else
+        {
+            host.Run();
+        }
     }
+
+    public static IWebHost BuildWebHost(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+            .UseConfiguration(new ConfigurationBuilder()
+                .AddCommandLine(args)
+                .AddEnvironmentVariables()
+                .Build())
+            .UseStartup<Startup>()
+            .ConfigureLocalizationSettings()
+            .Build();
 }
