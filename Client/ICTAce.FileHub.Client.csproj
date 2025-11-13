@@ -16,6 +16,8 @@
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="System.Net.Http.Json" />
     <PackageReference Include="Oqtane.Client" />
+    <PackageReference Include="Syncfusion.Blazor.Navigations"/>
+    <PackageReference Include="Syncfusion.Blazor.Themes"/>
   </ItemGroup>
 
   <ItemGroup>

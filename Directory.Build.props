@@ -19,6 +19,8 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <AspNetCoreVersion>9.0.11</AspNetCoreVersion>
     <OqtaneVersion>6.2.1</OqtaneVersion>
+    <AspNetCoreVersion>9.0.11</AspNetCoreVersion>
+    <SyncfusionVersion>31.2.5</SyncfusionVersion>
   </PropertyGroup>
 
 </Project>

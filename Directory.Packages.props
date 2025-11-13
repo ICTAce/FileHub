@@ -16,5 +16,7 @@
     <PackageVersion Include="Oqtane.Client" Version="$(OqtaneVersion)" />
     <PackageVersion Include="Oqtane.Server" Version="$(OqtaneVersion)" />
     <PackageVersion Include="Oqtane.Shared" Version="$(OqtaneVersion)" />
+    <PackageVersion Include="Syncfusion.Blazor.Navigations" Version="$(SyncfusionVersion)" />
+    <PackageVersion Include="Syncfusion.Blazor.Themes" Version="$(SyncfusionVersion)" />
   </ItemGroup>
 </Project>
