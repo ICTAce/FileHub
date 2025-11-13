@@ -8,38 +8,44 @@ using Oqtane.Extensions;
 using Oqtane.Infrastructure;
 using Oqtane.Shared;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.Extensions.Hosting;
 
-namespace ICTAce.FileHub.Server
+namespace ICTAce.FileHub.Server;
+
+public class Startup
 {
-    public class Startup
+    private readonly IConfigurationRoot _configuration;
+    private readonly IWebHostEnvironment _environment;
+
+    public Startup(IWebHostEnvironment environment)
     {
-        private readonly IConfigurationRoot _configuration;
-        private readonly IWebHostEnvironment _environment;
+        AppDomain.CurrentDomain.SetData(Constants.DataDirectory, Path.Combine(environment.ContentRootPath, "Data"));
 
-        public Startup(IWebHostEnvironment environment)
+        var builder = new ConfigurationBuilder()
+            .SetBasePath(environment.ContentRootPath)
+            .AddJsonFile("appsettings.json", false, true)
+            .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", true, true)
+            .AddEnvironmentVariables();
+
+        // Add user secrets only in development environment
+        if (environment.IsDevelopment())
         {
-            AppDomain.CurrentDomain.SetData(Constants.DataDirectory, Path.Combine(environment.ContentRootPath, "Data"));
-
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(environment.ContentRootPath)
-                .AddJsonFile("appsettings.json", false, true)
-                .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", true, true)
-                .AddEnvironmentVariables();
-
-            _configuration = builder.Build();
-            _environment = environment;
+            builder.AddUserSecrets<Startup>();
         }
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            // defer server startup to Oqtane - do not modify
-            services.AddOqtane(_configuration, _environment);
-        }
+        _configuration = builder.Build();
+        _environment = environment;
+    }
 
-        public void Configure(IApplicationBuilder app, IConfigurationRoot configuration, IWebHostEnvironment environment, ICorsService corsService, ICorsPolicyProvider corsPolicyProvider, ISyncManager sync)
-        {
-            // defer server startup to Oqtane - do not modify
-            app.UseOqtane(configuration, environment, corsService, corsPolicyProvider, sync);
-        }
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // defer server startup to Oqtane - do not modify
+        services.AddOqtane(_configuration, _environment);
+    }
+
+    public void Configure(IApplicationBuilder app, IConfigurationRoot configuration, IWebHostEnvironment environment, ICorsService corsService, ICorsPolicyProvider corsPolicyProvider, ISyncManager sync)
+    {
+        // defer server startup to Oqtane - do not modify
+        app.UseOqtane(configuration, environment, corsService, corsPolicyProvider, sync);
     }
 }
