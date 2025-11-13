@@ -1,0 +1,24 @@
+<Project>
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Version>1.0.0</Version>
+    <LangVersion>13</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <Company>ICTAce</Company>
+    <Product>FileHub</Product>
+    <Copyright>Copyright © ICTAce $([System.DateTime]::Now.Year)</Copyright>
+    <RepositoryUrl>https://github.com/ICTAce/FileHub</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <AspNetCoreVersion>9.0.11</AspNetCoreVersion>
+    <OqtaneVersion>6.2.1</OqtaneVersion>
+  </PropertyGroup>
+
+</Project>

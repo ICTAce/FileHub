@@ -8,3 +8,4 @@ msbuild.binlog
 *.binlog
 *.nupkg
 /Server/Content/Log
+/Server/Data
