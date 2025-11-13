@@ -6,6 +6,7 @@
     <SatelliteResourceLanguages>none</SatelliteResourceLanguages>
     <CompressionEnabled>false</CompressionEnabled>
     <StaticWebAssetsFingerprintContent>false</StaticWebAssetsFingerprintContent>
+    <UserSecretsId>d867c087-8168-44f8-8074-822ca92a1a30</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
