@@ -1,8 +1,3 @@
-using System.Collections.Generic;
-using Oqtane.Models;
-using Oqtane.Themes;
-using Oqtane.Shared;
-
 namespace ICTAce.FileHub.MyTheme
 {
     public class ThemeInfo : ITheme

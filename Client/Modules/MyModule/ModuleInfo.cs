@@ -1,6 +1,3 @@
-using Oqtane.Models;
-using Oqtane.Modules;
-
 namespace ICTAce.FileHub.MyModule
 {
     public class ModuleInfo : IModule
