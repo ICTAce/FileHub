@@ -9,7 +9,7 @@ namespace ICTAce.FileHub.Client.Tests;
 /// </summary>
 public class CounterCSharpTest : BunitContext
 {
-    [Fact]
+    [Test]
     public void CounterStartsAtZero()
     {
         // Arrange
@@ -19,7 +19,7 @@ public class CounterCSharpTest : BunitContext
         cut.Find("p").MarkupMatches("<p>Current count: 0</p>");
     }
 
-    [Fact]
+    [Test]
     public void ClickingButtonIncrementsCounter()
     {
         // Arrange
