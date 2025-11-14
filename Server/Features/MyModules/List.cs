@@ -3,18 +3,14 @@
 namespace ICTAce.FileHub.Features.MyModules;
 
 // Handler
-public class ListHandler : CommandHandlerBase, IRequestHandler<ListMyModulesRequest, List<ListMyModulesResponse>>
+public class ListHandler(
+    IDbContextFactory<Context> contextFactory,
+    IUserPermissions userPermissions,
+    ITenantManager tenantManager,
+    IHttpContextAccessor httpContextAccessor,
+    ILogManager logger)
+    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListMyModulesRequest, List<ListMyModulesResponse>>
 {
-    public ListHandler(
-        IDbContextFactory<Context> contextFactory,
-        IUserPermissions userPermissions,
-        ITenantManager tenantManager,
-        IHttpContextAccessor httpContextAccessor,
-        ILogManager logger)
-        : base(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger)
-    {
-    }
-
     public async Task<List<ListMyModulesResponse>> Handle(ListMyModulesRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();

@@ -3,22 +3,18 @@
 namespace ICTAce.FileHub.Features.MyModules;
 
 // Handler
-public class DeleteHandler : CommandHandlerBase, IRequestHandler<DeleteMyModuleRequest, int>
+public class DeleteHandler(
+    IDbContextFactory<Context> contextFactory,
+    IUserPermissions userPermissions,
+    ITenantManager tenantManager,
+    IHttpContextAccessor httpContextAccessor,
+    ILogManager logger)
+    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<DeleteMyModuleRequest, int>
 {
-    public DeleteHandler(
-        IDbContextFactory<Context> contextFactory,
-        IUserPermissions userPermissions,
-        ITenantManager tenantManager,
-        IHttpContextAccessor httpContextAccessor,
-        ILogManager logger)
-        : base(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger)
-    {
-    }
-
     public async Task<int> Handle(DeleteMyModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
-        
+
         if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
         {
             using var db = CreateDbContext();

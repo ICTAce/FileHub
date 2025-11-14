@@ -2,16 +2,13 @@
 
 namespace ICTAce.FileHub.Server.Manager;
 
-public class MyModuleManager : MigratableModuleBase, IInstallable, IPortable, ISearchable
+public class MyModuleManager(
+    IDbContextFactory<Context> contextFactory, 
+    IDBContextDependencies DBContextDependencies)
+    : MigratableModuleBase, IInstallable, IPortable, ISearchable
 {
-    private readonly IDbContextFactory<Context> _contextFactory;
-    private readonly IDBContextDependencies _DBContextDependencies;
-
-    public MyModuleManager(IDbContextFactory<Context> contextFactory, IDBContextDependencies DBContextDependencies)
-    {
-        _contextFactory = contextFactory;
-        _DBContextDependencies = DBContextDependencies;
-    }
+    private readonly IDbContextFactory<Context> _contextFactory = contextFactory;
+    private readonly IDBContextDependencies _DBContextDependencies = DBContextDependencies;
 
     public bool Install(Tenant tenant, string version)
     {

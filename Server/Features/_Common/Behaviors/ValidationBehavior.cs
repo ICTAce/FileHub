@@ -23,7 +23,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
         var requestName = typeof(TRequest).Name;
 
         // Validate request properties
-        if (!TryValidateRequest(request, out var validationErrors))
+        if (!ValidationBehavior<TRequest, TResponse>.TryValidateRequest(request, out var validationErrors))
         {
             _logger.Log(LogLevel.Warning, this, LogFunction.Other,
                 "Validation failed for {RequestName}: {Errors}",
@@ -36,16 +36,16 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
         return await next();
     }
 
-    private bool TryValidateRequest(TRequest request, out List<string> errors)
+    private static bool TryValidateRequest(TRequest request, out List<string> errors)
     {
-        errors = new List<string>();
+        errors = [];
 
         // Basic validation - you can enhance this with FluentValidation
         var properties = typeof(TRequest).GetProperties();
         foreach (var prop in properties)
         {
             var value = prop.GetValue(request);
-            
+
             // Check for required strings
             if (prop.PropertyType == typeof(string))
             {

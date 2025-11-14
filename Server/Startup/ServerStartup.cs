@@ -22,11 +22,11 @@ public class ServerStartup : IServerStartup
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(ServerStartup).Assembly);
-            
+
             // Add pipeline behaviors (order matters!)
             cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
         });
-        
+
         // Register DbContext factory
         services.AddDbContextFactory<Context>(opt => { }, ServiceLifetime.Transient);
     }

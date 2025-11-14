@@ -6,27 +6,18 @@ namespace ICTAce.FileHub.Features.Common;
 /// Base handler class that provides common dependencies for all command and query handlers.
 /// Encapsulates infrastructure concerns (database, authorization, logging) used across vertical slices.
 /// </summary>
-public abstract class CommandHandlerBase
+public abstract class CommandHandlerBase(
+    IDbContextFactory<Context> contextFactory,
+    IUserPermissions userPermissions,
+    ITenantManager tenantManager,
+    IHttpContextAccessor httpContextAccessor,
+    ILogManager logger)
 {
-    protected readonly IDbContextFactory<Context> ContextFactory;
-    protected readonly IUserPermissions UserPermissions;
-    protected readonly ITenantManager TenantManager;
-    protected readonly IHttpContextAccessor HttpContextAccessor;
-    protected readonly ILogManager Logger;
-
-    protected CommandHandlerBase(
-        IDbContextFactory<Context> contextFactory,
-        IUserPermissions userPermissions,
-        ITenantManager tenantManager,
-        IHttpContextAccessor httpContextAccessor,
-        ILogManager logger)
-    {
-        ContextFactory = contextFactory;
-        UserPermissions = userPermissions;
-        TenantManager = tenantManager;
-        HttpContextAccessor = httpContextAccessor;
-        Logger = logger;
-    }
+    protected readonly IDbContextFactory<Context> ContextFactory = contextFactory;
+    protected readonly IUserPermissions UserPermissions = userPermissions;
+    protected readonly ITenantManager TenantManager = tenantManager;
+    protected readonly IHttpContextAccessor HttpContextAccessor = httpContextAccessor;
+    protected readonly ILogManager Logger = logger;
 
     /// <summary>
     /// Gets the current tenant alias from TenantManager
