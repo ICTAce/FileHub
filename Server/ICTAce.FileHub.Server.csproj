@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Client\ICTAce.FileHub.Client.csproj" />
-    <ProjectReference Include="..\Shared\ICTAce.FileHub.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

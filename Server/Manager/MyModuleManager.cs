@@ -27,7 +27,7 @@ public class MyModuleManager : MigratableModuleBase, IInstallable, IPortable, IS
         
         // Direct data access - no repository layer
         using var db = _contextFactory.CreateDbContext();
-        List<Models.MyModule> MyModules = db.MyModule
+        List<Entities.MyModule> MyModules = db.MyModule
             .Where(item => item.ModuleId == module.ModuleId)
             .ToList();
             
@@ -40,19 +40,19 @@ public class MyModuleManager : MigratableModuleBase, IInstallable, IPortable, IS
 
     public void ImportModule(Module module, string content, string version)
     {
-        List<Models.MyModule> MyModules = null;
+        List<Entities.MyModule> MyModules = null;
         if (!string.IsNullOrEmpty(content))
         {
-            MyModules = JsonSerializer.Deserialize<List<Models.MyModule>>(content);
+            MyModules = JsonSerializer.Deserialize<List<Entities.MyModule>>(content);
         }
         
-        if (MyModules != null)
+        if (MyModules is not null)
         {
             // Direct data access - no repository layer
             using var db = _contextFactory.CreateDbContext();
-            foreach(var Task in MyModules)
+            foreach (var task in MyModules)
             {
-                db.MyModule.Add(new Models.MyModule { ModuleId = module.ModuleId, Name = Task.Name });
+                db.MyModule.Add(new Entities.MyModule { ModuleId = module.ModuleId, Name = task.Name });
             }
             db.SaveChanges();
         }

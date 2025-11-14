@@ -22,7 +22,7 @@ public class CreateHandler : CommandHandlerBase, IRequestHandler<CreateMyModuleR
         if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
         {
             // Build the entity from command data
-            var myModule = new Models.MyModule
+            var myModule = new Entities.MyModule
             {
                 ModuleId = request.ModuleId,
                 Name = request.Name

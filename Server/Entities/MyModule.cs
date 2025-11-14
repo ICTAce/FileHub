@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Oqtane.Models;
 
-namespace ICTAce.FileHub.Models;
+namespace ICTAce.FileHub.Entities;
 
 public class MyModule : IAuditable
 {
