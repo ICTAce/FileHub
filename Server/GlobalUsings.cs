@@ -6,7 +6,9 @@ global using System.Collections.Generic;
 global using System.IO;
 global using System.Linq;
 global using System.Net;
+global using System.Security.Claims;
 global using System.Text.Json;
+global using System.Threading;
 global using System.Threading.Tasks;
 
 // Microsoft.AspNetCore namespaces
@@ -47,7 +49,10 @@ global using Oqtane.Repository.Databases.Interfaces;
 global using Oqtane.Security;
 global using Oqtane.Shared;
 
+// Third-party packages
+global using MediatR;
+
 // Project namespaces
 global using ICTAce.FileHub.Migrations.EntityBuilders;
 global using ICTAce.FileHub.Repository;
-global using ICTAce.FileHub.Services;
+global using ICTAce.FileHub.Features.MyModules;

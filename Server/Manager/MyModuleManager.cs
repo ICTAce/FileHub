@@ -2,12 +2,12 @@ namespace ICTAce.FileHub.Manager;
 
 public class MyModuleManager : MigratableModuleBase, IInstallable, IPortable, ISearchable
 {
-    private readonly IMyModuleRepository _MyModuleRepository;
+    private readonly IDbContextFactory<Context> _contextFactory;
     private readonly IDBContextDependencies _DBContextDependencies;
 
-    public MyModuleManager(IMyModuleRepository MyModuleRepository, IDBContextDependencies DBContextDependencies)
+    public MyModuleManager(IDbContextFactory<Context> contextFactory, IDBContextDependencies DBContextDependencies)
     {
-        _MyModuleRepository = MyModuleRepository;
+        _contextFactory = contextFactory;
         _DBContextDependencies = DBContextDependencies;
     }
 
@@ -24,7 +24,13 @@ public class MyModuleManager : MigratableModuleBase, IInstallable, IPortable, IS
     public string ExportModule(Module module)
     {
         string content = "";
-        List<Models.MyModule> MyModules = _MyModuleRepository.GetMyModules(module.ModuleId).ToList();
+        
+        // Direct data access - no repository layer
+        using var db = _contextFactory.CreateDbContext();
+        List<Models.MyModule> MyModules = db.MyModule
+            .Where(item => item.ModuleId == module.ModuleId)
+            .ToList();
+            
         if (MyModules != null)
         {
             content = JsonSerializer.Serialize(MyModules);
@@ -39,35 +45,41 @@ public class MyModuleManager : MigratableModuleBase, IInstallable, IPortable, IS
         {
             MyModules = JsonSerializer.Deserialize<List<Models.MyModule>>(content);
         }
+        
         if (MyModules != null)
         {
+            // Direct data access - no repository layer
+            using var db = _contextFactory.CreateDbContext();
             foreach(var Task in MyModules)
             {
-                _MyModuleRepository.AddMyModule(new Models.MyModule { ModuleId = module.ModuleId, Name = Task.Name });
+                db.MyModule.Add(new Models.MyModule { ModuleId = module.ModuleId, Name = Task.Name });
             }
+            db.SaveChanges();
         }
     }
 
     public Task<List<SearchContent>> GetSearchContentsAsync(PageModule pageModule, DateTime lastIndexedOn)
     {
-       var searchContentList = new List<SearchContent>();
+        var searchContentList = new List<SearchContent>();
 
-       foreach (var MyModule in _MyModuleRepository.GetMyModules(pageModule.ModuleId))
-       {
-           if (MyModule.ModifiedOn >= lastIndexedOn)
-           {
-               searchContentList.Add(new SearchContent
-               {
-                   EntityName = "MyModule",
-                   EntityId = MyModule.MyModuleId.ToString(),
-                   Title = MyModule.Name,
-                   Body = MyModule.Name,
-                   ContentModifiedBy = MyModule.ModifiedBy,
-                   ContentModifiedOn = MyModule.ModifiedOn
-               });
-           }
-       }
+        // Direct data access - no repository layer
+        using var db = _contextFactory.CreateDbContext();
+        foreach (var MyModule in db.MyModule.Where(item => item.ModuleId == pageModule.ModuleId))
+        {
+            if (MyModule.ModifiedOn >= lastIndexedOn)
+            {
+                searchContentList.Add(new SearchContent
+                {
+                    EntityName = "MyModule",
+                    EntityId = MyModule.MyModuleId.ToString(),
+                    Title = MyModule.Name,
+                    Body = MyModule.Name,
+                    ContentModifiedBy = MyModule.ModifiedBy,
+                    ContentModifiedOn = MyModule.ModifiedOn
+                });
+            }
+        }
 
-       return Task.FromResult(searchContentList);
+        return Task.FromResult(searchContentList);
     }
 }

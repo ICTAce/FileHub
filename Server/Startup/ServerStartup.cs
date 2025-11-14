@@ -14,7 +14,10 @@ public class ServerStartup : IServerStartup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddTransient<IMyModuleService, ServerMyModuleService>();
+        // Register MediatR for Vertical Slice Architecture
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ServerStartup).Assembly));
+        
+        // Register DbContext factory
         services.AddDbContextFactory<Context>(opt => { }, ServiceLifetime.Transient);
     }
 }

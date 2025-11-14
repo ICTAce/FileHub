@@ -98,5 +98,7 @@
   "System.Security.Cryptography.ProtectedData.dll": 1,
   "System.Security.Permissions.dll": 1,
   "System.Windows.Extensions.dll": 1,
-  "ZstdSharp.dll": 1
+  "ZstdSharp.dll": 1,
+  "MediatR.Contracts.dll": 1,
+  "MediatR.dll": 1
 }
