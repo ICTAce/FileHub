@@ -16,7 +16,7 @@ public class MyModuleController : ModuleControllerBase
     [Authorize(Policy = PolicyNames.ViewModule)]
     public async Task<IEnumerable<ListMyModulesResponse>> List(string moduleid)
     {
-        if (!int.TryParse(moduleid, out int ModuleId))
+        if (!int.TryParse(moduleid, out int ModuleId) && IsAuthorizedEntityId(EntityNames.Module, ModuleId))
         {
             HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return null;
