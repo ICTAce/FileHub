@@ -9,6 +9,8 @@ public class MyModule : IAuditable
     [Key]
     public int MyModuleId { get; set; }
     public int ModuleId { get; set; }
+
+    [MaxLength(100)]
     public string Name { get; set; }
 
     public string CreatedBy { get; set; }
