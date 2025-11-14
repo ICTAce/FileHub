@@ -2,13 +2,8 @@ using ICTAce.FileHub.Client.Features.MyModules;
 
 namespace ICTAce.FileHub.Features.MyModules;
 
-// Wrapper that implements IRequest for MediatR
-public class UpdateMyModuleRequest : UpdateMyModuleCommand, IRequest<Models.MyModule>
-{
-}
-
 // Handler
-public class UpdateHandler : CommandHandlerBase, IRequestHandler<UpdateMyModuleRequest, Models.MyModule>
+public class UpdateHandler : CommandHandlerBase, IRequestHandler<UpdateMyModuleRequest, int>
 {
     public UpdateHandler(
         IDbContextFactory<Context> contextFactory,
@@ -20,7 +15,7 @@ public class UpdateHandler : CommandHandlerBase, IRequestHandler<UpdateMyModuleR
     {
     }
 
-    public async Task<Models.MyModule> Handle(UpdateMyModuleRequest request, CancellationToken cancellationToken)
+    public async Task<int> Handle(UpdateMyModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
         
@@ -39,15 +34,15 @@ public class UpdateHandler : CommandHandlerBase, IRequestHandler<UpdateMyModuleR
                 await db.SaveChangesAsync(cancellationToken);
                 
                 Logger.Log(LogLevel.Information, this, LogFunction.Update, "MyModule Updated {MyModule}", myModule);
-                return myModule;
+                return request.MyModuleId;
             }
             
-            return null;
+            return -1;
         }
         else
         {
             Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Update Attempt {MyModuleId}", request.MyModuleId);
-            return null;
+            return -1;
         }
     }
 }

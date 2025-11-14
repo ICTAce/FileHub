@@ -3,7 +3,7 @@ using ICTAce.FileHub.Client.Features.MyModules;
 namespace ICTAce.FileHub.Features.MyModules;
 
 // Handler
-public class CreateHandler : CommandHandlerBase, IRequestHandler<CreateMyModuleRequest, Models.MyModule>
+public class CreateHandler : CommandHandlerBase, IRequestHandler<CreateMyModuleRequest, int>
 {
     public CreateHandler(
         IDbContextFactory<Context> contextFactory,
@@ -15,7 +15,7 @@ public class CreateHandler : CommandHandlerBase, IRequestHandler<CreateMyModuleR
     {
     }
 
-    public async Task<Models.MyModule> Handle(CreateMyModuleRequest request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateMyModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
         
@@ -34,12 +34,12 @@ public class CreateHandler : CommandHandlerBase, IRequestHandler<CreateMyModuleR
             await db.SaveChangesAsync(cancellationToken);
             
             Logger.Log(LogLevel.Information, this, LogFunction.Create, "MyModule Added {MyModule}", myModule);
-            return myModule;
+            return myModule.MyModuleId;
         }
         else
         {
             Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Add Attempt {ModuleId} {Name}", request.ModuleId, request.Name);
-            return null;
+            return -1;
         }
     }
 }

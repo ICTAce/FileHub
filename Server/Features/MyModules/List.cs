@@ -30,7 +30,11 @@ public class ListHandler : CommandHandlerBase, IRequestHandler<ListMyModulesRequ
 
             // Project MyModule entities to ListMyModulesResponse DTOs
             return modules
-                .Select(m => new ListMyModulesResponse { Name = m.Name })
+                .Select(m => new ListMyModulesResponse 
+                { 
+                    MyModuleId = m.MyModuleId,
+                    Name = m.Name 
+                })
                 .ToList();
         }
         else

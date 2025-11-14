@@ -39,10 +39,10 @@
     private bool validated = false;
 
     private int _id;
-    private string _name;
-    private string _createdby;
+    private string _name = string.Empty;
+    private string _createdby = string.Empty;
     private DateTime _createdon;
-    private string _modifiedby;
+    private string _modifiedby = string.Empty;
     private DateTime _modifiedon;
 
     protected override async Task OnInitializedAsync()
@@ -52,14 +52,19 @@
             if (PageState.Action == "Edit")
             {
                 _id = Int32.Parse(PageState.QueryString["id"]);
-                MyModule MyModule = await MyModuleService.GetMyModuleAsync(_id, ModuleState.ModuleId);
-                if (MyModule != null)
+                var request = new GetMyModuleRequest 
+                { 
+                    MyModuleId = _id, 
+                    ModuleId = ModuleState.ModuleId 
+                };
+                var myModule = await MyModuleService.GetAsync(request);
+                if (myModule != null)
                 {
-                    _name = MyModule.Name;
-                    _createdby = MyModule.CreatedBy;
-                    _createdon = MyModule.CreatedOn;
-                    _modifiedby = MyModule.ModifiedBy;
-                    _modifiedon = MyModule.ModifiedOn;
+                    _name = myModule.Name;
+                    _createdby = myModule.CreatedBy;
+                    _createdon = myModule.CreatedOn;
+                    _modifiedby = myModule.ModifiedBy;
+                    _modifiedon = myModule.ModifiedOn;
                 }
             }
         }
@@ -85,19 +90,19 @@
                         ModuleId = ModuleState.ModuleId,
                         Name = _name
                     };
-                    var myModule = await MyModuleService.CreateMyModuleAsync(command);
-                    await logger.LogInformation("MyModule Added {MyModule}", myModule);
+                    var myModuleId = await MyModuleService.CreateAsync(command);
+                    await logger.LogInformation("MyModule Created {MyModuleId}", myModuleId);
                 }
                 else
                 {
-                    var command = new UpdateMyModuleCommand
+                    var command = new UpdateMyModuleRequest
                     {
                         MyModuleId = _id,
                         ModuleId = ModuleState.ModuleId,
                         Name = _name
                     };
-                    var myModule = await MyModuleService.UpdateMyModuleAsync(command);
-                    await logger.LogInformation("MyModule Updated {MyModule}", myModule);
+                    var myModuleId = await MyModuleService.UpdateAsync(command);
+                    await logger.LogInformation("MyModule Updated {MyModuleId}", myModuleId);
                 }
                 NavigationManager.NavigateTo(NavigateUrl());
             }

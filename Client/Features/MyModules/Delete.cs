@@ -5,8 +5,8 @@ using MediatR;
 
 namespace ICTAce.FileHub.Client.Features.MyModules;
 
-public class CreateMyModuleRequest: IRequest<int>
+public class DeleteMyModuleRequest : IRequest<int>
 {
+    public int MyModuleId { get; set; }
     public int ModuleId { get; set; }
-    public string Name { get; set; }
 }

@@ -5,15 +5,15 @@ namespace ICTAce.FileHub.Services;
 
 public interface IMyModuleService
 {
-    Task<List<Models.MyModule>> ListMyModulesAsync(int ModuleId);
+    Task<GetMyModuleResponse> GetAsync(GetMyModuleRequest request);
 
-    Task<Models.MyModule> GetMyModuleAsync(int MyModuleId, int ModuleId);
+    Task<List<ListMyModulesResponse>> ListAsync(ListMyModulesRequest request);
 
-    Task<Models.MyModule> CreateMyModuleAsync(CreateMyModuleRequest command);
+    Task<int> CreateAsync(CreateMyModuleRequest request);
 
-    Task<Models.MyModule> UpdateMyModuleAsync(UpdateMyModuleCommand command);
+    Task<int> UpdateAsync(UpdateMyModuleRequest request);
 
-    Task DeleteMyModuleAsync(int MyModuleId, int ModuleId);
+    Task DeleteAsync(DeleteMyModuleRequest request);
 }
 
 public class MyModuleService : ServiceBase, IMyModuleService
@@ -27,33 +27,33 @@ public class MyModuleService : ServiceBase, IMyModuleService
 
     private string Apiurl => CreateApiUrl("MyModule");
 
-    public async Task<List<Models.MyModule>> ListMyModulesAsync(int ModuleId)
+    public async Task<GetMyModuleResponse> GetAsync(GetMyModuleRequest request)
     {
-        List<Models.MyModule> Tasks = await GetJsonAsync<List<Models.MyModule>>(CreateAuthorizationPolicyUrl($"{Apiurl}?moduleid={ModuleId}", EntityNames.Module, ModuleId), Enumerable.Empty<Models.MyModule>().ToList());
-        return Tasks.OrderBy(item => item.Name).ToList();
+        return await GetJsonAsync<GetMyModuleResponse>(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.MyModuleId}/{request.ModuleId}", EntityNames.Module, request.ModuleId));
     }
 
-    public async Task<Models.MyModule> GetMyModuleAsync(int MyModuleId, int ModuleId)
+    public async Task<List<ListMyModulesResponse>> ListAsync(ListMyModulesRequest request)
     {
-        return await GetJsonAsync<Models.MyModule>(CreateAuthorizationPolicyUrl($"{Apiurl}/{MyModuleId}/{ModuleId}", EntityNames.Module, ModuleId));
+        var modules = await GetJsonAsync<List<ListMyModulesResponse>>(CreateAuthorizationPolicyUrl($"{Apiurl}?moduleid={request.ModuleId}", EntityNames.Module, request.ModuleId), new List<ListMyModulesResponse>());
+        return modules.OrderBy(item => item.Name).ToList();
     }
 
-    public async Task<Models.MyModule> CreateMyModuleAsync(CreateMyModuleRequest command)
+    public async Task<int> CreateAsync(CreateMyModuleRequest request)
     {
-        var response = await _http.PostAsJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}", EntityNames.Module, command.ModuleId), command);
+        var response = await _http.PostAsJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}", EntityNames.Module, request.ModuleId), request);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<Models.MyModule>();
+        return await response.Content.ReadFromJsonAsync<int>();
     }
 
-    public async Task<Models.MyModule> UpdateMyModuleAsync(UpdateMyModuleCommand command)
+    public async Task<int> UpdateAsync(UpdateMyModuleRequest request)
     {
-        var response = await _http.PutAsJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{command.MyModuleId}", EntityNames.Module, command.ModuleId), command);
+        var response = await _http.PutAsJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.MyModuleId}", EntityNames.Module, request.ModuleId), request);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<Models.MyModule>();
+        return await response.Content.ReadFromJsonAsync<int>();
     }
 
-    public async Task DeleteMyModuleAsync(int MyModuleId, int ModuleId)
+    public async Task DeleteAsync(DeleteMyModuleRequest request)
     {
-        await DeleteAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{MyModuleId}/{ModuleId}", EntityNames.Module, ModuleId));
+        await DeleteAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.MyModuleId}/{request.ModuleId}", EntityNames.Module, request.ModuleId));
     }
 }

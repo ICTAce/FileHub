@@ -37,11 +37,11 @@ public class MyModuleController : ModuleControllerBase
     // GET api/<controller>/5
     [HttpGet("{id}/{moduleid}")]
     [Authorize(Policy = PolicyNames.ViewModule)]
-    public async Task<Models.MyModule> Get(int id, int moduleid)
+    public async Task<GetMyModuleResponse> Get(int id, int moduleid)
     {
         if (IsAuthorizedEntityId(EntityNames.Module, moduleid))
         {
-            var query = new GetMyModuleByIdQuery
+            var query = new GetMyModuleRequest
             {
                 MyModuleId = id,
                 ModuleId = moduleid
@@ -66,49 +66,34 @@ public class MyModuleController : ModuleControllerBase
     // POST api/<controller>
     [HttpPost]
     [Authorize(Policy = PolicyNames.EditModule)]
-    public async Task<Models.MyModule> Post([FromBody] CreateMyModuleRequest command)
+    public async Task<int> Post([FromBody] CreateMyModuleRequest command)
     {
         if (ModelState.IsValid && IsAuthorizedEntityId(EntityNames.Module, command.ModuleId))
         {
-            // Map DTO to MediatR request
-            var request = new CreateMyModuleRequest
-            {
-                ModuleId = command.ModuleId,
-                Name = command.Name
-            };
-            var myModule = await _mediator.Send(request).ConfigureAwait(false);
-            return myModule;
+            return await _mediator.Send(command).ConfigureAwait(false);
         }
         else
         {
             _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Post Attempt {Command}", command);
             HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            return null;
+            return -1;
         }
     }
 
     // PUT api/<controller>/5
     [HttpPut("{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
-    public async Task<Models.MyModule> Put(int id, [FromBody] UpdateMyModuleCommand command)
+    public async Task<int> Put(int id, [FromBody] Client.Features.MyModules.UpdateMyModuleRequest command)
     {
         if (ModelState.IsValid && command.MyModuleId == id && IsAuthorizedEntityId(EntityNames.Module, command.ModuleId))
         {
-            // Map DTO to MediatR request
-            var request = new UpdateMyModuleRequest
-            {
-                MyModuleId = command.MyModuleId,
-                ModuleId = command.ModuleId,
-                Name = command.Name
-            };
-            var myModule = await _mediator.Send(request).ConfigureAwait(false);
-            return myModule;
+            return await _mediator.Send(command).ConfigureAwait(false);
         }
         else
         {
             _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Put Attempt {Command}", command);
             HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            return null;
+            return -1;
         }
     }
 
@@ -119,7 +104,7 @@ public class MyModuleController : ModuleControllerBase
     {
         if (IsAuthorizedEntityId(EntityNames.Module, moduleid))
         {
-            var command = new DeleteMyModuleCommand
+            var command = new DeleteMyModuleRequest
             {
                 MyModuleId = id,
                 ModuleId = moduleid

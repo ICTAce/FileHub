@@ -1,14 +1,9 @@
+using ICTAce.FileHub.Client.Features.MyModules;
+
 namespace ICTAce.FileHub.Features.MyModules;
 
-// Query
-public class GetMyModuleByIdQuery : IRequest<Models.MyModule>
-{
-    public int MyModuleId { get; set; }
-    public int ModuleId { get; set; }
-}
-
 // Handler
-public class GetHandler : CommandHandlerBase, IRequestHandler<GetMyModuleByIdQuery, Models.MyModule>
+public class GetHandler : CommandHandlerBase, IRequestHandler<GetMyModuleRequest, GetMyModuleResponse>
 {
     public GetHandler(
         IDbContextFactory<Context> contextFactory,
@@ -20,14 +15,30 @@ public class GetHandler : CommandHandlerBase, IRequestHandler<GetMyModuleByIdQue
     {
     }
 
-    public async Task<Models.MyModule> Handle(GetMyModuleByIdQuery request, CancellationToken cancellationToken)
+    public async Task<GetMyModuleResponse> Handle(GetMyModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
-        
+
         if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.View))
         {
             using var db = CreateDbContext();
-            return await db.MyModule.FindAsync([request.MyModuleId], cancellationToken);
+            var entity = await db.MyModule.FindAsync(new object[] { request.MyModuleId }, cancellationToken).ConfigureAwait(false);
+            if (entity is null)
+            {
+                Logger.Log(LogLevel.Error, this, LogFunction.Security, "MyModule not found {MyModuleId} {ModuleId}", request.MyModuleId, request.ModuleId);
+                return null;
+            }
+
+            return new GetMyModuleResponse
+            {
+                MyModuleId = entity.MyModuleId,
+                ModuleId = entity.ModuleId,
+                Name = entity.Name,
+                CreatedBy = entity.CreatedBy,
+                CreatedOn = entity.CreatedOn,
+                ModifiedBy = entity.ModifiedBy,
+                ModifiedOn = entity.ModifiedOn
+            };
         }
         else
         {

@@ -3,6 +3,7 @@
 @inject IMyModuleService MyModuleService
 @inject NavigationManager NavigationManager
 @inject IStringLocalizer<Index> Localizer
+@using ICTAce.FileHub.Client.Features.MyModules
 
 @if (_MyModules == null)
 {
@@ -41,13 +42,14 @@ else
         new Script(ModulePath() + "Module.js")
     };
 
-    List<Models.MyModule> _MyModules;
+    List<ListMyModulesResponse> _MyModules;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            _MyModules = await MyModuleService.ListMyModulesAsync(ModuleState.ModuleId);
+            var request = new ListMyModulesRequest { ModuleId = ModuleState.ModuleId };
+            _MyModules = await MyModuleService.ListAsync(request);
         }
         catch (Exception ex)
         {
@@ -56,18 +58,25 @@ else
         }
     }
 
-    private async Task Delete(MyModule MyModule)
+    private async Task Delete(ListMyModulesResponse myModule)
     {
         try
         {
-            await MyModuleService.DeleteMyModuleAsync(MyModule.MyModuleId, ModuleState.ModuleId);
-            await logger.LogInformation("MyModule Deleted {MyModule}", MyModule);
-            _MyModules = await MyModuleService.ListMyModulesAsync(ModuleState.ModuleId);
+            var request = new DeleteMyModuleRequest 
+            { 
+                MyModuleId = myModule.MyModuleId, 
+                ModuleId = ModuleState.ModuleId 
+            };
+            await MyModuleService.DeleteAsync(request);
+            await logger.LogInformation("MyModule Deleted {MyModuleId}", myModule.MyModuleId);
+            
+            var listRequest = new ListMyModulesRequest { ModuleId = ModuleState.ModuleId };
+            _MyModules = await MyModuleService.ListAsync(listRequest);
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            await logger.LogError(ex, "Error Deleting MyModule {MyModule} {Error}", MyModule, ex.Message);
+            await logger.LogError(ex, "Error Deleting MyModule {MyModuleId} {Error}", myModule.MyModuleId, ex.Message);
             AddModuleMessage(Localizer["Message.DeleteError"], MessageType.Error);
         }
     }
