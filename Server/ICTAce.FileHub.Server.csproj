@@ -1,8 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <AssemblyName>ICTAce.FileHub.Server.Oqtane</AssemblyName>
-    <RootNamespace>ICTAce.FileHub</RootNamespace>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <SatelliteResourceLanguages>none</SatelliteResourceLanguages>
     <CompressionEnabled>false</CompressionEnabled>
