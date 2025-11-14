@@ -1,8 +1,5 @@
 ﻿@namespace ICTAce.FileHub.MyModule
 @inherits ModuleBase
-@inject IMyModuleService MyModuleService
-@inject NavigationManager NavigationManager
-@inject IStringLocalizer<Index> Localizer
 @using ICTAce.FileHub.Features.MyModules
 
 @if (_MyModules == null)
@@ -32,52 +29,5 @@ else
     else
     {
         <p>@Localizer["Message.DisplayNone"]</p>
-    }
-}
-
-@code {
-    public override List<Resource> Resources => new List<Resource>()
-    {
-        new Stylesheet(ModulePath() + "Module.css"),
-        new Script(ModulePath() + "Module.js")
-    };
-
-    List<ListMyModulesResponse> _MyModules;
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            var request = new ListMyModulesRequest { ModuleId = ModuleState.ModuleId };
-            _MyModules = await MyModuleService.ListAsync(request);
-        }
-        catch (Exception ex)
-        {
-            await logger.LogError(ex, "Error Loading MyModule {Error}", ex.Message);
-            AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
-        }
-    }
-
-    private async Task Delete(ListMyModulesResponse myModule)
-    {
-        try
-        {
-            var request = new DeleteMyModuleRequest 
-            { 
-                Id = myModule.Id, 
-                ModuleId = ModuleState.ModuleId 
-            };
-            await MyModuleService.DeleteAsync(request);
-            await logger.LogInformation("MyModule Deleted {Id}", myModule.Id);
-            
-            var listRequest = new ListMyModulesRequest { ModuleId = ModuleState.ModuleId };
-            _MyModules = await MyModuleService.ListAsync(listRequest);
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            await logger.LogError(ex, "Error Deleting MyModule {Id} {Error}", myModule.Id, ex.Message);
-            AddModuleMessage(Localizer["Message.DeleteError"], MessageType.Error);
-        }
     }
 }
