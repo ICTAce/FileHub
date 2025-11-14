@@ -1,7 +1,5 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Client.Features.MyModules;
-
 namespace ICTAce.FileHub.Controllers;
 
 [Route(ControllerRoutes.ApiRoute)]
@@ -74,7 +72,7 @@ public class MyModuleController : ModuleControllerBase
 
     [HttpPut("{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
-    public async Task<int> Put(int id, [FromBody] Client.Features.MyModules.UpdateMyModuleRequest command)
+    public async Task<int> Put(int id, [FromBody] UpdateMyModuleRequest command)
     {
         if (ModelState.IsValid && command.Id == id && IsAuthorizedEntityId(EntityNames.Module, command.ModuleId))
         {

@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Server.Features.MyModules;
+namespace ICTAce.FileHub.Features.MyModules;
 
 // Handler
 public class ListHandler : CommandHandlerBase, IRequestHandler<ListMyModulesRequest, List<ListMyModulesResponse>>

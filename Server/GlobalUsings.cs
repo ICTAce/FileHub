@@ -43,4 +43,4 @@ global using MediatR;
 global using ICTAce.FileHub.Migrations.EntityBuilders;
 global using ICTAce.FileHub.Repository;
 global using ICTAce.FileHub.Features.Common;
-global using ICTAce.FileHub.Client.Features.MyModules;
+global using ICTAce.FileHub.Features.MyModules;

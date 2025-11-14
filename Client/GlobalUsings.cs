@@ -17,3 +17,4 @@ global using System.Net.Http;
 global using System.Threading.Tasks;
 global using System;
 global using ICTAce.FileHub.Features.Common;
+global using ICTAce.FileHub.Features.MyModules;

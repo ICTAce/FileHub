@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <AssemblyName>ICTAce.FileHub.Client.Oqtane</AssemblyName>
+    <RootNamespace>ICTAce.FileHub.Client</RootNamespace>
     <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
     <PublishTrimmed>false</PublishTrimmed>

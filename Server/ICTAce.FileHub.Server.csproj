@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>ICTAce.FileHub.Server.Oqtane</AssemblyName>
+    <RootNamespace>ICTAce.FileHub.Server</RootNamespace>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <SatelliteResourceLanguages>none</SatelliteResourceLanguages>
     <CompressionEnabled>false</CompressionEnabled>
