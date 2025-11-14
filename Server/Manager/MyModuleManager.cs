@@ -24,13 +24,13 @@ public class MyModuleManager : MigratableModuleBase, IInstallable, IPortable, IS
     public string ExportModule(Module module)
     {
         string content = "";
-        
+
         // Direct data access - no repository layer
         using var db = _contextFactory.CreateDbContext();
         List<Entities.MyModule> MyModules = db.MyModule
             .Where(item => item.ModuleId == module.ModuleId)
             .ToList();
-            
+
         if (MyModules != null)
         {
             content = JsonSerializer.Serialize(MyModules);
@@ -45,7 +45,7 @@ public class MyModuleManager : MigratableModuleBase, IInstallable, IPortable, IS
         {
             MyModules = JsonSerializer.Deserialize<List<Entities.MyModule>>(content);
         }
-        
+
         if (MyModules is not null)
         {
             // Direct data access - no repository layer
