@@ -1,6 +1,4 @@
 using ICTAce.FileHub.Client.Features.MyModules;
-using ICTAce.FileHub.Features.MyModules;
-using MediatR;
 
 namespace ICTAce.FileHub.Controllers;
 
@@ -14,10 +12,9 @@ public class MyModuleController : ModuleControllerBase
         _mediator = mediator;
     }
 
-    // GET: api/<controller>?moduleid=x
     [HttpGet]
     [Authorize(Policy = PolicyNames.ViewModule)]
-    public async Task<IEnumerable<ListMyModulesResponse>> Get(string moduleid)
+    public async Task<IEnumerable<ListMyModulesResponse>> List(string moduleid)
     {
         if (!int.TryParse(moduleid, out int ModuleId))
         {
@@ -29,7 +26,6 @@ public class MyModuleController : ModuleControllerBase
         return await _mediator.Send(query);
     }
 
-    // GET api/<controller>/5
     [HttpGet("{id}/{moduleid}")]
     [Authorize(Policy = PolicyNames.ViewModule)]
     public async Task<GetMyModuleResponse> Get(int id, int moduleid)
@@ -58,7 +54,6 @@ public class MyModuleController : ModuleControllerBase
         }
     }
 
-    // POST api/<controller>
     [HttpPost]
     [Authorize(Policy = PolicyNames.EditModule)]
     public async Task<int> Post([FromBody] CreateMyModuleRequest command)
@@ -75,7 +70,6 @@ public class MyModuleController : ModuleControllerBase
         }
     }
 
-    // PUT api/<controller>/5
     [HttpPut("{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
     public async Task<int> Put(int id, [FromBody] Client.Features.MyModules.UpdateMyModuleRequest command)
@@ -92,7 +86,6 @@ public class MyModuleController : ModuleControllerBase
         }
     }
 
-    // DELETE api/<controller>/5
     [HttpDelete("{id}/{moduleid}")]
     [Authorize(Policy = PolicyNames.EditModule)]
     public async Task Delete(int id, int moduleid)

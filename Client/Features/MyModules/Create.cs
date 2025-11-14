@@ -3,13 +3,40 @@
 
 namespace ICTAce.FileHub.Client.Features.MyModules;
 
-public class CreateMyModuleRequest: IRequest<int>
+public class CreateMyModuleRequest : IRequest<int>
 {
-    [Required]
-    [Range(1, int.MaxValue, ErrorMessage = "ModuleId must be greater than 0")]
     public int ModuleId { get; set; }
-
-    [Required(ErrorMessage = "Name is required")]
-    [StringLength(100, MinimumLength = 1, ErrorMessage = "Name must be between 1 and 100 characters")]
     public string Name { get; set; } = string.Empty;
+}
+
+public class CreateMyModuleValidator : AbstractValidator<CreateMyModuleRequest>
+{
+    public CreateMyModuleValidator()
+    {
+        // ModuleId validation
+        RuleFor(x => x.ModuleId)
+            .GreaterThan(0)
+            .WithMessage("ModuleId must be greater than 0");
+
+        // Name validation
+        RuleFor(x => x.Name)
+            .NotEmpty()
+            .WithMessage("Name is required")
+            .Length(1, 100)
+            .WithMessage("Name must be between 1 and 100 characters")
+            .Matches(@"^[a-zA-Z0-9\s\-_]+$")
+            .WithMessage("Name can only contain letters, numbers, spaces, hyphens, and underscores");
+
+        // Example: Async validation (e.g., check if name already exists)
+        // RuleFor(x => x.Name)
+        //     .MustAsync(async (name, cancellation) => await IsNameUnique(name))
+        //     .WithMessage("A module with this name already exists");
+    }
+
+    // Example async validation method
+    // private async Task<bool> IsNameUnique(string name)
+    // {
+    //     // Call service to check database
+    //     return true;
+    // }
 }

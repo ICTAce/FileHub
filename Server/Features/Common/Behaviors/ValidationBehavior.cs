@@ -27,12 +27,8 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
                 "Validation failed for {RequestName}: {Errors}",
                 requestName, string.Join(", ", validationErrors));
 
-            // Return appropriate response based on type
-            if (typeof(TResponse) == typeof(Result<>).MakeGenericType(typeof(TResponse).GenericTypeArguments))
-            {
-                // If using Result pattern, return validation failure
-                throw new InvalidOperationException($"Validation failed: {string.Join(", ", validationErrors)}");
-            }
+            // Throw validation exception
+            throw new InvalidOperationException($"Validation failed: {string.Join(", ", validationErrors)}");
         }
 
         return await next();

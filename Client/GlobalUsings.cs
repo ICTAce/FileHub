@@ -15,3 +15,4 @@ global using System.ComponentModel.DataAnnotations;
 global using MediatR;
 global using System;
 global using System.Net.Http.Json;
+global using FluentValidation;

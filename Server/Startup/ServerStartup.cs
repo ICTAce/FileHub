@@ -1,3 +1,4 @@
+using FluentValidation;
 using ICTAce.FileHub.Features.Common.Behaviors;
 
 namespace ICTAce.FileHub.Startup;
@@ -23,8 +24,11 @@ public class ServerStartup : IServerStartup
             
             // Add pipeline behaviors (order matters!)
             cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
-            cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            cfg.AddOpenBehavior(typeof(FluentValidationBehavior<,>)); // Add FluentValidation
         });
+
+        // Register FluentValidation validators from this assembly
+        services.AddValidatorsFromAssembly(typeof(ServerStartup).Assembly);
         
         // Register DbContext factory
         services.AddDbContextFactory<Context>(opt => { }, ServiceLifetime.Transient);
