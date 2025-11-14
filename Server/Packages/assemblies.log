@@ -98,5 +98,18 @@
   "System.Security.Cryptography.ProtectedData.dll": 1,
   "System.Security.Permissions.dll": 1,
   "System.Windows.Extensions.dll": 1,
-  "ZstdSharp.dll": 1
+  "ZstdSharp.dll": 1,
+  "Syncfusion.Blazor.Buttons.dll": 1,
+  "Syncfusion.Blazor.Core.dll": 1,
+  "Syncfusion.Blazor.Data.dll": 1,
+  "Syncfusion.Blazor.DropDowns.dll": 1,
+  "Syncfusion.Blazor.Inputs.dll": 1,
+  "Syncfusion.Blazor.Lists.dll": 1,
+  "Syncfusion.Blazor.Navigations.dll": 1,
+  "Syncfusion.Blazor.Notifications.dll": 1,
+  "Syncfusion.Blazor.Popups.dll": 1,
+  "Syncfusion.Blazor.Spinner.dll": 1,
+  "Syncfusion.Blazor.SplitButtons.dll": 1,
+  "Syncfusion.Blazor.Themes.dll": 1,
+  "Syncfusion.Licensing.dll": 1
 }

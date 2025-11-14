@@ -15,6 +15,7 @@ public class ServerStartup : IServerStartup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddTransient<IMyModuleService, ServerMyModuleService>();
+        services.AddTransient<ICategoryService, ServerCategoryService>();
         services.AddDbContextFactory<Context>(opt => { }, ServiceLifetime.Transient);
     }
 }

@@ -1,0 +1,150 @@
+﻿@namespace ICTAce.FileHub.Categories
+@inherits ModuleBase
+@inject ICategoryService CategoryService
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<Index> Localizer
+
+<div class="container-fluid">
+	<div class="row mb-3">
+		<div class="col-md-12">
+			<h3>Category Management</h3>
+			<ActionLink Action="Add" Security="SecurityAccessLevel.Edit" Text="Add Category" ResourceKey="Add" Class="btn btn-primary" />
+		</div>
+	</div>
+
+	@if (_categories is null)
+	{
+		<div class="alert alert-info">
+			<p>Loading.</p>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-6">
+				<div class="card">
+					<div class="card-body">
+						@if (_treeData is not null && _treeData.Any())
+						{
+							<SfTreeView TValue="TreeNode" @ref="_treeView">
+								<TreeViewFieldsSettings TValue="TreeNode"
+														Id="Id"
+														Text="Text"
+														ParentID="ParentId"
+														HasChildren="HasChild"
+														DataSource="@_treeData"
+														Expanded="Expanded">
+								</TreeViewFieldsSettings>
+								<TreeViewEvents TValue="TreeNode" NodeSelected="OnNodeSelected"></TreeViewEvents>
+							</SfTreeView>
+						}
+						else
+						{
+							<p>No tree data available</p>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+</div>
+
+@code {
+	public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.View;
+
+	public override string Title => "Category Management";
+
+	public override List<Resource> Resources => new List<Resource>()
+	{
+		new Stylesheet(ModulePath() + "Module.css")
+	};
+
+	private List<Models.Category> _categories;
+	private List<TreeNode> _treeData;
+	private Models.Category _selectedCategory;
+	private SfTreeView<TreeNode> _treeView;
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			await logger.LogInformation("Categories Module Initializing for ModuleId: {ModuleId}", ModuleState.ModuleId);
+			await LoadCategories();
+			await logger.LogInformation("Categories loaded: {Count}", _categories?.Count ?? 0);
+		}
+		catch (Exception ex)
+		{
+			await logger.LogError(ex, "Error Loading Categories {Error}", ex.Message);
+			AddModuleMessage($"Error: {ex.Message}", MessageType.Error);
+		}
+	}
+
+	private async Task LoadCategories()
+	{
+		_categories = await CategoryService.GetCategoriesAsync(ModuleState.ModuleId);
+		_treeData = BuildTreeData(_categories);
+	}
+
+	private List<TreeNode> BuildTreeData(List<Models.Category> categories)
+	{
+		var treeNodes = new List<TreeNode>();
+
+		foreach (var category in categories)
+		{
+			treeNodes.Add(new TreeNode
+			{
+				Id = category.CategoryId.ToString(),
+				Text = category.Name,
+				ParentId = category.ParentCategoryId?.ToString(),
+				HasChild = categories.Any(c => c.ParentCategoryId == category.CategoryId),
+				Expanded = !category.ParentCategoryId.HasValue // Expand root categories by default
+			});
+		}
+
+		return treeNodes;
+	}
+
+	private void OnNodeSelected(NodeSelectEventArgs args)
+	{
+		if (int.TryParse(args.NodeData.Id, out int categoryId))
+		{
+			_selectedCategory = _categories.FirstOrDefault(c => c.CategoryId == categoryId);
+			StateHasChanged();
+		}
+	}
+
+	private async Task Delete(Models.Category category)
+	{
+		try
+		{
+			// Check if category has children
+			var hasChildren = _categories.Any(c => c.ParentCategoryId == category.CategoryId);
+			if (hasChildren)
+			{
+				AddModuleMessage("Cannot delete category that has child categories", MessageType.Error);
+				return;
+			}
+
+			await CategoryService.DeleteCategoryAsync(category.CategoryId, ModuleState.ModuleId);
+			await logger.LogInformation("Category Deleted {Category}", category);
+
+			_selectedCategory = null;
+			await LoadCategories();
+			StateHasChanged();
+		}
+		catch (Exception ex)
+		{
+			await logger.LogError(ex, "Error Deleting Category {Category} {Error}", category, ex.Message);
+			AddModuleMessage($"Error deleting category: {ex.Message}", MessageType.Error);
+		}
+	}
+
+	public class TreeNode
+	{
+		public string Id { get; set; }
+		public string Text { get; set; }
+		public string ParentId { get; set; }
+		public bool HasChild { get; set; }
+		public bool Expanded { get; set; }
+	}
+}

@@ -9,6 +9,11 @@ public class ClientStartup : IClientStartup
             services.AddScoped<IMyModuleService, MyModuleService>();
         }
 
+        if (!services.Any(s => s.ServiceType == typeof(ICategoryService)))
+        {
+            services.AddScoped<ICategoryService, CategoryService>();
+        }
+
         services.AddSyncfusionBlazor();
         var serviceProvider = services.BuildServiceProvider();
         var configuration = serviceProvider.GetService<IConfiguration>();

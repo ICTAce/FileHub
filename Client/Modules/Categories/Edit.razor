@@ -1,0 +1,198 @@
+﻿@namespace ICTAce.FileHub.Categories
+@inherits ModuleBase
+@inject ICategoryService CategoryService
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<Edit> Localizer
+
+<form @ref="form" class="@(validated ? " was-validated" : "needs-validation" )" novalidate>
+    <div class="container">
+        <div class="row mb-3 align-items-center">
+            <Label Class="col-sm-3" For="name" HelpText="Enter a category name" ResourceKey="Name">Name: </Label>
+            <div class="col-sm-9">
+                <input id="name" class="form-control" @bind="@_name" maxlength="100" required />
+            </div>
+        </div>
+        
+        <div class="row mb-3 align-items-center">
+            <Label Class="col-sm-3" For="description" HelpText="Enter a description" ResourceKey="Description">Description: </Label>
+            <div class="col-sm-9">
+                <textarea id="description" class="form-control" @bind="@_description" maxlength="500" rows="3"></textarea>
+            </div>
+        </div>
+        
+        <div class="row mb-3 align-items-center">
+            <Label Class="col-sm-3" For="parent" HelpText="Select a parent category (optional)" ResourceKey="ParentCategory">Parent Category: </Label>
+            <div class="col-sm-9">
+                <select id="parent" class="form-select" @bind="@_parentCategoryId">
+                    <option value="">-- @Localizer["RootCategory"] --</option>
+                    @if (_availableCategories != null)
+                    {
+                        @foreach (var category in _availableCategories)
+                        {
+                            <option value="@category.CategoryId">@GetCategoryPath(category)</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <button type="button" class="btn btn-success" @onclick="Save">@Localizer["Save"]</button>
+    <NavLink class="btn btn-secondary" href="@NavigateUrl()">@Localizer["Cancel"]</NavLink>
+    
+    <br /><br />
+    @if (PageState.Action == "Edit")
+    {
+        <AuditInfo CreatedBy="@_createdby" CreatedOn="@_createdon" ModifiedBy="@_modifiedby" ModifiedOn="@_modifiedon"></AuditInfo>
+    }
+</form>
+
+@code {
+    public override SecurityAccessLevel SecurityAccessLevel => SecurityAccessLevel.Edit;
+
+    public override string Actions => "Add,Edit";
+
+    public override string Title => "Manage Category";
+
+    public override List<Resource> Resources => new List<Resource>()
+    {
+        new Stylesheet(ModulePath() + "Module.css")
+    };
+
+    private ElementReference form;
+    private bool validated = false;
+
+    private int _id;
+    private string _name;
+    private string _description;
+    private string _parentCategoryId = "";
+    private string _createdby;
+    private DateTime _createdon;
+    private string _modifiedby;
+    private DateTime _modifiedon;
+
+    private List<Models.Category> _allCategories;
+    private List<Models.Category> _availableCategories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _allCategories = await CategoryService.GetCategoriesAsync(ModuleState.ModuleId);
+
+            if (PageState.Action == "Edit")
+            {
+                _id = Int32.Parse(PageState.QueryString["id"]);
+                Models.Category category = await CategoryService.GetCategoryAsync(_id, ModuleState.ModuleId);
+                if (category != null)
+                {
+                    _name = category.Name;
+                    _description = category.Description;
+                    _parentCategoryId = category.ParentCategoryId?.ToString() ?? "";
+                    _createdby = category.CreatedBy;
+                    _createdon = category.CreatedOn;
+                    _modifiedby = category.ModifiedBy;
+                    _modifiedon = category.ModifiedOn;
+
+                    // Filter out the current category and its descendants to prevent circular references
+                    _availableCategories = _allCategories
+                        .Where(c => c.CategoryId != _id && !IsDescendant(c.CategoryId, _id))
+                        .OrderBy(c => c.Name)
+                        .ToList();
+                }
+            }
+            else
+            {
+                // For new categories, all existing categories are available as parents
+                _availableCategories = _allCategories.OrderBy(c => c.Name).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Loading Category {CategoryId} {Error}", _id, ex.Message);
+            AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
+        }
+    }
+
+    private bool IsDescendant(int categoryId, int ancestorId)
+    {
+        var category = _allCategories.FirstOrDefault(c => c.CategoryId == categoryId);
+        if (category == null || !category.ParentCategoryId.HasValue)
+            return false;
+
+        if (category.ParentCategoryId.Value == ancestorId)
+            return true;
+
+        return IsDescendant(category.ParentCategoryId.Value, ancestorId);
+    }
+
+    private string GetCategoryPath(Models.Category category)
+    {
+        var path = new List<string> { category.Name };
+        var current = category;
+
+        while (current.ParentCategoryId.HasValue)
+        {
+            current = _allCategories.FirstOrDefault(c => c.CategoryId == current.ParentCategoryId.Value);
+            if (current != null)
+            {
+                path.Insert(0, current.Name);
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return string.Join(" > ", path);
+    }
+
+    private async Task Save()
+    {
+        try
+        {
+            validated = true;
+            var interop = new Oqtane.UI.Interop(JSRuntime);
+            if (await interop.FormValid(form))
+            {
+                int? parentId = null;
+                if (!string.IsNullOrEmpty(_parentCategoryId) && int.TryParse(_parentCategoryId, out int parsedParentId))
+                {
+                    parentId = parsedParentId;
+                }
+
+                if (PageState.Action == "Add")
+                {
+                    Models.Category category = new Models.Category
+                    {
+                        ModuleId = ModuleState.ModuleId,
+                        Name = _name,
+                        Description = _description,
+                        ParentCategoryId = parentId
+                    };
+                    category = await CategoryService.AddCategoryAsync(category);
+                    await logger.LogInformation("Category Added {Category}", category);
+                }
+                else
+                {
+                    Models.Category category = await CategoryService.GetCategoryAsync(_id, ModuleState.ModuleId);
+                    category.Name = _name;
+                    category.Description = _description;
+                    category.ParentCategoryId = parentId;
+                    await CategoryService.UpdateCategoryAsync(category);
+                    await logger.LogInformation("Category Updated {Category}", category);
+                }
+                NavigationManager.NavigateTo(NavigateUrl());
+            }
+            else
+            {
+                AddModuleMessage(Localizer["Message.SaveValidation"], MessageType.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving Category {Error}", ex.Message);
+            AddModuleMessage(Localizer["Message.SaveError"], MessageType.Error);
+        }
+    }
+}
