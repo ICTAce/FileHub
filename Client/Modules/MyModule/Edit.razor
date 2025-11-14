@@ -1,4 +1,5 @@
 ﻿@namespace ICTAce.FileHub.MyModule
+@using ICTAce.FileHub.Client.Features.MyModules
 @inherits ModuleBase
 @inject IMyModuleService MyModuleService
 @inject NavigationManager NavigationManager
@@ -79,18 +80,24 @@
             {
                 if (PageState.Action == "Add")
                 {
-                    MyModule MyModule = new MyModule();
-                    MyModule.ModuleId = ModuleState.ModuleId;
-                    MyModule.Name = _name;
-                    MyModule = await MyModuleService.AddMyModuleAsync(MyModule);
-                    await logger.LogInformation("MyModule Added {MyModule}", MyModule);
+                    var command = new CreateMyModuleRequest
+                    {
+                        ModuleId = ModuleState.ModuleId,
+                        Name = _name
+                    };
+                    var myModule = await MyModuleService.CreateMyModuleAsync(command);
+                    await logger.LogInformation("MyModule Added {MyModule}", myModule);
                 }
                 else
                 {
-                    MyModule MyModule = await MyModuleService.GetMyModuleAsync(_id, ModuleState.ModuleId);
-                    MyModule.Name = _name;
-                    await MyModuleService.UpdateMyModuleAsync(MyModule);
-                    await logger.LogInformation("MyModule Updated {MyModule}", MyModule);
+                    var command = new UpdateMyModuleCommand
+                    {
+                        MyModuleId = _id,
+                        ModuleId = ModuleState.ModuleId,
+                        Name = _name
+                    };
+                    var myModule = await MyModuleService.UpdateMyModuleAsync(command);
+                    await logger.LogInformation("MyModule Updated {MyModule}", myModule);
                 }
                 NavigationManager.NavigateTo(NavigateUrl());
             }

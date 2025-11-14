@@ -1,5 +1,7 @@
-using MediatR;
+using ICTAce.FileHub.Client.Features.MyModules;
 using ICTAce.FileHub.Features.MyModules;
+using ICTAce.FileHub.Models;
+using MediatR;
 
 namespace ICTAce.FileHub.Controllers;
 
@@ -16,13 +18,13 @@ public class MyModuleController : ModuleControllerBase
     // GET: api/<controller>?moduleid=x
     [HttpGet]
     [Authorize(Policy = PolicyNames.ViewModule)]
-    public async Task<IEnumerable<Models.MyModule>> Get(string moduleid)
+    public async Task<IEnumerable<ListMyModulesResponse>> Get(string moduleid)
     {
         int ModuleId;
         if (int.TryParse(moduleid, out ModuleId) && IsAuthorizedEntityId(EntityNames.Module, ModuleId))
         {
-            var query = new GetMyModulesQuery { ModuleId = ModuleId };
-            return await _mediator.Send(query);
+            var query = new ListMyModulesRequest { ModuleId = ModuleId };
+            return await _mediator.Send(query).ConfigureAwait(false);
         }
         else
         {
@@ -44,8 +46,8 @@ public class MyModuleController : ModuleControllerBase
                 MyModuleId = id,
                 ModuleId = moduleid
             };
-            var myModule = await _mediator.Send(query);
-            
+            var myModule = await _mediator.Send(query).ConfigureAwait(false);
+
             if (myModule == null)
             {
                 _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {MyModuleId} {ModuleId}", id, moduleid);
@@ -64,39 +66,50 @@ public class MyModuleController : ModuleControllerBase
     // POST api/<controller>
     [HttpPost]
     [Authorize(Policy = PolicyNames.EditModule)]
-    public async Task<Models.MyModule> Post([FromBody] Models.MyModule MyModule)
+    public async Task<Models.MyModule> Post([FromBody] CreateMyModuleRequest command)
     {
-        if (!ModelState.IsValid && IsAuthorizedEntityId(EntityNames.Module, MyModule.ModuleId))
+        if (ModelState.IsValid && IsAuthorizedEntityId(EntityNames.Module, command.ModuleId))
         {
-            var command = new AddMyModuleCommand { MyModule = MyModule };
-            MyModule = await _mediator.Send(command);
+            // Map DTO to MediatR request
+            var request = new CreateMyModuleRequest
+            {
+                ModuleId = command.ModuleId,
+                Name = command.Name
+            };
+            var myModule = await _mediator.Send(request).ConfigureAwait(false);
+            return myModule;
         }
         else
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Post Attempt {MyModule}", MyModule);
+            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Post Attempt {Command}", command);
             HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            MyModule = null;
+            return null;
         }
-        return MyModule;
     }
 
     // PUT api/<controller>/5
     [HttpPut("{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
-    public async Task<Models.MyModule> Put(int id, [FromBody] Models.MyModule MyModule)
+    public async Task<Models.MyModule> Put(int id, [FromBody] UpdateMyModuleCommand command)
     {
-        if (ModelState.IsValid && MyModule.MyModuleId == id && IsAuthorizedEntityId(EntityNames.Module, MyModule.ModuleId))
+        if (ModelState.IsValid && command.MyModuleId == id && IsAuthorizedEntityId(EntityNames.Module, command.ModuleId))
         {
-            var command = new UpdateMyModuleCommand { MyModule = MyModule };
-            MyModule = await _mediator.Send(command);
+            // Map DTO to MediatR request
+            var request = new UpdateMyModuleRequest
+            {
+                MyModuleId = command.MyModuleId,
+                ModuleId = command.ModuleId,
+                Name = command.Name
+            };
+            var myModule = await _mediator.Send(request).ConfigureAwait(false);
+            return myModule;
         }
         else
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Put Attempt {MyModule}", MyModule);
+            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Put Attempt {Command}", command);
             HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            MyModule = null;
+            return null;
         }
-        return MyModule;
     }
 
     // DELETE api/<controller>/5
@@ -111,7 +124,7 @@ public class MyModuleController : ModuleControllerBase
                 MyModuleId = id,
                 ModuleId = moduleid
             };
-            await _mediator.Send(command);
+            await _mediator.Send(command).ConfigureAwait(false);
         }
         else
         {

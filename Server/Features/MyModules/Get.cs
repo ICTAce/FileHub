@@ -8,9 +8,9 @@ public class GetMyModuleByIdQuery : IRequest<Models.MyModule>
 }
 
 // Handler
-public class GetByIdHandler : CommandHandlerBase, IRequestHandler<GetMyModuleByIdQuery, Models.MyModule>
+public class GetHandler : CommandHandlerBase, IRequestHandler<GetMyModuleByIdQuery, Models.MyModule>
 {
-    public GetByIdHandler(
+    public GetHandler(
         IDbContextFactory<Context> contextFactory,
         IUserPermissions userPermissions,
         ITenantManager tenantManager,

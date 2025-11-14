@@ -47,7 +47,7 @@ else
     {
         try
         {
-            _MyModules = await MyModuleService.GetMyModulesAsync(ModuleState.ModuleId);
+            _MyModules = await MyModuleService.ListMyModulesAsync(ModuleState.ModuleId);
         }
         catch (Exception ex)
         {
@@ -62,7 +62,7 @@ else
         {
             await MyModuleService.DeleteMyModuleAsync(MyModule.MyModuleId, ModuleState.ModuleId);
             await logger.LogInformation("MyModule Deleted {MyModule}", MyModule);
-            _MyModules = await MyModuleService.GetMyModulesAsync(ModuleState.ModuleId);
+            _MyModules = await MyModuleService.ListMyModulesAsync(ModuleState.ModuleId);
             StateHasChanged();
         }
         catch (Exception ex)

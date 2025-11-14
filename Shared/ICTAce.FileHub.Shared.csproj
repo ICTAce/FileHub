@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR.Contracts" />
     <PackageReference Include="System.ComponentModel.Annotations" />
     <PackageReference Include="Oqtane.Shared" />
   </ItemGroup>

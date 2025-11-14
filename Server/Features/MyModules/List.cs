@@ -1,13 +1,10 @@
+using ICTAce.FileHub.Client.Features.MyModules;
+using ICTAce.FileHub.Models;
+
 namespace ICTAce.FileHub.Features.MyModules;
 
-// Query
-public class GetMyModulesQuery : IRequest<List<Models.MyModule>>
-{
-    public int ModuleId { get; set; }
-}
-
 // Handler
-public class ListHandler : CommandHandlerBase, IRequestHandler<GetMyModulesQuery, List<Models.MyModule>>
+public class ListHandler : CommandHandlerBase, IRequestHandler<ListMyModulesRequest, List<ListMyModulesResponse>>
 {
     public ListHandler(
         IDbContextFactory<Context> contextFactory,
@@ -19,16 +16,22 @@ public class ListHandler : CommandHandlerBase, IRequestHandler<GetMyModulesQuery
     {
     }
 
-    public async Task<List<Models.MyModule>> Handle(GetMyModulesQuery request, CancellationToken cancellationToken)
+    public async Task<List<ListMyModulesResponse>> Handle(ListMyModulesRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
-        
+
         if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.View))
         {
             using var db = CreateDbContext();
-            return await db.MyModule
+            var modules = await db.MyModule
                 .Where(item => item.ModuleId == request.ModuleId)
-                .ToListAsync(cancellationToken);
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            // Project MyModule entities to ListMyModulesResponse DTOs
+            return modules
+                .Select(m => new ListMyModulesResponse { Name = m.Name })
+                .ToList();
         }
         else
         {
