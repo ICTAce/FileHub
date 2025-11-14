@@ -19,18 +19,14 @@ public class MyModuleController : ModuleControllerBase
     [Authorize(Policy = PolicyNames.ViewModule)]
     public async Task<IEnumerable<ListMyModulesResponse>> Get(string moduleid)
     {
-        int ModuleId;
-        if (int.TryParse(moduleid, out ModuleId) && IsAuthorizedEntityId(EntityNames.Module, ModuleId))
+        if (!int.TryParse(moduleid, out int ModuleId))
         {
-            var query = new ListMyModulesRequest { ModuleId = ModuleId };
-            return await _mediator.Send(query).ConfigureAwait(false);
-        }
-        else
-        {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {ModuleId}", moduleid);
-            HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return null;
         }
+
+        var query = new ListMyModulesRequest { ModuleId = ModuleId };
+        return await _mediator.Send(query);
     }
 
     // GET api/<controller>/5

@@ -11,3 +11,7 @@ global using Oqtane.Services;
 global using Oqtane.Shared;
 global using Oqtane.Themes;
 global using ICTAce.FileHub.Services;
+global using System.ComponentModel.DataAnnotations;
+global using MediatR;
+global using System;
+global using System.Net.Http.Json;
