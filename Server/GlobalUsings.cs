@@ -40,7 +40,6 @@ global using Oqtane.Repository.Databases.Interfaces;
 global using Oqtane.Security;
 global using Oqtane.Shared;
 global using MediatR;
-global using FluentValidation;
 global using ICTAce.FileHub.Migrations.EntityBuilders;
 global using ICTAce.FileHub.Repository;
 global using ICTAce.FileHub.Features.Common;
