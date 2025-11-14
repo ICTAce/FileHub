@@ -8,48 +8,36 @@ public class DeleteMyModuleCommand : IRequest<Unit>
 }
 
 // Handler
-public class DeleteHandler : IRequestHandler<DeleteMyModuleCommand, Unit>
+public class DeleteHandler : CommandHandlerBase, IRequestHandler<DeleteMyModuleCommand, Unit>
 {
-    private readonly IDbContextFactory<Context> _contextFactory;
-    private readonly IUserPermissions _userPermissions;
-    private readonly ITenantManager _tenantManager;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILogManager _logger;
-
     public DeleteHandler(
         IDbContextFactory<Context> contextFactory,
         IUserPermissions userPermissions,
         ITenantManager tenantManager,
         IHttpContextAccessor httpContextAccessor,
         ILogManager logger)
+        : base(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger)
     {
-        _contextFactory = contextFactory;
-        _userPermissions = userPermissions;
-        _tenantManager = tenantManager;
-        _httpContextAccessor = httpContextAccessor;
-        _logger = logger;
     }
 
     public async Task<Unit> Handle(DeleteMyModuleCommand request, CancellationToken cancellationToken)
     {
-        var alias = _tenantManager.GetAlias();
-        var user = _httpContextAccessor.HttpContext?.User;
+        var alias = GetAlias();
         
-        if (user != null && _userPermissions.IsAuthorized(user, alias.SiteId, EntityNames.Module, request.ModuleId, PermissionNames.Edit))
+        if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
         {
-            // Direct data access - no repository layer
-            using var db = _contextFactory.CreateDbContext();
+            using var db = CreateDbContext();
             var myModule = await db.MyModule.FindAsync([request.MyModuleId], cancellationToken);
             if (myModule != null)
             {
                 db.MyModule.Remove(myModule);
                 await db.SaveChangesAsync(cancellationToken);
-                _logger.Log(LogLevel.Information, this, LogFunction.Delete, "MyModule Deleted {MyModuleId}", request.MyModuleId);
+                Logger.Log(LogLevel.Information, this, LogFunction.Delete, "MyModule Deleted {MyModuleId}", request.MyModuleId);
             }
         }
         else
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Delete Attempt {MyModuleId} {ModuleId}", request.MyModuleId, request.ModuleId);
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Delete Attempt {MyModuleId} {ModuleId}", request.MyModuleId, request.ModuleId);
         }
         
         return Unit.Value;
