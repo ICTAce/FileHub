@@ -1,4 +1,5 @@
 ﻿@namespace ICTAce.FileHub.MyModule
+@using ICTAce.FileHub.Shared.Models
 @inherits ModuleBase
 @inject IMyModuleService MyModuleService
 @inject NavigationManager NavigationManager
@@ -41,7 +42,7 @@ else
         new Script(ModulePath() + "Module.js")
     };
 
-    List<Models.MyModule> _MyModules;
+    List<MyModule> _MyModules;
 
     protected override async Task OnInitializedAsync()
     {

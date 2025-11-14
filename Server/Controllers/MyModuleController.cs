@@ -13,7 +13,7 @@ public class MyModuleController : ModuleControllerBase
     // GET: api/<controller>?moduleid=x
     [HttpGet]
     [Authorize(Policy = PolicyNames.ViewModule)]
-    public async Task<IEnumerable<Models.MyModule>> Get(string moduleid)
+    public async Task<IEnumerable<Shared.Models.MyModule>> Get(string moduleid)
     {
         int ModuleId;
         if (int.TryParse(moduleid, out ModuleId) && IsAuthorizedEntityId(EntityNames.Module, ModuleId))
@@ -31,9 +31,9 @@ public class MyModuleController : ModuleControllerBase
     // GET api/<controller>/5
     [HttpGet("{id}/{moduleid}")]
     [Authorize(Policy = PolicyNames.ViewModule)]
-    public async Task<Models.MyModule> Get(int id, int moduleid)
+    public async Task<Shared.Models.MyModule> Get(int id, int moduleid)
     {
-        Models.MyModule MyModule = await _MyModuleService.GetMyModuleAsync(id, moduleid);
+        var MyModule = await _MyModuleService.GetMyModuleAsync(id, moduleid);
         if (MyModule != null && IsAuthorizedEntityId(EntityNames.Module, MyModule.ModuleId))
         {
             return MyModule;
@@ -49,7 +49,7 @@ public class MyModuleController : ModuleControllerBase
     // POST api/<controller>
     [HttpPost]
     [Authorize(Policy = PolicyNames.EditModule)]
-    public async Task<Models.MyModule> Post([FromBody] Models.MyModule MyModule)
+    public async Task<Shared.Models.MyModule> Post([FromBody] Shared.Models.MyModule MyModule)
     {
         if (ModelState.IsValid && IsAuthorizedEntityId(EntityNames.Module, MyModule.ModuleId))
         {
@@ -67,7 +67,7 @@ public class MyModuleController : ModuleControllerBase
     // PUT api/<controller>/5
     [HttpPut("{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
-    public async Task<Models.MyModule> Put(int id, [FromBody] Models.MyModule MyModule)
+    public async Task<Shared.Models.MyModule> Put(int id, [FromBody] Shared.Models.MyModule MyModule)
     {
         if (ModelState.IsValid && MyModule.MyModuleId == id && IsAuthorizedEntityId(EntityNames.Module, MyModule.ModuleId))
         {
@@ -87,7 +87,7 @@ public class MyModuleController : ModuleControllerBase
     [Authorize(Policy = PolicyNames.EditModule)]
     public async Task Delete(int id, int moduleid)
     {
-        Models.MyModule MyModule = await _MyModuleService.GetMyModuleAsync(id, moduleid);
+        var MyModule = await _MyModuleService.GetMyModuleAsync(id, moduleid);
         if (MyModule != null && IsAuthorizedEntityId(EntityNames.Module, MyModule.ModuleId))
         {
             await _MyModuleService.DeleteMyModuleAsync(id, MyModule.ModuleId);

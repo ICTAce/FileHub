@@ -24,7 +24,7 @@ public class MyModuleManager : MigratableModuleBase, IInstallable, IPortable, IS
     public string ExportModule(Module module)
     {
         string content = "";
-        List<Models.MyModule> MyModules = _MyModuleRepository.GetMyModules(module.ModuleId).ToList();
+        List<Shared.Models.MyModule> MyModules = _MyModuleRepository.GetMyModules(module.ModuleId).ToList();
         if (MyModules != null)
         {
             content = JsonSerializer.Serialize(MyModules);
@@ -34,16 +34,16 @@ public class MyModuleManager : MigratableModuleBase, IInstallable, IPortable, IS
 
     public void ImportModule(Module module, string content, string version)
     {
-        List<Models.MyModule> MyModules = null;
+        List<Shared.Models.MyModule> MyModules = null;
         if (!string.IsNullOrEmpty(content))
         {
-            MyModules = JsonSerializer.Deserialize<List<Models.MyModule>>(content);
+            MyModules = JsonSerializer.Deserialize<List<Shared.Models.MyModule>>(content);
         }
         if (MyModules != null)
         {
             foreach(var Task in MyModules)
             {
-                _MyModuleRepository.AddMyModule(new Models.MyModule { ModuleId = module.ModuleId, Name = Task.Name });
+                _MyModuleRepository.AddMyModule(new Shared.Models.MyModule { ModuleId = module.ModuleId, Name = Task.Name });
             }
         }
     }

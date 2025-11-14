@@ -2,7 +2,7 @@ namespace ICTAce.FileHub.Repository;
 
 public class Context : DBContextBase, ITransientService, IMultiDatabase
 {
-    public virtual DbSet<Models.MyModule> MyModule { get; set; }
+    public virtual DbSet<Shared.Models.MyModule> MyModule { get; set; }
 
     public Context(IDBContextDependencies DBContextDependencies) : base(DBContextDependencies)
     {
@@ -13,6 +13,6 @@ public class Context : DBContextBase, ITransientService, IMultiDatabase
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<Models.MyModule>().ToTable(ActiveDatabase.RewriteName("MyModule"));
+        builder.Entity<Shared.Models.MyModule>().ToTable(ActiveDatabase.RewriteName("MyModule"));
     }
 }

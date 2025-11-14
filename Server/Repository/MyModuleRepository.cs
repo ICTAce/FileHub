@@ -2,11 +2,11 @@ namespace ICTAce.FileHub.Repository;
 
 public interface IMyModuleRepository
 {
-    IEnumerable<Models.MyModule> GetMyModules(int ModuleId);
-    Models.MyModule GetMyModule(int MyModuleId);
-    Models.MyModule GetMyModule(int MyModuleId, bool tracking);
-    Models.MyModule AddMyModule(Models.MyModule MyModule);
-    Models.MyModule UpdateMyModule(Models.MyModule MyModule);
+    IEnumerable<Shared.Models.MyModule> GetMyModules(int ModuleId);
+    Shared.Models.MyModule GetMyModule(int MyModuleId);
+    Shared.Models.MyModule GetMyModule(int MyModuleId, bool tracking);
+    Shared.Models.MyModule AddMyModule(Shared.Models.MyModule MyModule);
+    Shared.Models.MyModule UpdateMyModule(Shared.Models.MyModule MyModule);
     void DeleteMyModule(int MyModuleId);
 }
 
@@ -19,18 +19,18 @@ public class MyModuleRepository : IMyModuleRepository, ITransientService
         _factory = factory;
     }
 
-    public IEnumerable<Models.MyModule> GetMyModules(int ModuleId)
+    public IEnumerable<Shared.Models.MyModule> GetMyModules(int ModuleId)
     {
         using var db = _factory.CreateDbContext();
         return db.MyModule.Where(item => item.ModuleId == ModuleId).ToList();
     }
 
-    public Models.MyModule GetMyModule(int MyModuleId)
+    public Shared.Models.MyModule GetMyModule(int MyModuleId)
     {
         return GetMyModule(MyModuleId, true);
     }
 
-    public Models.MyModule GetMyModule(int MyModuleId, bool tracking)
+    public Shared.Models.MyModule GetMyModule(int MyModuleId, bool tracking)
     {
         using var db = _factory.CreateDbContext();
         if (tracking)
@@ -43,7 +43,7 @@ public class MyModuleRepository : IMyModuleRepository, ITransientService
         }
     }
 
-    public Models.MyModule AddMyModule(Models.MyModule MyModule)
+    public Shared.Models.MyModule AddMyModule(Shared.Models.MyModule MyModule)
     {
         using var db = _factory.CreateDbContext();
         db.MyModule.Add(MyModule);
@@ -51,7 +51,7 @@ public class MyModuleRepository : IMyModuleRepository, ITransientService
         return MyModule;
     }
 
-    public Models.MyModule UpdateMyModule(Models.MyModule MyModule)
+    public Shared.Models.MyModule UpdateMyModule(Shared.Models.MyModule MyModule)
     {
         using var db = _factory.CreateDbContext();
         db.Entry(MyModule).State = EntityState.Modified;
@@ -62,7 +62,7 @@ public class MyModuleRepository : IMyModuleRepository, ITransientService
     public void DeleteMyModule(int MyModuleId)
     {
         using var db = _factory.CreateDbContext();
-        Models.MyModule MyModule = db.MyModule.Find(MyModuleId);
+        var MyModule = db.MyModule.Find(MyModuleId);
         db.MyModule.Remove(MyModule);
         db.SaveChanges();
     }

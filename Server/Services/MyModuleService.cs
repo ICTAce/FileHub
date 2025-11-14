@@ -17,7 +17,7 @@ public class ServerMyModuleService : IMyModuleService
         _alias = tenantManager.GetAlias();
     }
 
-    public Task<List<Models.MyModule>> GetMyModulesAsync(int ModuleId)
+    public Task<List<Shared.Models.MyModule>> GetMyModulesAsync(int ModuleId)
     {
         if (_userPermissions.IsAuthorized(_accessor.HttpContext.User, _alias.SiteId, EntityNames.Module, ModuleId, PermissionNames.View))
         {
@@ -30,7 +30,7 @@ public class ServerMyModuleService : IMyModuleService
         }
     }
 
-    public Task<Models.MyModule> GetMyModuleAsync(int MyModuleId, int ModuleId)
+    public Task<Shared.Models.MyModule> GetMyModuleAsync(int MyModuleId, int ModuleId)
     {
         if (_userPermissions.IsAuthorized(_accessor.HttpContext.User, _alias.SiteId, EntityNames.Module, ModuleId, PermissionNames.View))
         {
@@ -43,7 +43,7 @@ public class ServerMyModuleService : IMyModuleService
         }
     }
 
-    public Task<Models.MyModule> AddMyModuleAsync(Models.MyModule MyModule)
+    public Task<Shared.Models.MyModule> AddMyModuleAsync(Shared.Models.MyModule MyModule)
     {
         if (_userPermissions.IsAuthorized(_accessor.HttpContext.User, _alias.SiteId, EntityNames.Module, MyModule.ModuleId, PermissionNames.Edit))
         {
@@ -58,7 +58,7 @@ public class ServerMyModuleService : IMyModuleService
         return Task.FromResult(MyModule);
     }
 
-    public Task<Models.MyModule> UpdateMyModuleAsync(Models.MyModule MyModule)
+    public Task<Shared.Models.MyModule> UpdateMyModuleAsync(Shared.Models.MyModule MyModule)
     {
         if (_userPermissions.IsAuthorized(_accessor.HttpContext.User, _alias.SiteId, EntityNames.Module, MyModule.ModuleId, PermissionNames.Edit))
         {
