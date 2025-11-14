@@ -7,7 +7,6 @@
   "HtmlAgilityPack.dll": 1,
   "ICTAce.FileHub.Client.Oqtane.dll": 1,
   "ICTAce.FileHub.Server.Oqtane.dll": 1,
-  "ICTAce.FileHub.Shared.Oqtane.dll": 1,
   "K4os.Compression.LZ4.dll": 1,
   "K4os.Compression.LZ4.Streams.dll": 1,
   "K4os.Hash.xxHash.dll": 1,

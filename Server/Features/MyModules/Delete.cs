@@ -2,13 +2,6 @@ using ICTAce.FileHub.Client.Features.MyModules;
 
 namespace ICTAce.FileHub.Features.MyModules;
 
-// Command
-public class DeleteMyModuleCommand : IRequest<Unit>
-{
-    public int MyModuleId { get; set; }
-    public int ModuleId { get; set; }
-}
-
 // Handler
 public class DeleteHandler : CommandHandlerBase, IRequestHandler<DeleteMyModuleRequest, int>
 {
@@ -29,19 +22,19 @@ public class DeleteHandler : CommandHandlerBase, IRequestHandler<DeleteMyModuleR
         if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
         {
             using var db = CreateDbContext();
-            var myModule = await db.MyModule.FindAsync(new object[] { request.MyModuleId }, cancellationToken);
+            var myModule = await db.MyModule.FindAsync(new object[] { request.Id }, cancellationToken);
             if (myModule != null)
             {
                 db.MyModule.Remove(myModule);
                 await db.SaveChangesAsync(cancellationToken);
-                Logger.Log(LogLevel.Information, this, LogFunction.Delete, "MyModule Deleted {MyModuleId}", request.MyModuleId);
-                return request.MyModuleId;
+                Logger.Log(LogLevel.Information, this, LogFunction.Delete, "MyModule Deleted {Id}", request.Id);
+                return request.Id;
             }
             return -1;
         }
         else
         {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Delete Attempt {MyModuleId} {ModuleId}", request.MyModuleId, request.ModuleId);
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Delete Attempt {Id} {ModuleId}", request.Id, request.ModuleId);
             return -1;
         }
     }

@@ -31,7 +31,7 @@ public class ListHandler : CommandHandlerBase, IRequestHandler<ListMyModulesRequ
             return modules
                 .Select(m => new ListMyModulesResponse 
                 { 
-                    MyModuleId = m.MyModuleId,
+                    Id = m.Id,
                     Name = m.Name 
                 })
                 .ToList();

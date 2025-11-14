@@ -22,16 +22,16 @@ public class GetHandler : CommandHandlerBase, IRequestHandler<GetMyModuleRequest
         if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.View))
         {
             using var db = CreateDbContext();
-            var entity = await db.MyModule.FindAsync(new object[] { request.MyModuleId }, cancellationToken).ConfigureAwait(false);
+            var entity = await db.MyModule.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
             if (entity is null)
             {
-                Logger.Log(LogLevel.Error, this, LogFunction.Security, "MyModule not found {MyModuleId} {ModuleId}", request.MyModuleId, request.ModuleId);
+                Logger.Log(LogLevel.Error, this, LogFunction.Security, "MyModule not found {Id} {ModuleId}", request.Id, request.ModuleId);
                 return null;
             }
 
             return new GetMyModuleResponse
             {
-                MyModuleId = entity.MyModuleId,
+                Id = entity.Id,
                 ModuleId = entity.ModuleId,
                 Name = entity.Name,
                 CreatedBy = entity.CreatedBy,
@@ -42,7 +42,7 @@ public class GetHandler : CommandHandlerBase, IRequestHandler<GetMyModuleRequest
         }
         else
         {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {MyModuleId} {ModuleId}", request.MyModuleId, request.ModuleId);
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {Id} {ModuleId}", request.Id, request.ModuleId);
             return null;
         }
     }

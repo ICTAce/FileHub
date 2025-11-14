@@ -28,7 +28,7 @@ public class MyModuleService : ServiceBase, IMyModuleService
 
     public async Task<GetMyModuleResponse> GetAsync(GetMyModuleRequest request)
     {
-        return await GetJsonAsync<GetMyModuleResponse>(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.MyModuleId}/{request.ModuleId}", EntityNames.Module, request.ModuleId));
+        return await GetJsonAsync<GetMyModuleResponse>(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}/{request.ModuleId}", EntityNames.Module, request.ModuleId));
     }
 
     public async Task<List<ListMyModulesResponse>> ListAsync(ListMyModulesRequest request)
@@ -46,13 +46,13 @@ public class MyModuleService : ServiceBase, IMyModuleService
 
     public async Task<int> UpdateAsync(UpdateMyModuleRequest request)
     {
-        var response = await _http.PutAsJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.MyModuleId}", EntityNames.Module, request.ModuleId), request);
+        var response = await _http.PutAsJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}", EntityNames.Module, request.ModuleId), request);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<int>();
     }
 
     public async Task DeleteAsync(DeleteMyModuleRequest request)
     {
-        await DeleteAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.MyModuleId}/{request.ModuleId}", EntityNames.Module, request.ModuleId));
+        await DeleteAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}/{request.ModuleId}", EntityNames.Module, request.ModuleId));
     }
 }

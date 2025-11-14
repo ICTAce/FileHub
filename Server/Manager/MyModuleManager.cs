@@ -71,7 +71,7 @@ public class MyModuleManager : MigratableModuleBase, IInstallable, IPortable, IS
                 searchContentList.Add(new SearchContent
                 {
                     EntityName = "MyModule",
-                    EntityId = MyModule.MyModuleId.ToString(),
+                    EntityId = MyModule.Id.ToString(),
                     Title = MyModule.Name,
                     Body = MyModule.Name,
                     ContentModifiedBy = MyModule.ModifiedBy,

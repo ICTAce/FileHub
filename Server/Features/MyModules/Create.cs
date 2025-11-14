@@ -35,7 +35,7 @@ public class CreateHandler : CommandHandlerBase, IRequestHandler<CreateMyModuleR
             await db.SaveChangesAsync(cancellationToken);
             
             Logger.Log(LogLevel.Information, this, LogFunction.Create, "MyModule Added {MyModule}", myModule);
-            return myModule.MyModuleId;
+            return myModule.Id;
         }
         else
         {

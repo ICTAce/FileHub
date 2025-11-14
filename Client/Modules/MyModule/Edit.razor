@@ -54,7 +54,7 @@
                 _id = Int32.Parse(PageState.QueryString["id"]);
                 var request = new GetMyModuleRequest 
                 { 
-                    MyModuleId = _id, 
+                    Id = _id, 
                     ModuleId = ModuleState.ModuleId 
                 };
                 var myModule = await MyModuleService.GetAsync(request);
@@ -70,7 +70,7 @@
         }
         catch (Exception ex)
         {
-            await logger.LogError(ex, "Error Loading MyModule {MyModuleId} {Error}", _id, ex.Message);
+            await logger.LogError(ex, "Error Loading MyModule {Id} {Error}", _id, ex.Message);
             AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
         }
     }
@@ -90,19 +90,19 @@
                         ModuleId = ModuleState.ModuleId,
                         Name = _name
                     };
-                    var myModuleId = await MyModuleService.CreateAsync(command);
-                    await logger.LogInformation("MyModule Created {MyModuleId}", myModuleId);
+                    var id = await MyModuleService.CreateAsync(command);
+                    await logger.LogInformation("MyModule Created {Id}", id);
                 }
                 else
                 {
                     var command = new UpdateMyModuleRequest
                     {
-                        MyModuleId = _id,
+                        Id = _id,
                         ModuleId = ModuleState.ModuleId,
                         Name = _name
                     };
-                    var myModuleId = await MyModuleService.UpdateAsync(command);
-                    await logger.LogInformation("MyModule Updated {MyModuleId}", myModuleId);
+                    var id = await MyModuleService.UpdateAsync(command);
+                    await logger.LogInformation("MyModule Updated {Id}", id);
                 }
                 NavigationManager.NavigateTo(NavigateUrl());
             }

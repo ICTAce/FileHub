@@ -7,6 +7,6 @@ public class DeleteMyModuleRequest : IRequest<int>
     public int ModuleId { get; set; }
 
     [Required]
-    [Range(1, int.MaxValue, ErrorMessage = "MyModuleId must be greater than 0")]
-    public int MyModuleId { get; set; }
+    [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
+    public int Id { get; set; }
 }

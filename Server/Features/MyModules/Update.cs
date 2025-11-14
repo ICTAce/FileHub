@@ -24,7 +24,7 @@ public class UpdateHandler : CommandHandlerBase, IRequestHandler<UpdateMyModuleR
             using var db = CreateDbContext();
             
             // Fetch existing entity
-            var myModule = await db.MyModule.FindAsync(new object[] { request.MyModuleId }, cancellationToken);
+            var myModule = await db.MyModule.FindAsync(new object[] { request.Id }, cancellationToken);
             if (myModule != null)
             {
                 // Update only user-editable fields
@@ -34,14 +34,14 @@ public class UpdateHandler : CommandHandlerBase, IRequestHandler<UpdateMyModuleR
                 await db.SaveChangesAsync(cancellationToken);
                 
                 Logger.Log(LogLevel.Information, this, LogFunction.Update, "MyModule Updated {MyModule}", myModule);
-                return request.MyModuleId;
+                return request.Id;
             }
             
             return -1;
         }
         else
         {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Update Attempt {MyModuleId}", request.MyModuleId);
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Update Attempt {Id}", request.Id);
             return -1;
         }
     }

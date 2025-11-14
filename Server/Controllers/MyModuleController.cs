@@ -34,21 +34,21 @@ public class MyModuleController : ModuleControllerBase
         {
             var query = new GetMyModuleRequest
             {
-                MyModuleId = id,
+                Id = id,
                 ModuleId = moduleid
             };
             var myModule = await _mediator.Send(query).ConfigureAwait(false);
 
             if (myModule == null)
             {
-                _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {MyModuleId} {ModuleId}", id, moduleid);
+                _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {Id} {ModuleId}", id, moduleid);
                 HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
             }
             return myModule;
         }
         else
         { 
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {MyModuleId} {ModuleId}", id, moduleid);
+            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {Id} {ModuleId}", id, moduleid);
             HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
             return null;
         }
@@ -74,7 +74,7 @@ public class MyModuleController : ModuleControllerBase
     [Authorize(Policy = PolicyNames.EditModule)]
     public async Task<int> Put(int id, [FromBody] Client.Features.MyModules.UpdateMyModuleRequest command)
     {
-        if (ModelState.IsValid && command.MyModuleId == id && IsAuthorizedEntityId(EntityNames.Module, command.ModuleId))
+        if (ModelState.IsValid && command.Id == id && IsAuthorizedEntityId(EntityNames.Module, command.ModuleId))
         {
             return await _mediator.Send(command).ConfigureAwait(false);
         }
@@ -94,14 +94,14 @@ public class MyModuleController : ModuleControllerBase
         {
             var command = new DeleteMyModuleRequest
             {
-                MyModuleId = id,
+                Id = id,
                 ModuleId = moduleid
             };
             await _mediator.Send(command).ConfigureAwait(false);
         }
         else
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Delete Attempt {MyModuleId} {ModuleId}", id, moduleid);
+            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Delete Attempt {Id} {ModuleId}", id, moduleid);
             HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
         }
     }

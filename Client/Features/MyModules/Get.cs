@@ -7,13 +7,13 @@ public class GetMyModuleRequest : IRequest<GetMyModuleResponse>
     public int ModuleId { get; set; }
 
     [Required]
-    [Range(1, int.MaxValue, ErrorMessage = "MyModuleId must be greater than 0")]
-    public int MyModuleId { get; set; }
+    [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
+    public int Id { get; set; }
 }
 
 public class GetMyModuleResponse
 {
-    public int MyModuleId { get; set; }
+    public int Id { get; set; }
     public int ModuleId { get; set; }
     public string Name { get; set; }
 

@@ -9,6 +9,6 @@ public class ListMyModulesRequest : IRequest<List<ListMyModulesResponse>>
 
 public class ListMyModulesResponse
 {
-    public int MyModuleId { get; set; }
+    public int Id { get; set; }
     public string Name { get; set; }
 }
