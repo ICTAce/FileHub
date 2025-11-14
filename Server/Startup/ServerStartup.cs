@@ -1,3 +1,5 @@
+// Licensed to ICTAce under the MIT license.
+
 using ICTAce.FileHub.Features.Common.Behaviors;
 
 namespace ICTAce.FileHub.Startup;

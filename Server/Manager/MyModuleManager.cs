@@ -1,4 +1,6 @@
-namespace ICTAce.FileHub.Manager;
+// Licensed to ICTAce under the MIT license.
+
+namespace ICTAce.FileHub.Server.Manager;
 
 public class MyModuleManager : MigratableModuleBase, IInstallable, IPortable, ISearchable
 {
@@ -27,7 +29,7 @@ public class MyModuleManager : MigratableModuleBase, IInstallable, IPortable, IS
 
         // Direct data access - no repository layer
         using var db = _contextFactory.CreateDbContext();
-        List<Entities.MyModule> MyModules = db.MyModule
+        var MyModules = db.MyModule
             .Where(item => item.ModuleId == module.ModuleId)
             .ToList();
 

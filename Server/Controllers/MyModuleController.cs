@@ -1,3 +1,5 @@
+// Licensed to ICTAce under the MIT license.
+
 using ICTAce.FileHub.Client.Features.MyModules;
 
 namespace ICTAce.FileHub.Controllers;

@@ -1,8 +1,9 @@
+// Licensed to ICTAce under the MIT license.
+
 global using System;
 global using System.Collections.Generic;
 global using System.IO;
 global using System.Linq;
-global using System.Linq.Expressions;
 global using System.Net;
 global using System.Security.Claims;
 global using System.Text.Json;
@@ -22,7 +23,6 @@ global using Microsoft.EntityFrameworkCore.Migrations.Operations;
 global using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Diagnostics.HealthChecks;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Localization;
 global using Oqtane.Controllers;
@@ -43,4 +43,4 @@ global using MediatR;
 global using ICTAce.FileHub.Migrations.EntityBuilders;
 global using ICTAce.FileHub.Repository;
 global using ICTAce.FileHub.Features.Common;
-global using ICTAce.FileHub.Features.MyModules;
+global using ICTAce.FileHub.Client.Features.MyModules;

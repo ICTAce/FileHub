@@ -1,7 +1,6 @@
-using ICTAce.FileHub.Client.Features.MyModules;
-using ICTAce.FileHub.Entities;
+// Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Features.MyModules;
+namespace ICTAce.FileHub.Server.Features.MyModules;
 
 // Handler
 public class CreateHandler : CommandHandlerBase, IRequestHandler<CreateMyModuleRequest, int>

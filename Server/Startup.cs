@@ -1,3 +1,5 @@
+// Licensed to ICTAce under the MIT license.
+
 namespace ICTAce.FileHub.Server;
 
 public class Startup
@@ -12,7 +14,6 @@ public class Startup
         var builder = new ConfigurationBuilder()
             .SetBasePath(environment.ContentRootPath)
             .AddJsonFile("appsettings.json", false, true)
-            .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", true, true)
             .AddEnvironmentVariables();
 
         // Add user secrets only in development environment
