@@ -1,17 +1,13 @@
-using System.Security.Claims;
-using MediatR;
-
 namespace ICTAce.FileHub.Features.MyModules;
 
 // Query
-public class GetMyModuleByIdQuery : IRequest<Models.MyModule>
+public class GetMyModulesQuery : IRequest<List<Models.MyModule>>
 {
-    public int MyModuleId { get; set; }
     public int ModuleId { get; set; }
 }
 
 // Handler
-public class GetMyModuleByIdHandler : IRequestHandler<GetMyModuleByIdQuery, Models.MyModule>
+public class ListHandler : IRequestHandler<GetMyModulesQuery, List<Models.MyModule>>
 {
     private readonly IDbContextFactory<Context> _contextFactory;
     private readonly IUserPermissions _userPermissions;
@@ -19,7 +15,7 @@ public class GetMyModuleByIdHandler : IRequestHandler<GetMyModuleByIdQuery, Mode
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogManager _logger;
 
-    public GetMyModuleByIdHandler(
+    public ListHandler(
         IDbContextFactory<Context> contextFactory,
         IUserPermissions userPermissions,
         ITenantManager tenantManager,
@@ -33,7 +29,7 @@ public class GetMyModuleByIdHandler : IRequestHandler<GetMyModuleByIdQuery, Mode
         _logger = logger;
     }
 
-    public async Task<Models.MyModule> Handle(GetMyModuleByIdQuery request, CancellationToken cancellationToken)
+    public async Task<List<Models.MyModule>> Handle(GetMyModulesQuery request, CancellationToken cancellationToken)
     {
         var alias = _tenantManager.GetAlias();
         var user = _httpContextAccessor.HttpContext?.User;
@@ -42,11 +38,13 @@ public class GetMyModuleByIdHandler : IRequestHandler<GetMyModuleByIdQuery, Mode
         {
             // Direct data access - no repository layer
             using var db = _contextFactory.CreateDbContext();
-            return await db.MyModule.FindAsync([request.MyModuleId], cancellationToken);
+            return await db.MyModule
+                .Where(item => item.ModuleId == request.ModuleId)
+                .ToListAsync(cancellationToken);
         }
         else
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {MyModuleId} {ModuleId}", request.MyModuleId, request.ModuleId);
+            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {ModuleId}", request.ModuleId);
             return null;
         }
     }

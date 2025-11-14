@@ -1,6 +1,3 @@
-using System.Security.Claims;
-using MediatR;
-
 namespace ICTAce.FileHub.Features.MyModules;
 
 // Command
@@ -10,7 +7,7 @@ public class UpdateMyModuleCommand : IRequest<Models.MyModule>
 }
 
 // Handler
-public class UpdateMyModuleHandler : IRequestHandler<UpdateMyModuleCommand, Models.MyModule>
+public class UpdateHandler : IRequestHandler<UpdateMyModuleCommand, Models.MyModule>
 {
     private readonly IDbContextFactory<Context> _contextFactory;
     private readonly IUserPermissions _userPermissions;
@@ -18,7 +15,7 @@ public class UpdateMyModuleHandler : IRequestHandler<UpdateMyModuleCommand, Mode
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogManager _logger;
 
-    public UpdateMyModuleHandler(
+    public UpdateHandler(
         IDbContextFactory<Context> contextFactory,
         IUserPermissions userPermissions,
         ITenantManager tenantManager,

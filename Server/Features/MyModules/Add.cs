@@ -1,13 +1,13 @@
 namespace ICTAce.FileHub.Features.MyModules;
 
-// Query
-public class GetMyModulesQuery : IRequest<List<Models.MyModule>>
+// Command
+public class AddMyModuleCommand : IRequest<Models.MyModule>
 {
-    public int ModuleId { get; set; }
+    public Models.MyModule MyModule { get; set; }
 }
 
 // Handler
-public class GetMyModulesHandler : IRequestHandler<GetMyModulesQuery, List<Models.MyModule>>
+public class AddHandler : IRequestHandler<AddMyModuleCommand, Models.MyModule>
 {
     private readonly IDbContextFactory<Context> _contextFactory;
     private readonly IUserPermissions _userPermissions;
@@ -15,7 +15,7 @@ public class GetMyModulesHandler : IRequestHandler<GetMyModulesQuery, List<Model
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogManager _logger;
 
-    public GetMyModulesHandler(
+    public AddHandler(
         IDbContextFactory<Context> contextFactory,
         IUserPermissions userPermissions,
         ITenantManager tenantManager,
@@ -29,22 +29,24 @@ public class GetMyModulesHandler : IRequestHandler<GetMyModulesQuery, List<Model
         _logger = logger;
     }
 
-    public async Task<List<Models.MyModule>> Handle(GetMyModulesQuery request, CancellationToken cancellationToken)
+    public async Task<Models.MyModule> Handle(AddMyModuleCommand request, CancellationToken cancellationToken)
     {
         var alias = _tenantManager.GetAlias();
         var user = _httpContextAccessor.HttpContext?.User;
         
-        if (user != null && _userPermissions.IsAuthorized(user, alias.SiteId, EntityNames.Module, request.ModuleId, PermissionNames.View))
+        if (user != null && _userPermissions.IsAuthorized(user, alias.SiteId, EntityNames.Module, request.MyModule.ModuleId, PermissionNames.Edit))
         {
             // Direct data access - no repository layer
             using var db = _contextFactory.CreateDbContext();
-            return await db.MyModule
-                .Where(item => item.ModuleId == request.ModuleId)
-                .ToListAsync(cancellationToken);
+            db.MyModule.Add(request.MyModule);
+            await db.SaveChangesAsync(cancellationToken);
+            
+            _logger.Log(LogLevel.Information, this, LogFunction.Create, "MyModule Added {MyModule}", request.MyModule);
+            return request.MyModule;
         }
         else
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {ModuleId}", request.ModuleId);
+            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Add Attempt {MyModule}", request.MyModule);
             return null;
         }
     }

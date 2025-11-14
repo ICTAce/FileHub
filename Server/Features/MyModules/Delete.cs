@@ -1,16 +1,14 @@
-using System.Security.Claims;
-using MediatR;
-
 namespace ICTAce.FileHub.Features.MyModules;
 
 // Command
-public class AddMyModuleCommand : IRequest<Models.MyModule>
+public class DeleteMyModuleCommand : IRequest<Unit>
 {
-    public Models.MyModule MyModule { get; set; }
+    public int MyModuleId { get; set; }
+    public int ModuleId { get; set; }
 }
 
 // Handler
-public class AddMyModuleHandler : IRequestHandler<AddMyModuleCommand, Models.MyModule>
+public class DeleteHandler : IRequestHandler<DeleteMyModuleCommand, Unit>
 {
     private readonly IDbContextFactory<Context> _contextFactory;
     private readonly IUserPermissions _userPermissions;
@@ -18,7 +16,7 @@ public class AddMyModuleHandler : IRequestHandler<AddMyModuleCommand, Models.MyM
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogManager _logger;
 
-    public AddMyModuleHandler(
+    public DeleteHandler(
         IDbContextFactory<Context> contextFactory,
         IUserPermissions userPermissions,
         ITenantManager tenantManager,
@@ -32,25 +30,28 @@ public class AddMyModuleHandler : IRequestHandler<AddMyModuleCommand, Models.MyM
         _logger = logger;
     }
 
-    public async Task<Models.MyModule> Handle(AddMyModuleCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeleteMyModuleCommand request, CancellationToken cancellationToken)
     {
         var alias = _tenantManager.GetAlias();
         var user = _httpContextAccessor.HttpContext?.User;
         
-        if (user != null && _userPermissions.IsAuthorized(user, alias.SiteId, EntityNames.Module, request.MyModule.ModuleId, PermissionNames.Edit))
+        if (user != null && _userPermissions.IsAuthorized(user, alias.SiteId, EntityNames.Module, request.ModuleId, PermissionNames.Edit))
         {
             // Direct data access - no repository layer
             using var db = _contextFactory.CreateDbContext();
-            db.MyModule.Add(request.MyModule);
-            await db.SaveChangesAsync(cancellationToken);
-            
-            _logger.Log(LogLevel.Information, this, LogFunction.Create, "MyModule Added {MyModule}", request.MyModule);
-            return request.MyModule;
+            var myModule = await db.MyModule.FindAsync([request.MyModuleId], cancellationToken);
+            if (myModule != null)
+            {
+                db.MyModule.Remove(myModule);
+                await db.SaveChangesAsync(cancellationToken);
+                _logger.Log(LogLevel.Information, this, LogFunction.Delete, "MyModule Deleted {MyModuleId}", request.MyModuleId);
+            }
         }
         else
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Add Attempt {MyModule}", request.MyModule);
-            return null;
+            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Delete Attempt {MyModuleId} {ModuleId}", request.MyModuleId, request.ModuleId);
         }
+        
+        return Unit.Value;
     }
 }

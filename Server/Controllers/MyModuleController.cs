@@ -66,7 +66,7 @@ public class MyModuleController : ModuleControllerBase
     [Authorize(Policy = PolicyNames.EditModule)]
     public async Task<Models.MyModule> Post([FromBody] Models.MyModule MyModule)
     {
-        if (ModelState.IsValid && IsAuthorizedEntityId(EntityNames.Module, MyModule.ModuleId))
+        if (!ModelState.IsValid && IsAuthorizedEntityId(EntityNames.Module, MyModule.ModuleId))
         {
             var command = new AddMyModuleCommand { MyModule = MyModule };
             MyModule = await _mediator.Send(command);
