@@ -27,7 +27,7 @@ public class MyModuleController : ModuleControllerBase
     [Authorize(Policy = PolicyNames.ViewModule)]
     [ProducesResponseType(typeof(PagedResult<ListMyModulesResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<PagedResult<ListMyModulesResponse>>> GetAll(
+    public async Task<ActionResult<PagedResult<ListMyModulesResponse>>> ListAsync(
         [FromQuery] int moduleid,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10)
@@ -66,7 +66,7 @@ public class MyModuleController : ModuleControllerBase
     [ProducesResponseType(typeof(GetMyModuleResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<GetMyModuleResponse>> Get(int id, int moduleid)
+    public async Task<ActionResult<GetMyModuleResponse>> GetAsync(int id, int moduleid)
     {
         if (!IsAuthorizedEntityId(EntityNames.Module, moduleid))
         {
@@ -101,7 +101,7 @@ public class MyModuleController : ModuleControllerBase
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<int>> Create([FromBody] CreateMyModuleRequest command)
+    public async Task<ActionResult<int>> CreateAsync([FromBody] CreateMyModuleRequest command)
     {
         if (!ModelState.IsValid)
         {
@@ -133,7 +133,7 @@ public class MyModuleController : ModuleControllerBase
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<int>> Update(int id, [FromBody] UpdateMyModuleRequest command)
+    public async Task<ActionResult<int>> UpdateAsync(int id, [FromBody] UpdateMyModuleRequest command)
     {
         if (!ModelState.IsValid)
         {
@@ -165,7 +165,7 @@ public class MyModuleController : ModuleControllerBase
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Delete(int id, int moduleid)
+    public async Task<IActionResult> DeleteAsync(int id, int moduleid)
     {
         if (!IsAuthorizedEntityId(EntityNames.Module, moduleid))
         {
