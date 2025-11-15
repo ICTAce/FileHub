@@ -21,7 +21,8 @@ public partial class Index
         try
         {
             var request = new ListMyModulesRequest { ModuleId = ModuleState.ModuleId };
-            _MyModules = await MyModuleService.ListAsync(request);
+            var pagedResult = await MyModuleService.ListAsync(request);
+            _MyModules = pagedResult?.Items?.ToList();
         }
         catch (Exception ex)
         {
@@ -43,7 +44,8 @@ public partial class Index
             await logger.LogInformation("MyModule Deleted {Id}", myModule.Id);
             
             var listRequest = new ListMyModulesRequest { ModuleId = ModuleState.ModuleId };
-            _MyModules = await MyModuleService.ListAsync(listRequest);
+            var pagedResult = await MyModuleService.ListAsync(listRequest);
+            _MyModules = pagedResult?.Items?.ToList();
             StateHasChanged();
         }
         catch (Exception ex)
