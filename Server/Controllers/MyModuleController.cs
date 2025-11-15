@@ -1,101 +1,186 @@
+// Licensed to ICTAce under the MIT license.
+
 namespace ICTAce.FileHub.Controllers;
 
+/// <summary>
+/// Controller for managing MyModule resources within a module context
+/// </summary>
 [Route(ControllerRoutes.ApiRoute)]
+[ApiController]
 public class MyModuleController : ModuleControllerBase
 {
-    private readonly IMyModuleService _MyModuleService;
+    private readonly IMediator _mediator;
 
-    public MyModuleController(IMyModuleService MyModuleService, ILogManager logger, IHttpContextAccessor accessor) : base(logger, accessor)
+    public MyModuleController(IMediator mediator, ILogManager logger, IHttpContextAccessor accessor) : base(logger, accessor)
     {
-        _MyModuleService = MyModuleService;
+        _mediator = mediator;
     }
 
-    // GET: api/<controller>?moduleid=x
+    /// <summary>
+    /// Retrieves a paginated list of MyModules for the specified module
+    /// </summary>
+    /// <param name="moduleid">The module identifier</param>
+    /// <param name="pageNumber">Page number (1-based, default: 1)</param>
+    /// <param name="pageSize">Items per page (default: 10, max: 100)</param>
+    /// <returns>Paginated collection of MyModules</returns>
     [HttpGet]
     [Authorize(Policy = PolicyNames.ViewModule)]
-    public async Task<IEnumerable<Models.MyModule>> Get(string moduleid)
+    [ProducesResponseType(typeof(PagedResult<ListMyModulesResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<PagedResult<ListMyModulesResponse>>> ListAsync(
+        [FromQuery] int moduleid,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10)
     {
-        int ModuleId;
-        if (int.TryParse(moduleid, out ModuleId) && IsAuthorizedEntityId(EntityNames.Module, ModuleId))
+        if (!IsAuthorizedEntityId(EntityNames.Module, moduleid))
         {
-            return await _MyModuleService.GetMyModulesAsync(ModuleId);
+            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule List Attempt {ModuleId}", moduleid);
+            return Forbid();
         }
-        else
+
+        var query = new ListMyModulesRequest
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {ModuleId}", moduleid);
-            HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            return null;
+            ModuleId = moduleid,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
+        var result = await _mediator.Send(query);
+
+        if (result is null)
+        {
+            return NotFound();
         }
+
+        return Ok(result);
     }
 
-    // GET api/<controller>/5
+    /// <summary>
+    /// Retrieves a specific MyModule by ID
+    /// </summary>
+    /// <param name="id">The MyModule identifier</param>
+    /// <param name="moduleid">The module identifier</param>
+    /// <returns>The requested MyModule</returns>
     [HttpGet("{id}/{moduleid}")]
     [Authorize(Policy = PolicyNames.ViewModule)]
-    public async Task<Models.MyModule> Get(int id, int moduleid)
+    [ProducesResponseType(typeof(GetMyModuleResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<GetMyModuleResponse>> GetAsync(int id, int moduleid)
     {
-        Models.MyModule MyModule = await _MyModuleService.GetMyModuleAsync(id, moduleid);
-        if (MyModule != null && IsAuthorizedEntityId(EntityNames.Module, MyModule.ModuleId))
+        if (!IsAuthorizedEntityId(EntityNames.Module, moduleid))
         {
-            return MyModule;
+            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {Id} {ModuleId}", id, moduleid);
+            return Forbid();
         }
-        else
-        { 
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {MyModuleId} {ModuleId}", id, moduleid);
-            HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            return null;
+
+        var query = new GetMyModuleRequest
+        {
+            Id = id,
+            ModuleId = moduleid
+        };
+
+        var myModule = await _mediator.Send(query).ConfigureAwait(false);
+
+        if (myModule is null)
+        {
+            _logger.Log(LogLevel.Warning, this, LogFunction.Read, "MyModule Not Found {Id} {ModuleId}", id, moduleid);
+            return NotFound();
         }
+
+        return Ok(myModule);
     }
 
-    // POST api/<controller>
+    /// <summary>
+    /// Creates a new MyModule
+    /// </summary>
+    /// <param name="command">The creation request containing MyModule details</param>
+    /// <returns>The ID of the created MyModule</returns>
     [HttpPost]
     [Authorize(Policy = PolicyNames.EditModule)]
-    public async Task<Models.MyModule> Post([FromBody] Models.MyModule MyModule)
+    [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<int>> CreateAsync([FromBody] CreateMyModuleRequest command)
     {
-        if (ModelState.IsValid && IsAuthorizedEntityId(EntityNames.Module, MyModule.ModuleId))
+        if (!ModelState.IsValid)
         {
-            MyModule = await _MyModuleService.AddMyModuleAsync(MyModule);
+            return BadRequest(ModelState);
         }
-        else
+
+        if (!IsAuthorizedEntityId(EntityNames.Module, command.ModuleId))
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Post Attempt {MyModule}", MyModule);
-            HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            MyModule = null;
+            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Create Attempt {Command}", command);
+            return Forbid();
         }
-        return MyModule;
+
+        var id = await _mediator.Send(command).ConfigureAwait(false);
+
+        return CreatedAtAction(
+            nameof(Get),
+            new { id, moduleid = command.ModuleId },
+            id);
     }
 
-    // PUT api/<controller>/5
+    /// <summary>
+    /// Updates an existing MyModule
+    /// </summary>
+    /// <param name="id">The MyModule identifier</param>
+    /// <param name="command">The update request containing modified MyModule details</param>
+    /// <returns>The updated MyModule ID</returns>
     [HttpPut("{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
-    public async Task<Models.MyModule> Put(int id, [FromBody] Models.MyModule MyModule)
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<int>> UpdateAsync(int id, [FromBody] UpdateMyModuleRequest command)
     {
-        if (ModelState.IsValid && MyModule.MyModuleId == id && IsAuthorizedEntityId(EntityNames.Module, MyModule.ModuleId))
+        if (!ModelState.IsValid)
         {
-            MyModule = await _MyModuleService.UpdateMyModuleAsync(MyModule);
+            return BadRequest(ModelState);
         }
-        else
+
+        if (command.Id != id)
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Put Attempt {MyModule}", MyModule);
-            HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            MyModule = null;
+            return BadRequest("ID mismatch between route and body");
         }
-        return MyModule;
+
+        if (!IsAuthorizedEntityId(EntityNames.Module, command.ModuleId))
+        {
+            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Update Attempt {Command}", command);
+            return Forbid();
+        }
+
+        var result = await _mediator.Send(command).ConfigureAwait(false);
+
+        return Ok(result);
     }
 
-    // DELETE api/<controller>/5
+    /// <summary>
+    /// Deletes a specific MyModule
+    /// </summary>
+    /// <param name="id">The MyModule identifier</param>
+    /// <param name="moduleid">The module identifier</param>
     [HttpDelete("{id}/{moduleid}")]
     [Authorize(Policy = PolicyNames.EditModule)]
-    public async Task Delete(int id, int moduleid)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> DeleteAsync(int id, int moduleid)
     {
-        Models.MyModule MyModule = await _MyModuleService.GetMyModuleAsync(id, moduleid);
-        if (MyModule != null && IsAuthorizedEntityId(EntityNames.Module, MyModule.ModuleId))
+        if (!IsAuthorizedEntityId(EntityNames.Module, moduleid))
         {
-            await _MyModuleService.DeleteMyModuleAsync(id, MyModule.ModuleId);
+            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Delete Attempt {Id} {ModuleId}", id, moduleid);
+            return Forbid();
         }
-        else
+
+        var command = new DeleteMyModuleRequest
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized v Delete Attempt {MyModuleId} {ModuleId}", id, moduleid);
-            HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-        }
+            Id = id,
+            ModuleId = moduleid
+        };
+
+        await _mediator.Send(command).ConfigureAwait(false);
+
+        return NoContent();
     }
 }

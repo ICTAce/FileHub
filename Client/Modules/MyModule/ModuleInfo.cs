@@ -1,4 +1,6 @@
-namespace ICTAce.FileHub.MyModule;
+// Licensed to ICTAce under the MIT license.
+
+namespace ICTAce.FileHub.Modules.MyModule;
 
 public class ModuleInfo : IModule
 {

@@ -1,8 +1,10 @@
+// Licensed to ICTAce under the MIT license.
+
 namespace ICTAce.FileHub.Repository;
 
 public class Context : DBContextBase, ITransientService, IMultiDatabase
 {
-    public virtual DbSet<Models.MyModule> MyModule { get; set; }
+    public virtual DbSet<Entities.MyModule> MyModule { get; set; }
 
     public Context(IDBContextDependencies DBContextDependencies) : base(DBContextDependencies)
     {
@@ -13,6 +15,6 @@ public class Context : DBContextBase, ITransientService, IMultiDatabase
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<Models.MyModule>().ToTable(ActiveDatabase.RewriteName("MyModule"));
+        builder.Entity<Entities.MyModule>().ToTable(ActiveDatabase.RewriteName("MyModule"));
     }
 }

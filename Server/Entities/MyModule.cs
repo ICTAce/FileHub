@@ -1,14 +1,14 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-using Oqtane.Models;
+// Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Models;
+namespace ICTAce.FileHub.Entities;
 
 public class MyModule : IAuditable
 {
     [Key]
-    public int MyModuleId { get; set; }
+    public int Id { get; set; }
     public int ModuleId { get; set; }
+
+    [MaxLength(100)]
     public string Name { get; set; }
 
     public string CreatedBy { get; set; }

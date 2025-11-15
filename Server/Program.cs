@@ -1,3 +1,5 @@
+// Licensed to ICTAce under the MIT license.
+
 using Microsoft.Extensions.Logging;
 
 namespace ICTAce.FileHub.Server;

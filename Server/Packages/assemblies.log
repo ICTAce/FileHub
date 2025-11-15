@@ -7,7 +7,6 @@
   "HtmlAgilityPack.dll": 1,
   "ICTAce.FileHub.Client.Oqtane.dll": 1,
   "ICTAce.FileHub.Server.Oqtane.dll": 1,
-  "ICTAce.FileHub.Shared.Oqtane.dll": 1,
   "K4os.Compression.LZ4.dll": 1,
   "K4os.Compression.LZ4.Streams.dll": 1,
   "K4os.Hash.xxHash.dll": 1,
@@ -98,5 +97,7 @@
   "System.Security.Cryptography.ProtectedData.dll": 1,
   "System.Security.Permissions.dll": 1,
   "System.Windows.Extensions.dll": 1,
-  "ZstdSharp.dll": 1
+  "ZstdSharp.dll": 1,
+  "MediatR.Contracts.dll": 1,
+  "MediatR.dll": 1
 }

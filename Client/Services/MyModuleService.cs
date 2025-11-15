@@ -1,47 +1,63 @@
+// Licensed to ICTAce under the MIT license.
+
 namespace ICTAce.FileHub.Services;
 
 public interface IMyModuleService
 {
-    Task<List<Models.MyModule>> GetMyModulesAsync(int ModuleId);
+    Task<GetMyModuleResponse> GetAsync(GetMyModuleRequest request);
 
-    Task<Models.MyModule> GetMyModuleAsync(int MyModuleId, int ModuleId);
+    Task<PagedResult<ListMyModulesResponse>> ListAsync(ListMyModulesRequest request);
 
-    Task<Models.MyModule> AddMyModuleAsync(Models.MyModule MyModule);
+    Task<int> CreateAsync(CreateMyModuleRequest request);
 
-    Task<Models.MyModule> UpdateMyModuleAsync(Models.MyModule MyModule);
+    Task<int> UpdateAsync(UpdateMyModuleRequest request);
 
-    Task DeleteMyModuleAsync(int MyModuleId, int ModuleId);
+    Task DeleteAsync(DeleteMyModuleRequest request);
 }
 
 public class MyModuleService : ServiceBase, IMyModuleService
 {
-    public MyModuleService(HttpClient http, SiteState siteState) : base(http, siteState) { }
+    private readonly HttpClient _http;
+
+    public MyModuleService(HttpClient http, SiteState siteState) : base(http, siteState) 
+    {
+        _http = http;
+    }
 
     private string Apiurl => CreateApiUrl("MyModule");
 
-    public async Task<List<Models.MyModule>> GetMyModulesAsync(int ModuleId)
+    public async Task<GetMyModuleResponse> GetAsync(GetMyModuleRequest request)
     {
-        List<Models.MyModule> Tasks = await GetJsonAsync<List<Models.MyModule>>(CreateAuthorizationPolicyUrl($"{Apiurl}?moduleid={ModuleId}", EntityNames.Module, ModuleId), Enumerable.Empty<Models.MyModule>().ToList());
-        return Tasks.OrderBy(item => item.Name).ToList();
+        return await GetJsonAsync<GetMyModuleResponse>(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}/{request.ModuleId}", EntityNames.Module, request.ModuleId));
     }
 
-    public async Task<Models.MyModule> GetMyModuleAsync(int MyModuleId, int ModuleId)
+    public async Task<PagedResult<ListMyModulesResponse>> ListAsync(ListMyModulesRequest request)
     {
-        return await GetJsonAsync<Models.MyModule>(CreateAuthorizationPolicyUrl($"{Apiurl}/{MyModuleId}/{ModuleId}", EntityNames.Module, ModuleId));
+        var url = CreateAuthorizationPolicyUrl(
+            $"{Apiurl}?moduleid={request.ModuleId}&pageNumber={request.PageNumber}&pageSize={request.PageSize}", 
+            EntityNames.Module, 
+            request.ModuleId);
+
+        var result = await GetJsonAsync<PagedResult<ListMyModulesResponse>>(url, new PagedResult<ListMyModulesResponse>());
+        return result;
     }
 
-    public async Task<Models.MyModule> AddMyModuleAsync(Models.MyModule MyModule)
+    public async Task<int> CreateAsync(CreateMyModuleRequest request)
     {
-        return await PostJsonAsync<Models.MyModule>(CreateAuthorizationPolicyUrl($"{Apiurl}", EntityNames.Module, MyModule.ModuleId), MyModule);
+        var response = await _http.PostAsJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}", EntityNames.Module, request.ModuleId), request);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<int>();
     }
 
-    public async Task<Models.MyModule> UpdateMyModuleAsync(Models.MyModule MyModule)
+    public async Task<int> UpdateAsync(UpdateMyModuleRequest request)
     {
-        return await PutJsonAsync<Models.MyModule>(CreateAuthorizationPolicyUrl($"{Apiurl}/{MyModule.MyModuleId}", EntityNames.Module, MyModule.ModuleId), MyModule);
+        var response = await _http.PutAsJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}", EntityNames.Module, request.ModuleId), request);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<int>();
     }
 
-    public async Task DeleteMyModuleAsync(int MyModuleId, int ModuleId)
+    public async Task DeleteAsync(DeleteMyModuleRequest request)
     {
-        await DeleteAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{MyModuleId}/{ModuleId}", EntityNames.Module, ModuleId));
+        await DeleteAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}/{request.ModuleId}", EntityNames.Module, request.ModuleId));
     }
 }

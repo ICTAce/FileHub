@@ -1,0 +1,45 @@
+// Licensed to ICTAce under the MIT license.
+
+namespace ICTAce.FileHub.Features.MyModules;
+
+// Handler
+public class GetHandler(
+    IDbContextFactory<Context> contextFactory,
+    IUserPermissions userPermissions,
+    ITenantManager tenantManager,
+    IHttpContextAccessor httpContextAccessor,
+    ILogManager logger)
+    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<GetMyModuleRequest, GetMyModuleResponse>
+{
+    public async Task<GetMyModuleResponse> Handle(GetMyModuleRequest request, CancellationToken cancellationToken)
+    {
+        var alias = GetAlias();
+
+        if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.View))
+        {
+            using var db = CreateDbContext();
+            var entity = await db.MyModule.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
+            if (entity is null)
+            {
+                Logger.Log(LogLevel.Error, this, LogFunction.Security, "MyModule not found {Id} {ModuleId}", request.Id, request.ModuleId);
+                return null;
+            }
+
+            return new GetMyModuleResponse
+            {
+                Id = entity.Id,
+                ModuleId = entity.ModuleId,
+                Name = entity.Name,
+                CreatedBy = entity.CreatedBy,
+                CreatedOn = entity.CreatedOn,
+                ModifiedBy = entity.ModifiedBy,
+                ModifiedOn = entity.ModifiedOn
+            };
+        }
+        else
+        {
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {Id} {ModuleId}", request.Id, request.ModuleId);
+            return null;
+        }
+    }
+}

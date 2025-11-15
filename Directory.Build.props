@@ -11,7 +11,7 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <Company>ICTAce</Company>
     <Product>FileHub</Product>
-    <Copyright>Copyright © ICTAce $([System.DateTime]::Now.Year)</Copyright>
+    <Copyright>MIT License</Copyright>
     <RepositoryUrl>https://github.com/ICTAce/FileHub</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
