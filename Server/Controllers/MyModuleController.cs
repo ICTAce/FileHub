@@ -14,15 +14,16 @@ public class MyModuleController : ModuleControllerBase
 
     [HttpGet]
     [Authorize(Policy = PolicyNames.ViewModule)]
-    public async Task<IEnumerable<ListMyModulesResponse>> List(string moduleid)
+    public async Task<IEnumerable<ListMyModulesResponse>> List(int moduleid)
     {
-        if (!int.TryParse(moduleid, out int ModuleId) && IsAuthorizedEntityId(EntityNames.Module, ModuleId))
+        if (!IsAuthorizedEntityId(EntityNames.Module, moduleid))
         {
-            HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            _logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule List Attempt {ModuleId}", moduleid);
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
             return null;
         }
 
-        var query = new ListMyModulesRequest { ModuleId = ModuleId };
+        var query = new ListMyModulesRequest { ModuleId = moduleid };
         return await _mediator.Send(query);
     }
 
