@@ -117,7 +117,7 @@ public class MyModuleController : ModuleControllerBase
         var id = await _mediator.Send(command).ConfigureAwait(false);
 
         return CreatedAtAction(
-            nameof(Get),
+            nameof(GetAsync),
             new { id, moduleid = command.ModuleId },
             id);
     }
