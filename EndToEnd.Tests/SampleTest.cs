@@ -3,7 +3,7 @@
 
 namespace ICTAce.FileHub.EndToEnd.Tests;
 
-public class Tests : PageTest
+public class SampleTest : PageTest
 {
     [Test]
     public async Task Test()

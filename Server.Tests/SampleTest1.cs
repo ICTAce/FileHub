@@ -5,7 +5,7 @@ using ICTAce.FileHub.Server.Tests.Data;
 
 namespace ICTAce.FileHub.Server.Tests;
 
-public class Tests
+public class SampleTest1
 {
     [Test]
     public void Basic()

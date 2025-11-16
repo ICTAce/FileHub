@@ -99,5 +99,6 @@
   "System.Windows.Extensions.dll": 1,
   "ZstdSharp.dll": 1,
   "MediatR.Contracts.dll": 1,
-  "MediatR.dll": 1
+  "MediatR.dll": 1,
+  "Riok.Mapperly.Abstractions.dll": 1
 }
