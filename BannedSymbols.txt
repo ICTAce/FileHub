@@ -1,0 +1,58 @@
+# Banned APIs for FileHub Project
+# Format: [Namespace/Type/Member]; [Justification]
+#
+# Documentation: https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.BannedApiAnalyzers/BannedApiAnalyzers.Help.md
+
+# ============================================================================
+# Moq - Banned mocking framework
+# ============================================================================
+# Reason: Moq has had security concerns and license changes (SponsorLink).
+#         Use NSubstitute or FakeItEasy as safer alternatives for mocking.
+# ============================================================================
+
+# Ban the entire Moq namespace
+N:Moq; Use NSubstitute or FakeItEasy instead. Moq is banned due to security and licensing concerns.
+
+# Ban common Moq types explicitly
+T:Moq.Mock; Use NSubstitute (Substitute.For<T>()) or FakeItEasy (A.Fake<T>()) instead.
+T:Moq.Mock`1; Use NSubstitute (Substitute.For<T>()) or FakeItEasy (A.Fake<T>()) instead.
+T:Moq.MockRepository; Use NSubstitute or FakeItEasy instead. Moq is banned.
+T:Moq.It; Use NSubstitute (Arg.Any<T>()) or FakeItEasy (A<T>._) instead.
+T:Moq.Times; Use NSubstitute (Received()) or FakeItEasy (MustHaveHappened()) instead.
+
+# ============================================================================
+# AutoFixture - Banned test data generation framework
+# ============================================================================
+# Reason: AutoFixture creates "magic" test data that obscures test intent.
+#         Tests should be explicit and readable. Create test data manually
+#         or use simple builder patterns for clarity and maintainability.
+# ============================================================================
+
+# Ban the entire AutoFixture namespace
+N:AutoFixture; Create test data explicitly. AutoFixture obscures test intent and makes tests harder to understand.
+
+# Ban common AutoFixture types explicitly
+T:AutoFixture.Fixture; Create test data explicitly using object initializers or builder patterns.
+T:AutoFixture.IFixture; Create test data explicitly using object initializers or builder patterns.
+T:AutoFixture.Kernel.ISpecimenBuilder; Create test data explicitly. AutoFixture is banned.
+T:AutoFixture.AutoData; Use explicit test data instead. AutoFixture attributes are banned.
+T:AutoFixture.AutoDataAttribute; Use explicit test data instead. AutoFixture is banned.
+T:AutoFixture.InlineAutoDataAttribute; Use explicit test data instead. AutoFixture is banned.
+
+# Ban AutoFixture extensions
+N:AutoFixture.AutoMoq; Both AutoFixture and Moq are banned. Use explicit test data with NSubstitute.
+N:AutoFixture.AutoNSubstitute; Use explicit test data creation and manual NSubstitute setup for clarity.
+N:AutoFixture.AutoFakeItEasy; Use explicit test data creation and manual FakeItEasy setup for clarity.
+
+# ============================================================================
+# Additional Recommended Bans (Optional - Uncomment if desired)
+# ============================================================================
+
+# Ban synchronous versions of async methods to enforce async patterns
+# M:System.Threading.Tasks.Task.Wait(); Use await instead to prevent deadlocks.
+# M:System.Threading.Tasks.Task`1.Result; Use await instead to prevent deadlocks.
+# M:System.Threading.Tasks.Task.GetAwaiter().GetResult(); Use await instead.
+
+# Ban obsolete/dangerous APIs
+# M:System.Net.WebClient.#ctor(); Use HttpClient instead. WebClient is obsolete.
+# T:System.Web.HttpUtility; Use System.Net.WebUtility instead in .NET Core/5+.

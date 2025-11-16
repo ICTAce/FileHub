@@ -2,7 +2,6 @@
 
 namespace ICTAce.FileHub.Features.MyModules;
 
-// Handler
 public class GetHandler(
     IDbContextFactory<Context> contextFactory,
     IUserPermissions userPermissions,

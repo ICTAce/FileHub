@@ -2,7 +2,6 @@
 
 namespace ICTAce.FileHub.Features.MyModules;
 
-// Handler
 public class DeleteHandler(
     IDbContextFactory<Context> contextFactory,
     IUserPermissions userPermissions,
@@ -18,11 +17,11 @@ public class DeleteHandler(
         if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
         {
             using var db = CreateDbContext();
-            var myModule = await db.MyModule.FindAsync(new object[] { request.Id }, cancellationToken);
+            var myModule = await db.MyModule.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
             if (myModule != null)
             {
                 db.MyModule.Remove(myModule);
-                await db.SaveChangesAsync(cancellationToken);
+                await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 Logger.Log(LogLevel.Information, this, LogFunction.Delete, "MyModule Deleted {Id}", request.Id);
                 return request.Id;
             }

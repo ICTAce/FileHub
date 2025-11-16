@@ -2,7 +2,6 @@
 
 namespace ICTAce.FileHub.Features.MyModules;
 
-// Handler
 public class CreateHandler(
     IDbContextFactory<Context> contextFactory,
     IUserPermissions userPermissions,
@@ -27,7 +26,7 @@ public class CreateHandler(
 
             using var db = CreateDbContext();
             db.MyModule.Add(myModule);
-            await db.SaveChangesAsync(cancellationToken);
+            await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             Logger.Log(LogLevel.Information, this, LogFunction.Create, "MyModule Added {MyModule}", myModule);
             return myModule.Id;

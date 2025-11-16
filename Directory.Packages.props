@@ -3,8 +3,6 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="FluentValidation" Version="12.1.0" />
-    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.0" />
     <PackageVersion Include="MediatR" Version="13.1.0" />
     <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(AspNetCoreVersion)" />
@@ -20,17 +18,18 @@
     <PackageVersion Include="Oqtane.Client" Version="$(OqtaneVersion)" />
     <PackageVersion Include="Oqtane.Server" Version="$(OqtaneVersion)" />
     <PackageVersion Include="Oqtane.Shared" Version="$(OqtaneVersion)" />
-    <PackageVersion Include="TUnit" Version="1.1.10" />
-    <PackageVersion Include="TUnit.Playwright" Version="1.1.10" />
+    <PackageVersion Include="TUnit" Version="1.2.0" />
+    <PackageVersion Include="TUnit.Playwright" Version="1.2.0" />
     <PackageVersion Include="bunit" Version="2.0.66" />
+    <PackageVersion Include="Bogus" Version="35.6.1" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageVersion Include="coverlet.collector" Version="6.0.3" />
-    
-    <!-- Code Analyzers -->
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.5.0.108019" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.180" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.15.0.120848" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.253" />
     <PackageVersion Include="AsyncFixer" Version="1.6.0" />
-    <PackageVersion Include="Roslynator.Analyzers" Version="4.12.10" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.14.1" />
     <PackageVersion Include="TUnit.Analyzers" Version="0.1.984" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.11.0" />
   </ItemGroup>
 </Project>

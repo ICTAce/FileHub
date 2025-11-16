@@ -1,6 +1,5 @@
 // Licensed to ICTAce under the MIT license.
 
-using Riok.Mapperly.Abstractions;
 using MyModuleEntity = ICTAce.FileHub.Entities.MyModule;
 
 namespace ICTAce.FileHub.Features.MyModules;
