@@ -25,9 +25,9 @@ public class MyModuleController : ModuleControllerBase
     /// <returns>Paginated collection of MyModules</returns>
     [HttpGet]
     [Authorize(Policy = PolicyNames.ViewModule)]
-    [ProducesResponseType(typeof(PagedResult<ListMyModulesResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PagedResult<ListMyModuleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<PagedResult<ListMyModulesResponse>>> ListAsync(
+    public async Task<ActionResult<PagedResult<ListMyModuleResponse>>> ListAsync(
         [FromQuery] int moduleid,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10)
@@ -38,7 +38,7 @@ public class MyModuleController : ModuleControllerBase
             return Forbid();
         }
 
-        var query = new ListMyModulesRequest
+        var query = new ListMyModuleRequest
         {
             ModuleId = moduleid,
             PageNumber = pageNumber,

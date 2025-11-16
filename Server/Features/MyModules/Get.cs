@@ -9,7 +9,7 @@ public class GetHandler(
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<GetMyModuleRequest, GetMyModuleResponse>
+    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<GetMyModuleRequest, GetMyModuleResponse>
 {
     public async Task<GetMyModuleResponse> Handle(GetMyModuleRequest request, CancellationToken cancellationToken)
     {
@@ -25,16 +25,7 @@ public class GetHandler(
                 return null;
             }
 
-            return new GetMyModuleResponse
-            {
-                Id = entity.Id,
-                ModuleId = entity.ModuleId,
-                Name = entity.Name,
-                CreatedBy = entity.CreatedBy,
-                CreatedOn = entity.CreatedOn,
-                ModifiedBy = entity.ModifiedBy,
-                ModifiedOn = entity.ModifiedOn
-            };
+            return Mapper.ToGetResponse(entity);
         }
         else
         {

@@ -6,7 +6,7 @@ public interface IMyModuleService
 {
     Task<GetMyModuleResponse> GetAsync(GetMyModuleRequest request);
 
-    Task<PagedResult<ListMyModulesResponse>> ListAsync(ListMyModulesRequest request);
+    Task<PagedResult<ListMyModuleResponse>> ListAsync(ListMyModuleRequest request);
 
     Task<int> CreateAsync(CreateMyModuleRequest request);
 
@@ -31,14 +31,14 @@ public class MyModuleService : ServiceBase, IMyModuleService
         return await GetJsonAsync<GetMyModuleResponse>(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}/{request.ModuleId}", EntityNames.Module, request.ModuleId));
     }
 
-    public async Task<PagedResult<ListMyModulesResponse>> ListAsync(ListMyModulesRequest request)
+    public async Task<PagedResult<ListMyModuleResponse>> ListAsync(ListMyModuleRequest request)
     {
         var url = CreateAuthorizationPolicyUrl(
             $"{Apiurl}?moduleid={request.ModuleId}&pageNumber={request.PageNumber}&pageSize={request.PageSize}", 
             EntityNames.Module, 
             request.ModuleId);
 
-        var result = await GetJsonAsync<PagedResult<ListMyModulesResponse>>(url, new PagedResult<ListMyModulesResponse>());
+        var result = await GetJsonAsync<PagedResult<ListMyModuleResponse>>(url, new PagedResult<ListMyModuleResponse>());
         return result;
     }
 

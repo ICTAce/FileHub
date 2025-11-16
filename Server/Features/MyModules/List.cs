@@ -9,9 +9,9 @@ public class ListHandler(
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListMyModulesRequest, PagedResult<ListMyModulesResponse>>
+    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListMyModuleRequest, PagedResult<ListMyModuleResponse>>
 {
-    public async Task<PagedResult<ListMyModulesResponse>> Handle(ListMyModulesRequest request, CancellationToken cancellationToken)
+    public async Task<PagedResult<ListMyModuleResponse>> Handle(ListMyModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
 
@@ -22,7 +22,7 @@ public class ListHandler(
             // Get total count for pagination metadata
             var totalCount = await db.MyModule
                 .Where(item => item.ModuleId == request.ModuleId)
-                .CountAsync(cancellationToken);
+                .CountAsync(cancellationToken).ConfigureAwait(false);
 
             // Apply pagination
             var modules = await db.MyModule
@@ -30,18 +30,14 @@ public class ListHandler(
                 .OrderBy(m => m.Name) // Consistent ordering for pagination
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
-                .ToListAsync(cancellationToken);
+                .ToListAsync(cancellationToken).ConfigureAwait(false);
 
-            // Project MyModule entities to ListMyModulesResponse DTOs
+            // Map MyModule entities to ListMyModuleResponse DTOs using Mapperly
             var items = modules
-                .Select(m => new ListMyModulesResponse 
-                { 
-                    Id = m.Id,
-                    Name = m.Name 
-                })
+                .Select(Mapper.ToListResponse)
                 .ToList();
 
-            return new PagedResult<ListMyModulesResponse>
+            return new PagedResult<ListMyModuleResponse>
             {
                 Items = items,
                 PageNumber = request.PageNumber,

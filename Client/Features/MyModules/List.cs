@@ -2,7 +2,7 @@
 
 namespace ICTAce.FileHub.Features.MyModules;
 
-public class ListMyModulesRequest : RequestBase, IRequest<PagedResult<ListMyModulesResponse>>
+public class ListMyModuleRequest : RequestBase, IRequest<PagedResult<ListMyModuleResponse>>
 {
     /// <summary>
     /// Page number (1-based). Defaults to 1 if not specified.
@@ -17,7 +17,7 @@ public class ListMyModulesRequest : RequestBase, IRequest<PagedResult<ListMyModu
     public int PageSize { get; set; } = 10;
 }
 
-public class ListMyModulesResponse
+public class ListMyModuleResponse
 {
     public int Id { get; set; }
     public string Name { get; set; }
