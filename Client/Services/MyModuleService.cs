@@ -15,20 +15,15 @@ public interface IMyModuleService
     Task DeleteAsync(DeleteMyModuleRequest request);
 }
 
-public class MyModuleService : ServiceBase, IMyModuleService
+public class MyModuleService(HttpClient http, SiteState siteState) : ServiceBase(http, siteState), IMyModuleService
 {
-    private readonly HttpClient _http;
-
-    public MyModuleService(HttpClient http, SiteState siteState) : base(http, siteState) 
-    {
-        _http = http;
-    }
+    private readonly HttpClient _http = http;
 
     private string Apiurl => CreateApiUrl("MyModule");
 
-    public async Task<GetMyModuleResponse> GetAsync(GetMyModuleRequest request)
+    public Task<GetMyModuleResponse> GetAsync(GetMyModuleRequest request)
     {
-        return await GetJsonAsync<GetMyModuleResponse>(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}/{request.ModuleId}", EntityNames.Module, request.ModuleId));
+        return GetJsonAsync<GetMyModuleResponse>(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}/{request.ModuleId}", EntityNames.Module, request.ModuleId));
     }
 
     public async Task<PagedResult<ListMyModuleResponse>> ListAsync(ListMyModuleRequest request)
@@ -38,27 +33,26 @@ public class MyModuleService : ServiceBase, IMyModuleService
             EntityNames.Module, 
             request.ModuleId);
 
-        var result = await GetJsonAsync<PagedResult<ListMyModuleResponse>>(url, new PagedResult<ListMyModuleResponse>());
+        var result = await GetJsonAsync<PagedResult<ListMyModuleResponse>>(url, new PagedResult<ListMyModuleResponse>()).ConfigureAwait(false);
         return result;
     }
 
     public async Task<int> CreateAsync(CreateMyModuleRequest request)
     {
-        var response = await _http.PostAsJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}", EntityNames.Module, request.ModuleId), request);
+        var response = await _http.PostAsJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}", EntityNames.Module, request.ModuleId), request).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
-        var res = await response.Content.ReadAsStringAsync();
-        return await response.Content.ReadFromJsonAsync<int>();
+        return await response.Content.ReadFromJsonAsync<int>().ConfigureAwait(false);
     }
 
     public async Task<int> UpdateAsync(UpdateMyModuleRequest request)
     {
-        var response = await _http.PutAsJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}", EntityNames.Module, request.ModuleId), request);
+        var response = await _http.PutAsJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}", EntityNames.Module, request.ModuleId), request).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<int>();
+        return await response.Content.ReadFromJsonAsync<int>().ConfigureAwait(false);
     }
 
-    public async Task DeleteAsync(DeleteMyModuleRequest request)
+    public Task DeleteAsync(DeleteMyModuleRequest request)
     {
-        await DeleteAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}/{request.ModuleId}", EntityNames.Module, request.ModuleId));
+        return DeleteAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}/{request.ModuleId}", EntityNames.Module, request.ModuleId));
     }
 }
