@@ -46,6 +46,7 @@ public class MyModuleService : ServiceBase, IMyModuleService
     {
         var response = await _http.PostAsJsonAsync(CreateAuthorizationPolicyUrl($"{Apiurl}", EntityNames.Module, request.ModuleId), request);
         response.EnsureSuccessStatusCode();
+        var res = await response.Content.ReadAsStringAsync();
         return await response.Content.ReadFromJsonAsync<int>();
     }
 
