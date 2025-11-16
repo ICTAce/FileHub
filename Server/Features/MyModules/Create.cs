@@ -3,22 +3,18 @@
 namespace ICTAce.FileHub.Features.MyModules;
 
 // Handler
-public class CreateHandler : CommandHandlerBase, IRequestHandler<CreateMyModuleRequest, int>
+public class CreateHandler(
+    IDbContextFactory<Context> contextFactory,
+    IUserPermissions userPermissions,
+    ITenantManager tenantManager,
+    IHttpContextAccessor httpContextAccessor,
+    ILogManager logger)
+    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<CreateMyModuleRequest, int>
 {
-    public CreateHandler(
-        IDbContextFactory<Context> contextFactory,
-        IUserPermissions userPermissions,
-        ITenantManager tenantManager,
-        IHttpContextAccessor httpContextAccessor,
-        ILogManager logger)
-        : base(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger)
-    {
-    }
-
     public async Task<int> Handle(CreateMyModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
-        
+
         if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
         {
             // Build the entity from command data
@@ -32,7 +28,7 @@ public class CreateHandler : CommandHandlerBase, IRequestHandler<CreateMyModuleR
             using var db = CreateDbContext();
             db.MyModule.Add(myModule);
             await db.SaveChangesAsync(cancellationToken);
-            
+
             Logger.Log(LogLevel.Information, this, LogFunction.Create, "MyModule Added {MyModule}", myModule);
             return myModule.Id;
         }

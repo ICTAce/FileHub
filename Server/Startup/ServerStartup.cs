@@ -1,7 +1,5 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Features.Common.Behaviors;
-
 namespace ICTAce.FileHub.Startup;
 
 public class ServerStartup : IServerStartup
@@ -22,11 +20,8 @@ public class ServerStartup : IServerStartup
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(ServerStartup).Assembly);
-            
-            // Add pipeline behaviors (order matters!)
-            cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
         });
-        
+
         // Register DbContext factory
         services.AddDbContextFactory<Context>(opt => { }, ServiceLifetime.Transient);
     }
