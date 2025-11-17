@@ -11,7 +11,7 @@ global using System.Threading;
 global using System.Threading.Tasks;
 global using ICTAce.FileHub.Client.Contracts.Common;
 global using ICTAce.FileHub.Client.Contracts.MyModules;
-global using ICTAce.FileHub.Migrations.EntityBuilders;
+global using ICTAce.FileHub.Server.Persistence.Migrations.EntityBuilders;
 global using ICTAce.FileHub.Server.Contexts;
 global using MediatR;
 global using Microsoft.AspNetCore;

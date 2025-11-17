@@ -1,11 +1,9 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Server.Contexts;
-
 namespace ICTAce.FileHub.Server.Features.MyModules;
 
 public class ListHandler(
-    IDbContextFactory<MyModuleCommand> contextFactory,
+    IDbContextFactory<MyModuleCommandContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,

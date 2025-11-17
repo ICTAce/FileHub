@@ -25,6 +25,6 @@ public class ServerStartup : IServerStartup
         });
 
         // Register DbContext factory
-        services.AddDbContextFactory<MyModuleCommand>(opt => { }, ServiceLifetime.Transient);
+        services.AddDbContextFactory<MyModuleCommandContext>(opt => { }, ServiceLifetime.Transient);
     }
 }

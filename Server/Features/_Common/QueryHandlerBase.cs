@@ -10,13 +10,13 @@ namespace ICTAce.FileHub.Server.Features.Common;
 /// Follows CQRS principles by separating query concerns from command concerns.
 /// </summary>
 public abstract class QueryHandlerBase(
-    IDbContextFactory<MyModuleCommand> contextFactory,
+    IDbContextFactory<MyModuleCommandContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
 {
-    protected readonly IDbContextFactory<MyModuleCommand> ContextFactory = contextFactory;
+    protected readonly IDbContextFactory<MyModuleCommandContext> ContextFactory = contextFactory;
     protected readonly IUserPermissions UserPermissions = userPermissions;
     protected readonly ITenantManager TenantManager = tenantManager;
     protected readonly IHttpContextAccessor HttpContextAccessor = httpContextAccessor;
@@ -49,5 +49,5 @@ public abstract class QueryHandlerBase(
     /// <summary>
     /// Creates and returns a new database context instance for read-only queries
     /// </summary>
-    protected MyModuleCommand CreateDbContext() => ContextFactory.CreateDbContext();
+    protected MyModuleCommandContext CreateDbContext() => ContextFactory.CreateDbContext();
 }

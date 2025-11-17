@@ -9,13 +9,13 @@ namespace ICTAce.FileHub.Server.Features.Common;
 /// Encapsulates infrastructure concerns (database, authorization, logging) used across vertical slices.
 /// </summary>
 public abstract class CommandHandlerBase(
-    IDbContextFactory<MyModuleCommand> contextFactory,
+    IDbContextFactory<MyModuleCommandContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
 {
-    protected readonly IDbContextFactory<MyModuleCommand> ContextFactory = contextFactory;
+    protected readonly IDbContextFactory<MyModuleCommandContext> ContextFactory = contextFactory;
     protected readonly IUserPermissions UserPermissions = userPermissions;
     protected readonly ITenantManager TenantManager = tenantManager;
     protected readonly IHttpContextAccessor HttpContextAccessor = httpContextAccessor;
@@ -43,5 +43,5 @@ public abstract class CommandHandlerBase(
     /// <summary>
     /// Creates and returns a new database context instance
     /// </summary>
-    protected MyModuleCommand CreateDbContext() => ContextFactory.CreateDbContext();
+    protected MyModuleCommandContext CreateDbContext() => ContextFactory.CreateDbContext();
 }

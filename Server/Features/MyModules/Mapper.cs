@@ -11,10 +11,10 @@ public partial class Mapper
     /// <summary>
     /// Maps MyModule entity to ListMyModuleResponse DTO
     /// </summary>
-    public partial ListMyModuleResponse ToListResponse(Entities.MyModule myModule);
+    public partial ListMyModuleResponse ToListResponse(Persistence.Entities.MyModule myModule);
 
     /// <summary>
     /// Maps MyModule entity to GetMyModuleResponse DTO
     /// </summary>
-    public partial GetMyModuleResponse ToGetResponse(Entities.MyModule myModule);
+    public partial GetMyModuleResponse ToGetResponse(Persistence.Entities.MyModule myModule);
 }

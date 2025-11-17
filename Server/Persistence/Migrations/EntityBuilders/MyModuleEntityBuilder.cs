@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Migrations.EntityBuilders;
+namespace ICTAce.FileHub.Server.Persistence.Migrations.EntityBuilders;
 
 public class MyModuleEntityBuilder : AuditableBaseEntityBuilder<MyModuleEntityBuilder>
 {
