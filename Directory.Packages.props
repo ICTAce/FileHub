@@ -14,12 +14,12 @@
     <PackageVersion Include="Microsoft.Extensions.Localization" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Riok.Mapperly" Version="4.3.0" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageVersion Include="System.Net.Http.Json" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="System.Net.Http.Json" Version="10.0.0" />
     <PackageVersion Include="Oqtane.Client" Version="$(OqtaneVersion)" />
     <PackageVersion Include="Oqtane.Server" Version="$(OqtaneVersion)" />
     <PackageVersion Include="Oqtane.Shared" Version="$(OqtaneVersion)" />
-    <PackageVersion Include="TUnit" Version="1.2.0" />
-    <PackageVersion Include="TUnit.Playwright" Version="1.2.0" />
+    <PackageVersion Include="TUnit" Version="1.2.3" />
+    <PackageVersion Include="TUnit.Playwright" Version="1.2.3" />
     <PackageVersion Include="bunit" Version="2.0.66" />
     <PackageVersion Include="Bogus" Version="35.6.1" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
