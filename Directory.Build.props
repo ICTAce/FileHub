@@ -1,5 +1,6 @@
 <Project>
 
+  <!-- Global settings for All Projects -->
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Version>1.0.0</Version>
@@ -22,7 +23,7 @@
     <OqtaneVersion>6.2.1</OqtaneVersion>
   </PropertyGroup>
 
-  <!-- Global Analyzers for All Projects -->
+  <!-- Global packages for All Projects -->
   <ItemGroup>
     <PackageReference Include="SonarAnalyzer.CSharp">
       <PrivateAssets>all</PrivateAssets>
@@ -46,7 +47,13 @@
     </PackageReference>
   </ItemGroup>
 
-  <!-- Test-Only Analyzers -->
+  <!-- Global settings for all test projects -->
+  <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('.Tests'))">
+    <IsPackable>false</IsPackable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <!-- Global packages for all test projects -->
   <ItemGroup Condition="$(MSBuildProjectName.EndsWith('.Tests'))">
     <PackageReference Include="TUnit.Analyzers">
       <PrivateAssets>all</PrivateAssets>
