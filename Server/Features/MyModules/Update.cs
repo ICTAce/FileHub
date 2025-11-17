@@ -1,10 +1,12 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Features.MyModules;
+using ICTAce.FileHub.Server.Contexts;
+
+namespace ICTAce.FileHub.Server.Features.MyModules;
 
 // Handler
 public class UpdateHandler(
-    IDbContextFactory<Context> contextFactory,
+    IDbContextFactory<MyModuleCommand> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,

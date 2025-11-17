@@ -1,19 +1,21 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Features.Common;
+using ICTAce.FileHub.Server.Contexts;
+
+namespace ICTAce.FileHub.Server.Features.Common;
 
 /// <summary>
 /// Base handler class that provides common dependencies for all command and query handlers.
 /// Encapsulates infrastructure concerns (database, authorization, logging) used across vertical slices.
 /// </summary>
 public abstract class CommandHandlerBase(
-    IDbContextFactory<Context> contextFactory,
+    IDbContextFactory<MyModuleCommand> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
 {
-    protected readonly IDbContextFactory<Context> ContextFactory = contextFactory;
+    protected readonly IDbContextFactory<MyModuleCommand> ContextFactory = contextFactory;
     protected readonly IUserPermissions UserPermissions = userPermissions;
     protected readonly ITenantManager TenantManager = tenantManager;
     protected readonly IHttpContextAccessor HttpContextAccessor = httpContextAccessor;
@@ -41,5 +43,5 @@ public abstract class CommandHandlerBase(
     /// <summary>
     /// Creates and returns a new database context instance
     /// </summary>
-    protected Context CreateDbContext() => ContextFactory.CreateDbContext();
+    protected MyModuleCommand CreateDbContext() => ContextFactory.CreateDbContext();
 }

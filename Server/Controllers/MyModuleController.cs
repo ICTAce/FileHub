@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Controllers;
+namespace ICTAce.FileHub.Server.Controllers;
 
 /// <summary>
 /// Controller for managing MyModule resources within a module context

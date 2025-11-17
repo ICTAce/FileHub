@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Features.MyModules;
+namespace ICTAce.FileHub.Client.Contracts.MyModules;
 
 public record GetMyModuleRequest : RequestBase, IRequest<GetMyModuleResponse>
 {

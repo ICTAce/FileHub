@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Features.Common;
+namespace ICTAce.FileHub.Client.Contracts.Common;
 
 public abstract record RequestBase
 {

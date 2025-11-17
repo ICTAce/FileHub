@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Entities;
+namespace ICTAce.FileHub.Server.Entities;
 
 public class MyModule : IAuditable
 {

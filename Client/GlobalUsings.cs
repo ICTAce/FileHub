@@ -1,7 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
-global using ICTAce.FileHub.Features.Common;
-global using ICTAce.FileHub.Features.MyModules;
+global using ICTAce.FileHub.Client.Contracts.Common;
+global using ICTAce.FileHub.Client.Contracts.MyModules;
 global using ICTAce.FileHub.Services;
 global using MediatR;
 global using Microsoft.AspNetCore.Components;

@@ -1,23 +1,25 @@
 // Licensed to ICTAce under the MIT license.
 
+using ICTAce.FileHub.Server.Contexts;
+
 namespace ICTAce.FileHub.Server.Manager;
 
 public class MyModuleManager(
-    IDbContextFactory<Context> contextFactory, 
+    IDbContextFactory<MyModuleCommand> contextFactory, 
     IDBContextDependencies DBContextDependencies)
     : MigratableModuleBase, IInstallable, IPortable, ISearchable
 {
-    private readonly IDbContextFactory<Context> _contextFactory = contextFactory;
+    private readonly IDbContextFactory<MyModuleCommand> _contextFactory = contextFactory;
     private readonly IDBContextDependencies _DBContextDependencies = DBContextDependencies;
 
     public bool Install(Tenant tenant, string version)
     {
-        return Migrate(new Context(_DBContextDependencies), tenant, MigrationType.Up);
+        return Migrate(new MyModuleCommand(_DBContextDependencies), tenant, MigrationType.Up);
     }
 
     public bool Uninstall(Tenant tenant)
     {
-        return Migrate(new Context(_DBContextDependencies), tenant, MigrationType.Down);
+        return Migrate(new MyModuleCommand(_DBContextDependencies), tenant, MigrationType.Down);
     }
 
     public string ExportModule(Module module)
