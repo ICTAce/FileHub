@@ -9,6 +9,7 @@
     <WarningsAsErrors />
     <AnalysisLevel>latest</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Company>ICTAce</Company>
     <Product>FileHub</Product>
     <Copyright>MIT License</Copyright>
