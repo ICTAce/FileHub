@@ -2,14 +2,14 @@
 
 namespace ICTAce.FileHub.Features.MyModules;
 
-public class GetMyModuleRequest : RequestBase, IRequest<GetMyModuleResponse>
+public record GetMyModuleRequest : RequestBase, IRequest<GetMyModuleResponse>
 {
     [Required]
     [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
     public int Id { get; set; }
 }
 
-public class GetMyModuleResponse
+public record GetMyModuleResponse
 {
     public int Id { get; set; }
     public int ModuleId { get; set; }

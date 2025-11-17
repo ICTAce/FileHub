@@ -2,7 +2,7 @@
 
 namespace ICTAce.FileHub.Features.MyModules;
 
-public class UpdateMyModuleRequest : RequestBase, IRequest<int>
+public record UpdateMyModuleRequest : RequestBase, IRequest<int>
 {
     [Required]
     [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
