@@ -10,6 +10,8 @@ public class GetHandler(
     ILogManager logger)
     : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<GetMyModuleRequest, GetMyModuleResponse?>
 {
+    private static readonly GetMapper _mapper = new();
+
     public async Task<GetMyModuleResponse?> Handle(GetMyModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
@@ -24,7 +26,7 @@ public class GetHandler(
                 return null;
             }
 
-            return Mapper.ToGetResponse(entity);
+            return _mapper.ToGetResponse(entity);
         }
         else
         {
@@ -32,4 +34,13 @@ public class GetHandler(
             return null;
         }
     }
+}
+
+[Mapper]
+internal sealed partial class GetMapper
+{
+    /// <summary>
+    /// Maps MyModule entity to GetMyModuleResponse DTO
+    /// </summary>
+    public partial GetMyModuleResponse ToGetResponse(Persistence.Entities.MyModule myModule);
 }

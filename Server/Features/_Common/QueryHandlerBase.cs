@@ -1,7 +1,5 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Server.Contexts;
-
 namespace ICTAce.FileHub.Server.Features.Common;
 
 /// <summary>
@@ -21,11 +19,6 @@ public abstract class QueryHandlerBase(
     protected readonly ITenantManager TenantManager = tenantManager;
     protected readonly IHttpContextAccessor HttpContextAccessor = httpContextAccessor;
     protected readonly ILogManager Logger = logger;
-    
-    /// <summary>
-    /// Shared mapper instance for all query handlers in the MyModules feature
-    /// </summary>
-    protected static readonly MyModules.Mapper Mapper = new();
 
     /// <summary>
     /// Gets the current tenant alias from TenantManager

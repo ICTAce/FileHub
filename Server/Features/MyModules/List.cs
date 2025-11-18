@@ -10,6 +10,8 @@ public class ListHandler(
     ILogManager logger)
     : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListMyModuleRequest, PagedResult<ListMyModuleResponse>?>
 {
+    private static readonly ListMapper _mapper = new();
+
     public async Task<PagedResult<ListMyModuleResponse>?> Handle(ListMyModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
@@ -33,7 +35,7 @@ public class ListHandler(
 
             // Map MyModule entities to ListMyModuleResponse DTOs using Mapperly
             var items = modules
-                .Select(Mapper.ToListResponse)
+                .Select(_mapper.ToListResponse)
                 .ToList();
 
             return new PagedResult<ListMyModuleResponse>
@@ -50,4 +52,13 @@ public class ListHandler(
             return null;
         }
     }
+}
+
+[Mapper]
+internal sealed partial class ListMapper
+{
+    /// <summary>
+    /// Maps MyModule entity to ListMyModuleResponse DTO
+    /// </summary>
+    public partial ListMyModuleResponse ToListResponse(Persistence.Entities.MyModule myModule);
 }
