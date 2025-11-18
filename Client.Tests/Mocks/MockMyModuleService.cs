@@ -44,18 +44,18 @@ public class MockMyModuleService : IMyModuleService
         return Task.FromResult(module);
     }
 
-    public Task<PagedResult<ListMyModulesResponse>> ListAsync(ListMyModulesRequest request)
+    public Task<PagedResult<ListMyModuleResponse>> ListAsync(ListMyModuleRequest request)
     {
         var items = _modules
             .Where(m => m.ModuleId == request.ModuleId)
-            .Select(m => new ListMyModulesResponse
+            .Select(m => new ListMyModuleResponse
             {
                 Id = m.Id,
                 Name = m.Name
             })
             .ToList();
 
-        var pagedResult = new PagedResult<ListMyModulesResponse>
+        var pagedResult = new PagedResult<ListMyModuleResponse>
         {
             Items = items,
             TotalCount = items.Count,

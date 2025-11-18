@@ -7,7 +7,7 @@ public class MyModuleTests : BaseTest
     [Test]
     public async Task MyModuleService_List_ReturnsModules()
     {
-        var request = new ListMyModulesRequest { ModuleId = 1 };
+        var request = new ListMyModuleRequest { ModuleId = 1 };
         var mockService = TestContext.Services.GetService<IMyModuleService>() as MockMyModuleService;
         
         var result = await mockService!.ListAsync(request);
@@ -46,7 +46,7 @@ public class MyModuleTests : BaseTest
         await Assert.That(newId).IsGreaterThan(0);
         await Assert.That(mockService.GetModuleCount()).IsEqualTo(initialCount + 1);
         
-        var listRequest = new ListMyModulesRequest { ModuleId = 1 };
+        var listRequest = new ListMyModuleRequest { ModuleId = 1 };
         var allModules = await mockService.ListAsync(listRequest);
         
         await Assert.That(allModules.Items.Any(m => m.Name == "New Module")).IsTrue();
@@ -82,7 +82,7 @@ public class MyModuleTests : BaseTest
         
         await Assert.That(mockService.GetModuleCount()).IsEqualTo(initialCount - 1);
         
-        var listRequest = new ListMyModulesRequest { ModuleId = 1 };
+        var listRequest = new ListMyModuleRequest { ModuleId = 1 };
         var remainingModules = await mockService.ListAsync(listRequest);
         
         await Assert.That(remainingModules.Items.Any(m => m.Id == 1)).IsFalse();
