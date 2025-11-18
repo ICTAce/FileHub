@@ -1,8 +1,8 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Migrations;
+namespace ICTAce.FileHub.Server.Persistence.Migrations;
 
-[DbContext(typeof(Context))]
+[DbContext(typeof(MyModuleCommandContext))]
 [Migration("ICTAce.FileHub.01.00.00.00")]
 public class InitializeModule : MultiDatabaseMigration
 {

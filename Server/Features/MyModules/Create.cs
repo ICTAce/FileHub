@@ -1,10 +1,9 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Features.MyModules;
+namespace ICTAce.FileHub.Server.Features.MyModules;
 
-// Handler
 public class CreateHandler(
-    IDbContextFactory<Context> contextFactory,
+    IDbContextFactory<MyModuleCommandContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
@@ -18,7 +17,7 @@ public class CreateHandler(
         if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
         {
             // Build the entity from command data
-            var myModule = new Entities.MyModule
+            var myModule = new Persistence.Entities.MyModule
             {
                 ModuleId = request.ModuleId,
                 Name = request.Name
@@ -27,7 +26,7 @@ public class CreateHandler(
 
             using var db = CreateDbContext();
             db.MyModule.Add(myModule);
-            await db.SaveChangesAsync(cancellationToken);
+            await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             Logger.Log(LogLevel.Information, this, LogFunction.Create, "MyModule Added {MyModule}", myModule);
             return myModule.Id;

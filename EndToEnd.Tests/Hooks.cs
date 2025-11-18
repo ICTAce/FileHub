@@ -1,9 +1,8 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Licensed to ICTAce under the MIT license.
 
 namespace ICTAce.FileHub.EndToEnd.Tests;
 
-public class Hooks
+public static class Hooks
 {
     [Before(TestSession)]
     public static void InstallPlaywright()

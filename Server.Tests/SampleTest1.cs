@@ -1,11 +1,10 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Licensed to ICTAce under the MIT license.
 
 using ICTAce.FileHub.Server.Tests.Data;
 
 namespace ICTAce.FileHub.Server.Tests;
 
-public class Tests
+public class SampleTest1
 {
     [Test]
     public void Basic()

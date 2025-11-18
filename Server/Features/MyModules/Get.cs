@@ -1,17 +1,18 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Features.MyModules;
+namespace ICTAce.FileHub.Server.Features.MyModules;
 
-// Handler
 public class GetHandler(
-    IDbContextFactory<Context> contextFactory,
+    IDbContextFactory<MyModuleQueryContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<GetMyModuleRequest, GetMyModuleResponse>
+    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<GetMyModuleRequest, GetMyModuleResponse?>
 {
-    public async Task<GetMyModuleResponse> Handle(GetMyModuleRequest request, CancellationToken cancellationToken)
+    private static readonly GetMapper _mapper = new();
+
+    public async Task<GetMyModuleResponse?> Handle(GetMyModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
 
@@ -25,16 +26,7 @@ public class GetHandler(
                 return null;
             }
 
-            return new GetMyModuleResponse
-            {
-                Id = entity.Id,
-                ModuleId = entity.ModuleId,
-                Name = entity.Name,
-                CreatedBy = entity.CreatedBy,
-                CreatedOn = entity.CreatedOn,
-                ModifiedBy = entity.ModifiedBy,
-                ModifiedOn = entity.ModifiedOn
-            };
+            return _mapper.ToGetResponse(entity);
         }
         else
         {
@@ -42,4 +34,13 @@ public class GetHandler(
             return null;
         }
     }
+}
+
+[Mapper]
+internal sealed partial class GetMapper
+{
+    /// <summary>
+    /// Maps MyModule entity to GetMyModuleResponse DTO
+    /// </summary>
+    public partial GetMyModuleResponse ToGetResponse(Persistence.Entities.MyModule myModule);
 }

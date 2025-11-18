@@ -1,10 +1,10 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Features.MyModules;
+namespace ICTAce.FileHub.Server.Features.MyModules;
 
 // Handler
 public class UpdateHandler(
-    IDbContextFactory<Context> contextFactory,
+    IDbContextFactory<MyModuleCommandContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
@@ -20,14 +20,14 @@ public class UpdateHandler(
             using var db = CreateDbContext();
 
             // Fetch existing entity
-            var myModule = await db.MyModule.FindAsync(new object[] { request.Id }, cancellationToken);
+            var myModule = await db.MyModule.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
             if (myModule != null)
             {
                 // Update only user-editable fields
                 myModule.Name = request.Name;
                 // ModifiedBy, ModifiedOn will be updated by IAuditable/database
 
-                await db.SaveChangesAsync(cancellationToken);
+                await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
                 Logger.Log(LogLevel.Information, this, LogFunction.Update, "MyModule Updated {MyModule}", myModule);
                 return request.Id;

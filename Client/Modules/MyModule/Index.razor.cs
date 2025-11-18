@@ -14,13 +14,13 @@ public partial class Index
         new Script(ModulePath() + "Module.js")
     };
 
-    private List<ListMyModulesResponse>? _MyModules;
+    private List<ListMyModuleResponse>? _MyModules;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            var request = new ListMyModulesRequest { ModuleId = ModuleState.ModuleId };
+            var request = new ListMyModuleRequest { ModuleId = ModuleState.ModuleId };
             var pagedResult = await MyModuleService.ListAsync(request);
             _MyModules = pagedResult?.Items?.ToList();
         }
@@ -31,7 +31,7 @@ public partial class Index
         }
     }
 
-    private async Task Delete(ListMyModulesResponse myModule)
+    private async Task Delete(ListMyModuleResponse myModule)
     {
         try
         {
@@ -43,7 +43,7 @@ public partial class Index
             await MyModuleService.DeleteAsync(request);
             await logger.LogInformation("MyModule Deleted {Id}", myModule.Id);
             
-            var listRequest = new ListMyModulesRequest { ModuleId = ModuleState.ModuleId };
+            var listRequest = new ListMyModuleRequest { ModuleId = ModuleState.ModuleId };
             var pagedResult = await MyModuleService.ListAsync(listRequest);
             _MyModules = pagedResult?.Items?.ToList();
             StateHasChanged();

@@ -20,7 +20,7 @@ public partial class Edit
     };
 
     private ElementReference form;
-    private bool validated = false;
+    private bool _validated;
 
     private int _id;
     private string _name = string.Empty;
@@ -33,9 +33,9 @@ public partial class Edit
     {
         try
         {
-            if (PageState.Action == "Edit")
+            if (string.Equals(PageState.Action, "Edit", StringComparison.Ordinal))
             {
-                _id = Int32.Parse(PageState.QueryString["id"]);
+                _id = Int32.Parse(PageState.QueryString["id"], System.Globalization.CultureInfo.InvariantCulture);
                 var request = new GetMyModuleRequest 
                 { 
                     Id = _id, 
@@ -63,11 +63,11 @@ public partial class Edit
     {
         try
         {
-            validated = true;
+            _validated = true;
             var interop = new Oqtane.UI.Interop(JSRuntime);
             if (await interop.FormValid(form))
             {
-                if (PageState.Action == "Add")
+                if (string.Equals(PageState.Action, "Add", StringComparison.Ordinal))
                 {
                     var command = new CreateMyModuleRequest
                     {

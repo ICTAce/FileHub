@@ -1,23 +1,25 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Server.Manager;
+using ICTAce.FileHub.Server.Persistence;
+
+namespace ICTAce.FileHub.Server;
 
 public class MyModuleManager(
-    IDbContextFactory<Context> contextFactory, 
+    IDbContextFactory<MyModuleCommandContext> contextFactory, 
     IDBContextDependencies DBContextDependencies)
     : MigratableModuleBase, IInstallable, IPortable, ISearchable
 {
-    private readonly IDbContextFactory<Context> _contextFactory = contextFactory;
+    private readonly IDbContextFactory<MyModuleCommandContext> _contextFactory = contextFactory;
     private readonly IDBContextDependencies _DBContextDependencies = DBContextDependencies;
 
     public bool Install(Tenant tenant, string version)
     {
-        return Migrate(new Context(_DBContextDependencies), tenant, MigrationType.Up);
+        return Migrate(new MyModuleCommandContext(_DBContextDependencies), tenant, MigrationType.Up);
     }
 
     public bool Uninstall(Tenant tenant)
     {
-        return Migrate(new Context(_DBContextDependencies), tenant, MigrationType.Down);
+        return Migrate(new MyModuleCommandContext(_DBContextDependencies), tenant, MigrationType.Down);
     }
 
     public string ExportModule(Module module)
@@ -39,10 +41,10 @@ public class MyModuleManager(
 
     public void ImportModule(Module module, string content, string version)
     {
-        List<Entities.MyModule> MyModules = null;
+        List<Persistence.Entities.MyModule> MyModules = null;
         if (!string.IsNullOrEmpty(content))
         {
-            MyModules = JsonSerializer.Deserialize<List<Entities.MyModule>>(content);
+            MyModules = JsonSerializer.Deserialize<List<Persistence.Entities.MyModule>>(content);
         }
 
         if (MyModules is not null)
@@ -51,7 +53,7 @@ public class MyModuleManager(
             using var db = _contextFactory.CreateDbContext();
             foreach (var task in MyModules)
             {
-                db.MyModule.Add(new Entities.MyModule { ModuleId = module.ModuleId, Name = task.Name });
+                db.MyModule.Add(new Persistence.Entities.MyModule { ModuleId = module.ModuleId, Name = task.Name });
             }
             db.SaveChanges();
         }
@@ -70,7 +72,7 @@ public class MyModuleManager(
                 searchContentList.Add(new SearchContent
                 {
                     EntityName = "MyModule",
-                    EntityId = MyModule.Id.ToString(),
+                    EntityId = MyModule.Id.ToString(System.Globalization.CultureInfo.InvariantCulture),
                     Title = MyModule.Name,
                     Body = MyModule.Name,
                     ContentModifiedBy = MyModule.ModifiedBy,

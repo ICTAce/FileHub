@@ -1,8 +1,8 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Features.MyModules;
+namespace ICTAce.FileHub.Client.Contracts.MyModules;
 
-public class ListMyModulesRequest : RequestBase, IRequest<PagedResult<ListMyModulesResponse>>
+public record ListMyModuleRequest : RequestBase, IRequest<PagedResult<ListMyModuleResponse>>
 {
     /// <summary>
     /// Page number (1-based). Defaults to 1 if not specified.
@@ -17,8 +17,8 @@ public class ListMyModulesRequest : RequestBase, IRequest<PagedResult<ListMyModu
     public int PageSize { get; set; } = 10;
 }
 
-public class ListMyModulesResponse
+public record ListMyModuleResponse
 {
     public int Id { get; set; }
-    public string Name { get; set; }
+    public required string Name { get; set; }
 }

@@ -12,3 +12,8 @@ global using ICTAce.FileHub.Features.Common;
 
 global using Microsoft.Extensions.Localization;
 
+global using Bunit;
+global using Bunit.TestDoubles;
+global using Microsoft.Extensions.DependencyInjection;
+global using TUnit.Core;
+global using TUnit.Assertions;

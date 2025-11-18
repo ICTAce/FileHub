@@ -1,8 +1,8 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Licensed to ICTAce under the MIT license.
 
 namespace ICTAce.FileHub.Server.Tests.Data;
 
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
 public class DataGenerator : DataSourceGeneratorAttribute<int, int, int>
 {
     protected override IEnumerable<Func<(int, int, int)>> GenerateDataSources(DataGeneratorMetadata dataGeneratorMetadata)
