@@ -1,5 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
+using ICTAce.FileHub.Server.Persistence;
+
 namespace ICTAce.FileHub.Server;
 
 public class MyModuleManager(

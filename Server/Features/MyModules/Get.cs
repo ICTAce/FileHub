@@ -3,7 +3,7 @@
 namespace ICTAce.FileHub.Server.Features.MyModules;
 
 public class GetHandler(
-    IDbContextFactory<MyModuleCommandContext> contextFactory,
+    IDbContextFactory<MyModuleQueryContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,

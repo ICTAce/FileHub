@@ -18,8 +18,8 @@ public class MyModuleEntityBuilder : AuditableBaseEntityBuilder<MyModuleEntityBu
     protected override MyModuleEntityBuilder BuildTable(ColumnsBuilder table)
     {
         Id = AddAutoIncrementColumn(table, "Id");
-        ModuleId = AddIntegerColumn(table,"ModuleId");
-        Name = AddMaxStringColumn(table,"Name");
+        ModuleId = AddIntegerColumn(table, "ModuleId");
+        Name = AddMaxStringColumn(table, "Name");
         AddAuditableColumns(table);
         return this;
     }

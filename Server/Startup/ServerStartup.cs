@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Server.Contexts;
+using ICTAce.FileHub.Server.Persistence;
 
 namespace ICTAce.FileHub.Startup;
 
@@ -26,5 +26,6 @@ public class ServerStartup : IServerStartup
 
         // Register DbContext factory
         services.AddDbContextFactory<MyModuleCommandContext>(opt => { }, ServiceLifetime.Transient);
+        services.AddDbContextFactory<MyModuleQueryContext>(opt => { }, ServiceLifetime.Transient);
     }
 }

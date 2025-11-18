@@ -2,9 +2,9 @@
 
 namespace ICTAce.FileHub.Server.Persistence;
 
-public class MyModuleCommandContext : MyModuleContext
+public class MyModuleQueryContext : MyModuleContext
 {
-    public MyModuleCommandContext(IDBContextDependencies DBContextDependencies) : base(DBContextDependencies)
+    public MyModuleQueryContext(IDBContextDependencies DBContextDependencies) : base(DBContextDependencies)
     {
         // ContextBase handles multi-tenant database connections
     }
