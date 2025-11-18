@@ -9,9 +9,9 @@ public class ModuleInfo : IModule
         Name = "MyModule",
         Description = "Example module",
         Version = "1.0.0",
-        ServerManagerType = "ICTAce.FileHub.Manager.MyModuleManager, ICTAce.FileHub.Server.Oqtane",
+        ServerManagerType = "ICTAce.FileHub.Server.MyModuleManager, ICTAce.FileHub.Server.Oqtane",
         ReleaseVersions = "1.0.0",
         Dependencies = "ICTAce.FileHub.Shared.Oqtane",
-        PackageName = "ICTAce.FileHub" 
+        PackageName = "ICTAce.FileHub",
     };
 }
