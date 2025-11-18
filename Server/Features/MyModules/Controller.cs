@@ -43,8 +43,15 @@ public class MyModuleController : ModuleControllerBase
         }
 
         // Validation - part of this slice's responsibility
-        if (pageSize > 100) pageSize = 100;
-        if (pageNumber < 1) pageNumber = 1;
+        if (pageSize > 100)
+        {
+            pageSize = 100;
+        }
+
+        if (pageNumber < 1)
+        {
+            pageNumber = 1;
+        }
 
         // Business logic request
         var query = new ListMyModuleRequest
