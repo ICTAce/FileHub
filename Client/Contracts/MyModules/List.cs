@@ -20,5 +20,5 @@ public record ListMyModuleRequest : RequestBase, IRequest<PagedResult<ListMyModu
 public record ListMyModuleResponse
 {
     public int Id { get; set; }
-    public string Name { get; set; }
+    public required string Name { get; set; }
 }

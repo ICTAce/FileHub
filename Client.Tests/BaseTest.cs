@@ -1,3 +1,5 @@
+// Licensed to ICTAce under the MIT license.
+
 using System;
 using ICTAce.FileHub.Services;
 

@@ -70,7 +70,7 @@ public class MyModuleManager(
                 searchContentList.Add(new SearchContent
                 {
                     EntityName = "MyModule",
-                    EntityId = MyModule.Id.ToString(),
+                    EntityId = MyModule.Id.ToString(System.Globalization.CultureInfo.InvariantCulture),
                     Title = MyModule.Name,
                     Body = MyModule.Name,
                     ContentModifiedBy = MyModule.ModifiedBy,

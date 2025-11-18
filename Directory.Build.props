@@ -11,6 +11,7 @@
     <AnalysisLevel>latest</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Company>ICTAce</Company>
     <Product>FileHub</Product>
     <Copyright>MIT License</Copyright>

@@ -8,9 +8,9 @@ public class ListHandler(
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListMyModuleRequest, PagedResult<ListMyModuleResponse>>
+    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListMyModuleRequest, PagedResult<ListMyModuleResponse>?>
 {
-    public async Task<PagedResult<ListMyModuleResponse>> Handle(ListMyModuleRequest request, CancellationToken cancellationToken)
+    public async Task<PagedResult<ListMyModuleResponse>?> Handle(ListMyModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
 

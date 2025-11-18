@@ -9,7 +9,7 @@ public class MyModule : IAuditable
     public int ModuleId { get; set; }
 
     [MaxLength(100)]
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     public string CreatedBy { get; set; }
     public DateTime CreatedOn { get; set; }
