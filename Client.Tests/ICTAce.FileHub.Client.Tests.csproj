@@ -2,7 +2,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="bunit" />
-		<PackageReference Include="TUnit" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" />
 	</ItemGroup>
 

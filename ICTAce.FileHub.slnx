@@ -16,6 +16,7 @@
     <File Path=".github/instructions/github-actions-ci-cd-best-practices.instructions.md" />
     <File Path=".github/instructions/instructions.instructions.md" />
     <File Path=".github/instructions/markdown.instructions.md" />
+    <File Path=".github/instructions/project-properties.instructions.md" />
     <File Path=".github/instructions/prompt.instructions.md" />
     <File Path=".github/instructions/security-and-owasp.instructions.md" />
   </Folder>

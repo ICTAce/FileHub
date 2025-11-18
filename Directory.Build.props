@@ -56,6 +56,7 @@
 
   <!-- Global packages for all test projects -->
   <ItemGroup Condition="$(MSBuildProjectName.EndsWith('.Tests'))">
+    <PackageReference Include="TUnit" />
     <PackageReference Include="TUnit.Analyzers">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
