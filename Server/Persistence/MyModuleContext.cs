@@ -16,5 +16,6 @@ public class MyModuleContext : DBContextBase, ITransientService, IMultiDatabase
         base.OnModelCreating(builder);
 
         builder.Entity<Entities.MyModule>().ToTable(ActiveDatabase.RewriteName("MyModule"));
+        builder.Entity<Entities.Category>().ToTable(ActiveDatabase.RewriteName("FileHub_Category"));
     }
 }

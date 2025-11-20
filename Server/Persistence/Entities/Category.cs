@@ -2,7 +2,10 @@
 
 namespace ICTAce.FileHub.Server.Persistence.Entities;
 
-public class MyModule : AuditableModuleBase
+public class Category : AuditableModuleBase
 {
+    [MaxLength(100)]
     public required string Name { get; set; }
+    public int ViewOrder { get; set; }
+    public int ParentId { get; set; }
 }

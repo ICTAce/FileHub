@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
+    <Folder Include="Features\Category\" />
   </ItemGroup>
 
 </Project>

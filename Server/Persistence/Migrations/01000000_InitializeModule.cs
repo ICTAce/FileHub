@@ -14,11 +14,23 @@ public class InitializeModule : MultiDatabaseMigration
     {
         var myModuleEntityBuilder = new MyModuleEntityBuilder(migrationBuilder, ActiveDatabase);
         myModuleEntityBuilder.Create();
+
+        var categoryEntityBuilder = new CategoryEntityBuilder(migrationBuilder, ActiveDatabase);
+        categoryEntityBuilder.Create();
+
+        var fileHubEntityBuilder = new FileHubEntityBuilder(migrationBuilder, ActiveDatabase);
+        fileHubEntityBuilder.Create();
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)
     {
+        var categoryEntityBuilder = new CategoryEntityBuilder(migrationBuilder, ActiveDatabase);
+        categoryEntityBuilder.Drop();
+
         var myModuleEntityBuilder = new MyModuleEntityBuilder(migrationBuilder, ActiveDatabase);
         myModuleEntityBuilder.Drop();
+
+        var fileHubEntityBuilder = new FileHubEntityBuilder(migrationBuilder, ActiveDatabase);
+        fileHubEntityBuilder.Drop();
     }
 }

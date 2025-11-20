@@ -7,6 +7,7 @@ global using ICTAce.FileHub.Client.Contracts.Common;
 global using ICTAce.FileHub.Client.Contracts.MyModules;
 global using ICTAce.FileHub.Server.Features.Common;
 global using ICTAce.FileHub.Server.Persistence;
+global using ICTAce.FileHub.Server.Persistence.Common;
 global using ICTAce.FileHub.Server.Persistence.Migrations.EntityBuilders;
 global using MediatR;
 global using Microsoft.AspNetCore;

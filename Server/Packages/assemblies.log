@@ -100,5 +100,9 @@
   "ZstdSharp.dll": 1,
   "MediatR.Contracts.dll": 1,
   "MediatR.dll": 1,
-  "Riok.Mapperly.Abstractions.dll": 1
+  "Riok.Mapperly.Abstractions.dll": 1,
+  "System.IO.Pipelines.dll": 1,
+  "System.Net.Http.Json.dll": 1,
+  "System.Text.Encodings.Web.dll": 1,
+  "System.Text.Json.dll": 1
 }
