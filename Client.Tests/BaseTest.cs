@@ -1,9 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
-using System;
-using ICTAce.FileHub.Services;
-
 namespace ICTAce.FileHub.Client.Tests;
+
 public abstract class BaseTest : IDisposable
 {
     private bool _disposed;
@@ -12,10 +10,13 @@ public abstract class BaseTest : IDisposable
     protected BaseTest()
     {
         TestContext = new();
-
-        TestContext.Services.AddScoped<IMyModuleService, MyModuleService>();
         TestContext.JSInterop.Mode = JSRuntimeMode.Loose;
+        TestContext.JSInterop.SetupVoid("Oqtane.Interop.formValid", _ => true);
+        TestContext.Services.AddLocalization();
+        TestContext.Services.AddSingleton<Microsoft.Extensions.Localization.IStringLocalizerFactory, MockStringLocalizerFactory>();
+        TestContext.Services.AddScoped<IMyModuleService, MockMyModuleService>();
     }
+
 
     protected virtual void Dispose(bool disposing)
     {
@@ -25,7 +26,6 @@ public abstract class BaseTest : IDisposable
             {
                 TestContext.Dispose();
             }
-
             _disposed = true;
         }
     }
