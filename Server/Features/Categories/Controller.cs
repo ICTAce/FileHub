@@ -30,7 +30,7 @@ public class CategoryController(
                 "Unauthorized Category List Attempt {ModuleId}", moduleid);
             return Forbid();
         }
-        
+
         if (pageSize > 100)
         {
             pageSize = 100;
@@ -75,7 +75,7 @@ public class CategoryController(
                 "Unauthorized Category Get Attempt {Id} {ModuleId}", id, moduleid);
             return Forbid();
         }
-        
+
         if (id <= 0)
         {
             return BadRequest("Invalid Category ID");
@@ -189,7 +189,7 @@ public class CategoryController(
                 "Unauthorized Category Delete Attempt {Id} {ModuleId}", id, moduleid);
             return Forbid();
         }
-        
+
         if (id <= 0)
         {
             return BadRequest("Invalid Category ID");

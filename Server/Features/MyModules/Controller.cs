@@ -25,17 +25,17 @@ public class MyModuleController : ModuleControllerBase
     /// GET SLICE: Retrieves a specific MyModule by ID
     /// This slice contains all logic for getting a single MyModule.
     /// </summary>
-    [HttpGet("{moduleid}/{id}")]
+    [HttpGet("{moduleId}/{id}")]
     [Authorize(Policy = PolicyNames.ViewModule)]
     [ProducesResponseType(typeof(GetMyModuleResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<GetMyModuleResponse>> GetAsync(int moduleid, int id, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<GetMyModuleResponse>> GetAsync(int moduleId, int id, CancellationToken cancellationToken = default)
     {
-        if (!IsAuthorizedEntityId(EntityNames.Module, moduleid))
+        if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
         {
             _logger.Log(LogLevel.Error, this, LogFunction.Security,
-                "Unauthorized MyModule Get Attempt Id={Id} in ModuleId={ModuleId}", id, moduleid);
+                "Unauthorized MyModule Get Attempt Id={Id} in ModuleId={ModuleId}", id, moduleId);
             return Forbid();
         }
 
@@ -46,7 +46,7 @@ public class MyModuleController : ModuleControllerBase
 
         var query = new GetMyModuleRequest
         {
-            ModuleId = moduleid,
+            ModuleId = moduleId,
             Id = id,
         };
 
@@ -55,7 +55,7 @@ public class MyModuleController : ModuleControllerBase
         if (myModule is null)
         {
             _logger.Log(LogLevel.Warning, this, LogFunction.Read,
-                "MyModule Not Found Id={Id} in ModuleId={ModuleId}", id, moduleid);
+                "MyModule Not Found Id={Id} in ModuleId={ModuleId}", id, moduleId);
             return NotFound();
         }
 
@@ -70,16 +70,16 @@ public class MyModuleController : ModuleControllerBase
     /// LIST SLICE: Retrieves a paginated list of MyModules for the specified module
     /// This slice contains all logic for listing MyModules in one cohesive unit.
     /// </summary>
-    [HttpGet("{moduleid}")]
+    [HttpGet("{moduleId}")]
     [Authorize(Policy = PolicyNames.ViewModule)]
     [ProducesResponseType(typeof(PagedResult<ListMyModuleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<PagedResult<ListMyModuleResponse>>> ListAsync(int moduleid, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<PagedResult<ListMyModuleResponse>>> ListAsync(int moduleId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
     {
-        if (!IsAuthorizedEntityId(EntityNames.Module, moduleid))
+        if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
         {
             _logger.Log(LogLevel.Error, this, LogFunction.Security,
-                "Unauthorized MyModule List Attempt ModuleId={ModuleId}", moduleid);
+                "Unauthorized MyModule List Attempt ModuleId={ModuleId}", moduleId);
             return Forbid();
         }
 
@@ -95,7 +95,7 @@ public class MyModuleController : ModuleControllerBase
 
         var query = new ListMyModuleRequest
         {
-            ModuleId = moduleid,
+            ModuleId = moduleId,
             PageNumber = pageNumber,
             PageSize = pageSize,
         };
@@ -118,12 +118,12 @@ public class MyModuleController : ModuleControllerBase
     /// CREATE SLICE: Creates a new MyModule
     /// This slice contains all logic for creating a MyModule from request to response.
     /// </summary>
-    [HttpPost("{moduleid}")]
+    [HttpPost("{moduleId}")]
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<int>> CreateAsync(int moduleid, [FromBody] CreateMyModuleRequest command, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<int>> CreateAsync(int moduleId, [FromBody] CreateMyModuleRequest command, CancellationToken cancellationToken = default)
     {
         if (!ModelState.IsValid)
         {
@@ -157,12 +157,12 @@ public class MyModuleController : ModuleControllerBase
     /// UPDATE SLICE: Updates an existing MyModule
     /// This slice contains all logic for updating a MyModule.
     /// </summary>
-    [HttpPut("{moduleid}/{id}")]
+    [HttpPut("{moduleId}/{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<int>> UpdateAsync(int moduleid, int id, [FromBody] UpdateMyModuleRequest command, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<int>> UpdateAsync(int moduleId, int id, [FromBody] UpdateMyModuleRequest command, CancellationToken cancellationToken = default)
     {
         if (!ModelState.IsValid)
         {
@@ -199,17 +199,17 @@ public class MyModuleController : ModuleControllerBase
     /// DELETE SLICE: Deletes a specific MyModule
     /// This slice contains all logic for deleting a MyModule.
     /// </summary>
-    [HttpDelete("{moduleid}/{id}")]
+    [HttpDelete("{moduleId}/{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteAsync(int moduleid, int id, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> DeleteAsync(int moduleId, int id, CancellationToken cancellationToken = default)
     {
-        if (!IsAuthorizedEntityId(EntityNames.Module, moduleid))
+        if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
         {
             _logger.Log(LogLevel.Error, this, LogFunction.Security,
-                "Unauthorized MyModule Delete Attempt Id={Id} in ModuleId={ModuleId}", id, moduleid);
+                "Unauthorized MyModule Delete Attempt Id={Id} in ModuleId={ModuleId}", id, moduleId);
             return Forbid();
         }
 
@@ -218,23 +218,23 @@ public class MyModuleController : ModuleControllerBase
             return BadRequest("Invalid MyModule ID");
         }
 
-        var checkQuery = new GetMyModuleRequest { Id = id, ModuleId = moduleid };
+        var checkQuery = new GetMyModuleRequest { Id = id, ModuleId = moduleId };
         var exists = await _mediator.Send(checkQuery, cancellationToken).ConfigureAwait(false);
 
         if (exists is null)
         {
             _logger.Log(LogLevel.Warning, this, LogFunction.Delete,
-                "Attempted to delete non-existent MyModule Id={Id} in ModuleId={ModuleId}", id, moduleid);
+                "Attempted to delete non-existent MyModule Id={Id} in ModuleId={ModuleId}", id, moduleId);
             return NotFound();
         }
 
         var command = new DeleteMyModuleRequest
         {
-            ModuleId = moduleid,
+            ModuleId = moduleId,
             Id = id,
         };
 
-        await _mediator.Send(command).ConfigureAwait(false);
+        await _mediator.Send(command, cancellationToken).ConfigureAwait(false);
 
         return NoContent();
     }

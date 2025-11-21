@@ -36,12 +36,7 @@ public partial class Edit
             if (string.Equals(PageState.Action, "Edit", StringComparison.Ordinal))
             {
                 _id = Int32.Parse(PageState.QueryString["id"], System.Globalization.CultureInfo.InvariantCulture);
-                var request = new GetMyModuleRequest
-                {
-                    Id = _id,
-                    ModuleId = ModuleState.ModuleId
-                };
-                var myModule = await MyModuleService.GetAsync(request);
+                var myModule = await MyModuleService.GetAsync(ModuleState.ModuleId, _id).ConfigureAwait(true);
                 if (myModule != null)
                 {
                     _name = myModule.Name;
@@ -54,7 +49,7 @@ public partial class Edit
         }
         catch (Exception ex)
         {
-            await logger.LogError(ex, "Error Loading MyModule {Id} {Error}", _id, ex.Message);
+            await logger.LogError(ex, "Error Loading MyModule {Id} {Error}", _id, ex.Message).ConfigureAwait(true);
             AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
         }
     }
@@ -74,8 +69,8 @@ public partial class Edit
                         ModuleId = ModuleState.ModuleId,
                         Name = _name
                     };
-                    var id = await MyModuleService.CreateAsync(command);
-                    await logger.LogInformation("MyModule Created {Id}", id);
+                    var id = await MyModuleService.CreateAsync(ModuleState.ModuleId, command).ConfigureAwait(true);
+                    await logger.LogInformation("MyModule Created {Id}", id).ConfigureAwait(true);
                 }
                 else
                 {
@@ -85,8 +80,8 @@ public partial class Edit
                         ModuleId = ModuleState.ModuleId,
                         Name = _name
                     };
-                    var id = await MyModuleService.UpdateAsync(command);
-                    await logger.LogInformation("MyModule Updated {Id}", id);
+                    var id = await MyModuleService.UpdateAsync(ModuleState.ModuleId, command).ConfigureAwait(true);
+                    await logger.LogInformation("MyModule Updated {Id}", id).ConfigureAwait(true);
                 }
                 NavigationManager.NavigateTo(NavigateUrl());
             }
@@ -97,7 +92,7 @@ public partial class Edit
         }
         catch (Exception ex)
         {
-            await logger.LogError(ex, "Error Saving MyModule {Error}", ex.Message);
+            await logger.LogError(ex, "Error Saving MyModule {Error}", ex.Message).ConfigureAwait(true);
             AddModuleMessage(Localizer["Message.SaveError"], MessageType.Error);
         }
     }
