@@ -1,0 +1,191 @@
+﻿@namespace ICTAce.FileHub.ApiTest
+@inherits ModuleBase
+
+@using System.Text
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@inject HttpClient Http
+
+<h3>ApiTest - Generic API Tester</h3>
+
+<div class="row mb-3">
+    <div class="col-md-2">
+        <label class="form-label">Method</label>
+        <select class="form-select" @bind="_method">
+            <option>GET</option>
+            <option>POST</option>
+            <option>PUT</option>
+            <option>DELETE</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">ModuleId</label>
+        <input class="form-control" @bind="_moduleId" type="number" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Id</label>
+        <input class="form-control" @bind="_id" type="number" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Relative URL</label>
+        <input class="form-control" @bind="_url" placeholder="e.g. api/MyModule or api/MyModule/1" />
+    </div>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Body (JSON)</label>
+    <textarea class="form-control" rows="6" @bind="_body"></textarea>
+</div>
+
+<div class="mb-3">
+    <button class="btn btn-primary me-2" @onclick="SendRequest">Send</button>
+    <button class="btn btn-outline-secondary me-2" @onclick="PrefillList">List (GET)</button>
+    <button class="btn btn-outline-secondary me-2" @onclick="PrefillGet">Get (GET)</button>
+    <button class="btn btn-outline-secondary me-2" @onclick="PrefillCreate">Create (POST)</button>
+    <button class="btn btn-outline-secondary me-2" @onclick="PrefillUpdate">Update (PUT)</button>
+    <button class="btn btn-outline-danger" @onclick="PrefillDelete">Delete (DELETE)</button>
+</div>
+
+@if (_loading)
+{
+    <p><em>Loading...</em></p>
+}
+
+@if (!string.IsNullOrEmpty(_error))
+{
+    <div class="alert alert-danger">@_error</div>
+}
+
+@if (!string.IsNullOrEmpty(_responseStatus))
+{
+    <div class="mb-2"><strong>Response:</strong> @_responseStatus</div>
+}
+
+@if (!string.IsNullOrEmpty(_responseBody))
+{
+    <div class="card">
+        <div class="card-body">
+            <pre>@_responseBody</pre>
+        </div>
+    </div>
+}
+
+@code {
+    private string _method = "GET";
+    private int _moduleId;
+    private int _id;
+    private string _url = "api/MyModule";
+    private string _body = string.Empty;
+
+    private bool _loading;
+    private string _error = string.Empty;
+    private string _responseStatus = string.Empty;
+    private string _responseBody = string.Empty;
+
+    private readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+
+    private int CurrentModuleId => _moduleId != 0 ? _moduleId : ModuleState.ModuleId;
+    private int CurrentId => _id != 0 ? _id : 1;
+
+    private async Task SendRequest()
+    {
+        _error = string.Empty;
+        _responseStatus = string.Empty;
+        _responseBody = string.Empty;
+
+        try
+        {
+            _loading = true;
+
+            using var request = new HttpRequestMessage(new HttpMethod(_method), _url);
+
+            // set body if applicable; content type is always application/json
+            if (_method != "GET" && _method != "DELETE")
+            {
+                if (!string.IsNullOrWhiteSpace(_body))
+                {
+                    // try to prettify JSON
+                    try
+                    {
+                        using var doc = JsonDocument.Parse(_body);
+                        var pretty = JsonSerializer.Serialize(doc.RootElement, _jsonOptions);
+                        request.Content = new StringContent(pretty, Encoding.UTF8, "application/json");
+                    }
+                    catch (JsonException)
+                    {
+                        // not valid JSON, send raw
+                        request.Content = new StringContent(_body, Encoding.UTF8, "application/json");
+                    }
+                }
+                else
+                {
+                    request.Content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+                }
+            }
+
+            using var response = await Http.SendAsync(request);
+            _responseStatus = $"{(int)response.StatusCode} {response.ReasonPhrase}";
+            var respText = await response.Content.ReadAsStringAsync();
+
+            // try parse JSON for pretty output
+            if (!string.IsNullOrWhiteSpace(respText))
+            {
+                try
+                {
+                    using var doc = JsonDocument.Parse(respText);
+                    _responseBody = JsonSerializer.Serialize(doc.RootElement, _jsonOptions);
+                }
+                catch (JsonException)
+                {
+                    _responseBody = respText;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    // convenience prefill helpers for CRUD operations
+    private void PrefillList()
+    {
+        _method = "GET";
+        _url = $"api/MyModule/{CurrentModuleId}?pageNumber=1&pageSize=10";
+        _body = string.Empty;
+    }
+
+    private void PrefillGet()
+    {
+        _method = "GET";
+        _url = $"api/MyModule/{CurrentModuleId}/{CurrentId}";
+        _body = string.Empty;
+    }
+
+    private void PrefillCreate()
+    {
+        _method = "POST";
+        _url = $"api/MyModule/{CurrentModuleId}";
+        var sample = new { ModuleId = CurrentModuleId, Name = "ApiTest created " + DateTime.UtcNow.ToString("O") };
+        _body = JsonSerializer.Serialize(sample, _jsonOptions);
+    }
+
+    private void PrefillUpdate()
+    {
+        _method = "PUT";
+        _url = $"api/MyModule/{CurrentModuleId}/{CurrentId}"; // replace with id if needed
+        var sample = new { Id = CurrentId, ModuleId = CurrentModuleId, Name = "ApiTest updated " + DateTime.UtcNow.ToString("O") };
+        _body = JsonSerializer.Serialize(sample, _jsonOptions);
+    }
+
+    private void PrefillDelete()
+    {
+        _method = "DELETE";
+        _url = $"api/MyModule/{CurrentModuleId}/{CurrentId}";
+        _body = string.Empty;
+    }
+}

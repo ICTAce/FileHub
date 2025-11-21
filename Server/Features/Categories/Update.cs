@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Server.Features.MyModules;
+namespace ICTAce.FileHub.Server.Features.Categories;
 
 // Handler
 public class UpdateHandler(
@@ -9,9 +9,9 @@ public class UpdateHandler(
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<UpdateMyModuleRequest, int>
+    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<UpdateCategoryRequest, int>
 {
-    public async Task<int> Handle(UpdateMyModuleRequest request, CancellationToken cancellationToken)
+    public async Task<int> Handle(UpdateCategoryRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
 
@@ -20,16 +20,18 @@ public class UpdateHandler(
             using var db = CreateDbContext();
 
             // Fetch existing entity
-            var myModule = await db.MyModule.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
-            if (myModule != null)
+            var category = await db.Category.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
+            if (category != null)
             {
                 // Update only user-editable fields
-                myModule.Name = request.Name;
+                category.Name = request.Name;
+                category.ViewOrder = request.ViewOrder;
+                category.ParentId = request.ParentId;
                 // ModifiedBy, ModifiedOn will be updated by IAuditable/database
 
                 await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-                Logger.Log(LogLevel.Information, this, LogFunction.Update, "MyModule Updated {MyModule}", myModule);
+                Logger.Log(LogLevel.Information, this, LogFunction.Update, "Category Updated {Category}", category);
                 return request.Id;
             }
 
@@ -37,7 +39,7 @@ public class UpdateHandler(
         }
         else
         {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Update Attempt {Id}", request.Id);
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized Category Update Attempt {Id}", request.Id);
             return -1;
         }
     }

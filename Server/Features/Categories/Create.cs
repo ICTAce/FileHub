@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Server.Features.MyModules;
+namespace ICTAce.FileHub.Server.Features.Categories;
 
 public class CreateHandler(
     IDbContextFactory<ApplicationCommandContext> contextFactory,
@@ -8,32 +8,34 @@ public class CreateHandler(
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<CreateMyModuleRequest, int>
+    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<CreateCategoryRequest, int>
 {
-    public async Task<int> Handle(CreateMyModuleRequest request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateCategoryRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
 
         if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
         {
             // Build the entity from command data
-            var myModule = new Persistence.Entities.MyModule
+            var category = new Persistence.Entities.Category
             {
                 ModuleId = request.ModuleId,
-                Name = request.Name
+                Name = request.Name,
+                ViewOrder = request.ViewOrder,
+                ParentId = request.ParentId
                 // CreatedBy, CreatedOn, ModifiedBy, ModifiedOn will be set by IAuditable/database
             };
 
             using var db = CreateDbContext();
-            db.MyModule.Add(myModule);
+            db.Category.Add(category);
             await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-            Logger.Log(LogLevel.Information, this, LogFunction.Create, "MyModule Added {MyModule}", myModule);
-            return myModule.Id;
+            Logger.Log(LogLevel.Information, this, LogFunction.Create, "Category Added {Category}", category);
+            return category.Id;
         }
         else
         {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Add Attempt {ModuleId} {Name}", request.ModuleId, request.Name);
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized Category Add Attempt {ModuleId} {Name}", request.ModuleId, request.Name);
             return -1;
         }
     }

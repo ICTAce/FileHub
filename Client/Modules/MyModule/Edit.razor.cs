@@ -36,10 +36,10 @@ public partial class Edit
             if (string.Equals(PageState.Action, "Edit", StringComparison.Ordinal))
             {
                 _id = Int32.Parse(PageState.QueryString["id"], System.Globalization.CultureInfo.InvariantCulture);
-                var request = new GetMyModuleRequest 
-                { 
-                    Id = _id, 
-                    ModuleId = ModuleState.ModuleId 
+                var request = new GetMyModuleRequest
+                {
+                    Id = _id,
+                    ModuleId = ModuleState.ModuleId
                 };
                 var myModule = await MyModuleService.GetAsync(request);
                 if (myModule != null)

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -17,6 +17,10 @@
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="System.Net.Http.Json" />
     <PackageReference Include="Oqtane.Client" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Contracts\Category\" />
   </ItemGroup>
 
 </Project>

@@ -3,7 +3,7 @@
 namespace ICTAce.FileHub.Server.Features.MyModules;
 
 public class GetHandler(
-    IDbContextFactory<MyModuleQueryContext> contextFactory,
+    IDbContextFactory<ApplicationQueryContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
@@ -19,10 +19,11 @@ public class GetHandler(
         if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.View))
         {
             using var db = CreateDbContext();
-            var entity = await db.MyModule.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
+            // Use SingleOrDefaultAsync to ensure ModuleId scoping is applied at query level
+            var entity = await db.MyModule.SingleOrDefaultAsync(m => m.Id == request.Id && m.ModuleId == request.ModuleId, cancellationToken).ConfigureAwait(false);
             if (entity is null)
             {
-                Logger.Log(LogLevel.Error, this, LogFunction.Security, "MyModule not found {Id} {ModuleId}", request.Id, request.ModuleId);
+                Logger.Log(LogLevel.Error, this, LogFunction.Security, "MyModule not found Id={Id} in ModuleId= {ModuleId}", request.Id, request.ModuleId);
                 return null;
             }
 

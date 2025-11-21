@@ -2,11 +2,12 @@
 
 namespace ICTAce.FileHub.Server.Persistence;
 
-public class MyModuleContext : DBContextBase, ITransientService, IMultiDatabase
+public class ApplicationContext : DBContextBase, ITransientService, IMultiDatabase
 {
     public virtual DbSet<Entities.MyModule> MyModule { get; set; }
+    public virtual DbSet<Entities.Category> Category { get; set; }
 
-    public MyModuleContext(IDBContextDependencies DBContextDependencies) : base(DBContextDependencies)
+    public ApplicationContext(IDBContextDependencies DBContextDependencies) : base(DBContextDependencies)
     {
         // ContextBase handles multi-tenant database connections
     }
@@ -16,5 +17,6 @@ public class MyModuleContext : DBContextBase, ITransientService, IMultiDatabase
         base.OnModelCreating(builder);
 
         builder.Entity<Entities.MyModule>().ToTable(ActiveDatabase.RewriteName("MyModule"));
+        builder.Entity<Entities.Category>().ToTable(ActiveDatabase.RewriteName("FileHub_Category"));
     }
 }

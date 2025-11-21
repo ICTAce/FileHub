@@ -11,11 +11,11 @@ public class MockStringLocalizerFactory : IStringLocalizerFactory
 public class MockStringLocalizer : IStringLocalizer
 {
     public LocalizedString this[string name] => new LocalizedString(name, name);
-    
-    public LocalizedString this[string name, params object[] arguments] 
+
+    public LocalizedString this[string name, params object[] arguments]
         => new LocalizedString(name, string.Format(name, arguments));
-    
-    public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures) 
+
+    public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
         => Enumerable.Empty<LocalizedString>();
 }
 

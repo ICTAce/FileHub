@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Server.Features.MyModules;
+namespace ICTAce.FileHub.Server.Features.Categories;
 
 public class ListHandler(
     IDbContextFactory<ApplicationQueryContext> contextFactory,
@@ -8,11 +8,11 @@ public class ListHandler(
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListMyModuleRequest, PagedResult<ListMyModuleResponse>?>
+    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListCategoryRequest, PagedResult<ListCategoryResponse>?>
 {
     private static readonly ListMapper _mapper = new();
 
-    public async Task<PagedResult<ListMyModuleResponse>?> Handle(ListMyModuleRequest request, CancellationToken cancellationToken)
+    public async Task<PagedResult<ListCategoryResponse>?> Handle(ListCategoryRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
 
@@ -21,24 +21,25 @@ public class ListHandler(
             using var db = CreateDbContext();
 
             // Get total count for pagination metadata
-            var totalCount = await db.MyModule
+            var totalCount = await db.Category
                 .Where(item => item.ModuleId == request.ModuleId)
                 .CountAsync(cancellationToken).ConfigureAwait(false);
 
             // Apply pagination
-            var modules = await db.MyModule
+            var categories = await db.Category
                 .Where(item => item.ModuleId == request.ModuleId)
-                .OrderBy(m => m.Name) // Consistent ordering for pagination
+                .OrderBy(c => c.ViewOrder)
+                .ThenBy(c => c.Name) // Consistent ordering for pagination
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .ToListAsync(cancellationToken).ConfigureAwait(false);
 
-            // Map MyModule entities to ListMyModuleResponse DTOs using Mapperly
-            var items = modules
+            // Map Category entities to ListCategoryResponse DTOs using Mapperly
+            var items = categories
                 .Select(_mapper.ToListResponse)
                 .ToList();
 
-            return new PagedResult<ListMyModuleResponse>
+            return new PagedResult<ListCategoryResponse>
             {
                 Items = items,
                 PageNumber = request.PageNumber,
@@ -48,7 +49,7 @@ public class ListHandler(
         }
         else
         {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {ModuleId}", request.ModuleId);
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized Category Get Attempt {ModuleId}", request.ModuleId);
             return null;
         }
     }
@@ -58,7 +59,7 @@ public class ListHandler(
 internal sealed partial class ListMapper
 {
     /// <summary>
-    /// Maps MyModule entity to ListMyModuleResponse DTO
+    /// Maps Category entity to ListCategoryResponse DTO
     /// </summary>
-    public partial ListMyModuleResponse ToListResponse(Persistence.Entities.MyModule myModule);
+    public partial ListCategoryResponse ToListResponse(Persistence.Entities.Category category);
 }

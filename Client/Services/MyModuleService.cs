@@ -21,31 +21,31 @@ public class MyModuleService(HttpClient http, SiteState siteState) : ServiceBase
 
     public Task<GetMyModuleResponse> GetAsync(GetMyModuleRequest request)
     {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}/{request.ModuleId}", EntityNames.Module, request.ModuleId);
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{request.ModuleId}/{request.Id}", EntityNames.Module, request.ModuleId);
         return GetJsonAsync<GetMyModuleResponse>(url);
     }
 
     public Task<PagedResult<ListMyModuleResponse>> ListAsync(ListMyModuleRequest request)
     {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleid={request.ModuleId}&pageNumber={request.PageNumber}&pageSize={request.PageSize}", EntityNames.Module, request.ModuleId);
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{request.ModuleId}/?pageNumber={request.PageNumber}&pageSize={request.PageSize}", EntityNames.Module, request.ModuleId);
         return GetJsonAsync<PagedResult<ListMyModuleResponse>>(url, new PagedResult<ListMyModuleResponse>());
     }
 
     public Task<int> CreateAsync(CreateMyModuleRequest request)
     {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}", EntityNames.Module, request.ModuleId);
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{request.ModuleId}", EntityNames.Module, request.ModuleId);
         return PostJsonAsync<CreateMyModuleRequest, int>(url, request);
     }
 
     public Task<int> UpdateAsync(UpdateMyModuleRequest request)
     {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}", EntityNames.Module, request.ModuleId);
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{request.ModuleId}/{request.Id}", EntityNames.Module, request.ModuleId);
         return PutJsonAsync<UpdateMyModuleRequest, int>(url, request);
     }
 
     public Task DeleteAsync(DeleteMyModuleRequest request)
     {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{request.Id}/{request.ModuleId}", EntityNames.Module, request.ModuleId);
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{request.ModuleId}/{request.Id}", EntityNames.Module, request.ModuleId);
         return DeleteAsync(url);
     }
 }

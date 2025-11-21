@@ -13,36 +13,76 @@ public class MyModuleController : ModuleControllerBase
 {
     private readonly IMediator _mediator;
 
-    public MyModuleController(IMediator mediator, ILogManager logger, IHttpContextAccessor accessor) 
+    public MyModuleController(IMediator mediator, ILogManager logger, IHttpContextAccessor accessor)
         : base(logger, accessor)
     {
         _mediator = mediator;
     }
 
+    #region Get MyModule Slice
+
+    /// <summary>
+    /// GET SLICE: Retrieves a specific MyModule by ID
+    /// This slice contains all logic for getting a single MyModule.
+    /// </summary>
+    [HttpGet("{moduleid}/{id}")]
+    [Authorize(Policy = PolicyNames.ViewModule)]
+    [ProducesResponseType(typeof(GetMyModuleResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<GetMyModuleResponse>> GetAsync(int moduleid, int id, CancellationToken cancellationToken = default)
+    {
+        if (!IsAuthorizedEntityId(EntityNames.Module, moduleid))
+        {
+            _logger.Log(LogLevel.Error, this, LogFunction.Security,
+                "Unauthorized MyModule Get Attempt Id={Id} in ModuleId={ModuleId}", id, moduleid);
+            return Forbid();
+        }
+
+        if (id <= 0)
+        {
+            return BadRequest("Invalid MyModule ID");
+        }
+
+        var query = new GetMyModuleRequest
+        {
+            ModuleId = moduleid,
+            Id = id,
+        };
+
+        var myModule = await _mediator.Send(query, cancellationToken).ConfigureAwait(false);
+
+        if (myModule is null)
+        {
+            _logger.Log(LogLevel.Warning, this, LogFunction.Read,
+                "MyModule Not Found Id={Id} in ModuleId={ModuleId}", id, moduleid);
+            return NotFound();
+        }
+
+        return Ok(myModule);
+    }
+
+    #endregion
+
     #region List MyModules Slice
-    
+
     /// <summary>
     /// LIST SLICE: Retrieves a paginated list of MyModules for the specified module
     /// This slice contains all logic for listing MyModules in one cohesive unit.
     /// </summary>
-    [HttpGet]
+    [HttpGet("{moduleid}")]
     [Authorize(Policy = PolicyNames.ViewModule)]
     [ProducesResponseType(typeof(PagedResult<ListMyModuleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<PagedResult<ListMyModuleResponse>>> ListAsync(
-        [FromQuery] int moduleid,
-        [FromQuery] int pageNumber = 1,
-        [FromQuery] int pageSize = 10)
+    public async Task<ActionResult<PagedResult<ListMyModuleResponse>>> ListAsync(int moduleid, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
     {
-        // Authorization - this is the entry point for this slice
         if (!IsAuthorizedEntityId(EntityNames.Module, moduleid))
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, 
-                "Unauthorized MyModule List Attempt {ModuleId}", moduleid);
+            _logger.Log(LogLevel.Error, this, LogFunction.Security,
+                "Unauthorized MyModule List Attempt ModuleId={ModuleId}", moduleid);
             return Forbid();
         }
 
-        // Validation - part of this slice's responsibility
         if (pageSize > 100)
         {
             pageSize = 100;
@@ -53,17 +93,15 @@ public class MyModuleController : ModuleControllerBase
             pageNumber = 1;
         }
 
-        // Business logic request
         var query = new ListMyModuleRequest
         {
             ModuleId = moduleid,
             PageNumber = pageNumber,
-            PageSize = pageSize
+            PageSize = pageSize,
         };
 
-        var result = await _mediator.Send(query);
+        var result = await _mediator.Send(query, cancellationToken).ConfigureAwait(false);
 
-        // Response handling - completing the slice
         if (result is null)
         {
             return NotFound();
@@ -71,200 +109,135 @@ public class MyModuleController : ModuleControllerBase
 
         return Ok(result);
     }
-    
-    #endregion
 
-    #region Get MyModule Slice
-    
-    /// <summary>
-    /// GET SLICE: Retrieves a specific MyModule by ID
-    /// This slice contains all logic for getting a single MyModule.
-    /// </summary>
-    [HttpGet("{id}/{moduleid}")]
-    [Authorize(Policy = PolicyNames.ViewModule)]
-    [ProducesResponseType(typeof(GetMyModuleResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<GetMyModuleResponse>> GetAsync(int id, int moduleid)
-    {
-        // Authorization - entry point validation
-        if (!IsAuthorizedEntityId(EntityNames.Module, moduleid))
-        {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, 
-                "Unauthorized MyModule Get Attempt {Id} {ModuleId}", id, moduleid);
-            return Forbid();
-        }
-
-        // Input validation - part of slice responsibility
-        if (id <= 0)
-        {
-            return BadRequest("Invalid MyModule ID");
-        }
-
-        // Business logic request
-        var query = new GetMyModuleRequest
-        {
-            Id = id,
-            ModuleId = moduleid
-        };
-
-        var myModule = await _mediator.Send(query).ConfigureAwait(false);
-
-        // Response handling - completing the slice
-        if (myModule is null)
-        {
-            _logger.Log(LogLevel.Warning, this, LogFunction.Read, 
-                "MyModule Not Found {Id} {ModuleId}", id, moduleid);
-            return NotFound();
-        }
-
-        return Ok(myModule);
-    }
-    
     #endregion
 
     #region Create MyModule Slice
-    
+
     /// <summary>
     /// CREATE SLICE: Creates a new MyModule
     /// This slice contains all logic for creating a MyModule from request to response.
     /// </summary>
-    [HttpPost]
+    [HttpPost("{moduleid}")]
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<int>> CreateAsync([FromBody] CreateMyModuleRequest command)
+    public async Task<ActionResult<int>> CreateAsync(int moduleid, [FromBody] CreateMyModuleRequest command, CancellationToken cancellationToken = default)
     {
-        // Input validation - slice entry point
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        // Authorization - part of slice responsibility
         if (!IsAuthorizedEntityId(EntityNames.Module, command.ModuleId))
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, 
-                "Unauthorized MyModule Create Attempt {Command}", command);
+            _logger.Log(LogLevel.Error, this, LogFunction.Security,
+                "Unauthorized MyModule Create Attempt ModuleId={ModuleId}", command);
             return Forbid();
         }
 
-        // Additional business validation within this slice
         if (string.IsNullOrWhiteSpace(command.Name))
         {
             return BadRequest("MyModule name is required");
         }
 
-        // Business logic execution
-        var id = await _mediator.Send(command).ConfigureAwait(false);
+        var id = await _mediator.Send(command, cancellationToken).ConfigureAwait(false);
 
-        // Response generation - completing the slice
         return Created(
             Url.Action(nameof(GetAsync), new { id, moduleid = command.ModuleId }) ?? string.Empty,
             id);
     }
-    
+
     #endregion
 
     #region Update MyModule Slice
-    
+
     /// <summary>
     /// UPDATE SLICE: Updates an existing MyModule
     /// This slice contains all logic for updating a MyModule.
     /// </summary>
-    [HttpPut("{id}")]
+    [HttpPut("{moduleid}/{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<int>> UpdateAsync(int id, [FromBody] UpdateMyModuleRequest command)
+    public async Task<ActionResult<int>> UpdateAsync(int moduleid, int id, [FromBody] UpdateMyModuleRequest command, CancellationToken cancellationToken = default)
     {
-        // Input validation - slice entry point
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        // Route/body consistency validation
         if (command.Id != id)
         {
             return BadRequest("ID mismatch between route and body");
         }
 
-        // Authorization - part of slice responsibility
         if (!IsAuthorizedEntityId(EntityNames.Module, command.ModuleId))
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, 
-                "Unauthorized MyModule Update Attempt {Command}", command);
+            _logger.Log(LogLevel.Error, this, LogFunction.Security,
+                "Unauthorized MyModule Update Attempt ModuleId={ModuleId}", command);
             return Forbid();
         }
 
-        // Additional business validation
         if (string.IsNullOrWhiteSpace(command.Name))
         {
             return BadRequest("MyModule name is required");
         }
 
-        // Business logic execution
-        var result = await _mediator.Send(command).ConfigureAwait(false);
+        var result = await _mediator.Send(command, cancellationToken).ConfigureAwait(false);
 
-        // Response - completing the slice
         return Ok(result);
     }
-    
+
     #endregion
 
     #region Delete MyModule Slice
-    
+
     /// <summary>
     /// DELETE SLICE: Deletes a specific MyModule
     /// This slice contains all logic for deleting a MyModule.
     /// </summary>
-    [HttpDelete("{id}/{moduleid}")]
+    [HttpDelete("{moduleid}/{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteAsync(int id, int moduleid)
+    public async Task<IActionResult> DeleteAsync(int moduleid, int id, CancellationToken cancellationToken = default)
     {
-        // Authorization - slice entry point
         if (!IsAuthorizedEntityId(EntityNames.Module, moduleid))
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security, 
-                "Unauthorized MyModule Delete Attempt {Id} {ModuleId}", id, moduleid);
+            _logger.Log(LogLevel.Error, this, LogFunction.Security,
+                "Unauthorized MyModule Delete Attempt Id={Id} in ModuleId={ModuleId}", id, moduleid);
             return Forbid();
         }
 
-        // Input validation
         if (id <= 0)
         {
             return BadRequest("Invalid MyModule ID");
         }
 
-        // Check if resource exists before attempting delete
         var checkQuery = new GetMyModuleRequest { Id = id, ModuleId = moduleid };
-        var exists = await _mediator.Send(checkQuery);
-        
+        var exists = await _mediator.Send(checkQuery, cancellationToken).ConfigureAwait(false);
+
         if (exists is null)
         {
-            _logger.Log(LogLevel.Warning, this, LogFunction.Delete, 
-                "Attempted to delete non-existent MyModule {Id} {ModuleId}", id, moduleid);
+            _logger.Log(LogLevel.Warning, this, LogFunction.Delete,
+                "Attempted to delete non-existent MyModule Id={Id} in ModuleId={ModuleId}", id, moduleid);
             return NotFound();
         }
 
-        // Business logic execution
         var command = new DeleteMyModuleRequest
         {
+            ModuleId = moduleid,
             Id = id,
-            ModuleId = moduleid
         };
 
         await _mediator.Send(command).ConfigureAwait(false);
 
-        // Successful deletion response
         return NoContent();
     }
-    
+
     #endregion
 }

@@ -2,7 +2,7 @@
 
 namespace ICTAce.FileHub.Server.Persistence.Migrations;
 
-[DbContext(typeof(MyModuleCommandContext))]
+[DbContext(typeof(ApplicationCommandContext))]
 [Migration("ICTAce.FileHub.01.00.00.00")]
 public class InitializeModule : MultiDatabaseMigration
 {
@@ -14,11 +14,23 @@ public class InitializeModule : MultiDatabaseMigration
     {
         var myModuleEntityBuilder = new MyModuleEntityBuilder(migrationBuilder, ActiveDatabase);
         myModuleEntityBuilder.Create();
+
+        var categoryEntityBuilder = new CategoryEntityBuilder(migrationBuilder, ActiveDatabase);
+        categoryEntityBuilder.Create();
+
+        var fileHubEntityBuilder = new FileHubEntityBuilder(migrationBuilder, ActiveDatabase);
+        fileHubEntityBuilder.Create();
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)
     {
+        var categoryEntityBuilder = new CategoryEntityBuilder(migrationBuilder, ActiveDatabase);
+        categoryEntityBuilder.Drop();
+
         var myModuleEntityBuilder = new MyModuleEntityBuilder(migrationBuilder, ActiveDatabase);
         myModuleEntityBuilder.Drop();
+
+        var fileHubEntityBuilder = new FileHubEntityBuilder(migrationBuilder, ActiveDatabase);
+        fileHubEntityBuilder.Drop();
     }
 }
