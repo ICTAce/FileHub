@@ -2,7 +2,7 @@
 
 namespace ICTAce.FileHub.Server.Persistence.Migrations;
 
-[DbContext(typeof(MyModuleCommandContext))]
+[DbContext(typeof(ApplicationCommandContext))]
 [Migration("ICTAce.FileHub.01.00.00.00")]
 public class InitializeModule : MultiDatabaseMigration
 {

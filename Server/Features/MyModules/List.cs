@@ -3,7 +3,7 @@
 namespace ICTAce.FileHub.Server.Features.MyModules;
 
 public class ListHandler(
-    IDbContextFactory<MyModuleQueryContext> contextFactory,
+    IDbContextFactory<ApplicationQueryContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,

@@ -5,21 +5,21 @@ using ICTAce.FileHub.Server.Persistence;
 namespace ICTAce.FileHub.Server;
 
 public class MyModuleManager(
-    IDbContextFactory<MyModuleCommandContext> contextFactory, 
+    IDbContextFactory<ApplicationCommandContext> contextFactory, 
     IDBContextDependencies DBContextDependencies)
     : MigratableModuleBase, IInstallable, IPortable, ISearchable
 {
-    private readonly IDbContextFactory<MyModuleCommandContext> _contextFactory = contextFactory;
+    private readonly IDbContextFactory<ApplicationCommandContext> _contextFactory = contextFactory;
     private readonly IDBContextDependencies _DBContextDependencies = DBContextDependencies;
 
     public bool Install(Tenant tenant, string version)
     {
-        return Migrate(new MyModuleCommandContext(_DBContextDependencies), tenant, MigrationType.Up);
+        return Migrate(new ApplicationCommandContext(_DBContextDependencies), tenant, MigrationType.Up);
     }
 
     public bool Uninstall(Tenant tenant)
     {
-        return Migrate(new MyModuleCommandContext(_DBContextDependencies), tenant, MigrationType.Down);
+        return Migrate(new ApplicationCommandContext(_DBContextDependencies), tenant, MigrationType.Down);
     }
 
     public string ExportModule(Module module)

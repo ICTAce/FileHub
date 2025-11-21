@@ -8,9 +8,9 @@ namespace ICTAce.FileHub.Server.Features.Common;
 /// Follows CQRS principles by using MyModuleCommandContext for write operations.
 /// </summary>
 public abstract class CommandHandlerBase(
-    IDbContextFactory<MyModuleCommandContext> contextFactory,
+    IDbContextFactory<ApplicationCommandContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : HandlerBase<MyModuleCommandContext>(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger);
+    : HandlerBase<ApplicationCommandContext>(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger);

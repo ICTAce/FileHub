@@ -4,7 +4,7 @@ namespace ICTAce.FileHub.Server.Features.Categories;
 
 // Handler
 public class UpdateHandler(
-    IDbContextFactory<MyModuleCommandContext> contextFactory,
+    IDbContextFactory<ApplicationCommandContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,

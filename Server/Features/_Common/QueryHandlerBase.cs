@@ -8,9 +8,9 @@ namespace ICTAce.FileHub.Server.Features.Common;
 /// Follows CQRS principles by using MyModuleQueryContext for read-only operations.
 /// </summary>
 public abstract class QueryHandlerBase(
-    IDbContextFactory<MyModuleQueryContext> contextFactory,
+    IDbContextFactory<ApplicationQueryContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : HandlerBase<MyModuleQueryContext>(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger);
+    : HandlerBase<ApplicationQueryContext>(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger);

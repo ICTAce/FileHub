@@ -13,7 +13,7 @@ public abstract class HandlerBase<TContext>(
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    where TContext : MyModuleContext
+    where TContext : ApplicationContext
 {
     protected readonly IDbContextFactory<TContext> ContextFactory = contextFactory;
     protected readonly IUserPermissions UserPermissions = userPermissions;

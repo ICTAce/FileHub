@@ -3,7 +3,7 @@
 namespace ICTAce.FileHub.Server.Features.MyModules;
 
 public class CreateHandler(
-    IDbContextFactory<MyModuleCommandContext> contextFactory,
+    IDbContextFactory<ApplicationCommandContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,

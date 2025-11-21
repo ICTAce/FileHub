@@ -3,7 +3,7 @@
 namespace ICTAce.FileHub.Server.Features.Categories;
 
 public class DeleteHandler(
-    IDbContextFactory<MyModuleCommandContext> contextFactory,
+    IDbContextFactory<ApplicationCommandContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
