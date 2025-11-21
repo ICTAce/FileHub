@@ -14,43 +14,36 @@ public partial class Index
         new Script(ModulePath() + "Module.js")
     };
 
-    private List<ListMyModuleResponse>? _MyModules;
+    private List<ListMyModuleDto>? _MyModules;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            var request = new ListMyModuleRequest { ModuleId = ModuleState.ModuleId };
-            var pagedResult = await MyModuleService.ListAsync(request);
+            var pagedResult = await MyModuleService.ListAsync(ModuleState.ModuleId).ConfigureAwait(true);
             _MyModules = pagedResult?.Items?.ToList();
         }
         catch (Exception ex)
         {
-            await logger.LogError(ex, "Error Loading MyModule {Error}", ex.Message);
+            await logger.LogError(ex, "Error Loading MyModule {Error}", ex.Message).ConfigureAwait(true);
             AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
         }
     }
 
-    private async Task Delete(ListMyModuleResponse myModule)
+    private async Task Delete(ListMyModuleDto myModule)
     {
         try
         {
-            var request = new DeleteMyModuleRequest 
-            { 
-                Id = myModule.Id, 
-                ModuleId = ModuleState.ModuleId 
-            };
-            await MyModuleService.DeleteAsync(request);
-            await logger.LogInformation("MyModule Deleted {Id}", myModule.Id);
+            await MyModuleService.DeleteAsync(myModule.Id, ModuleState.ModuleId).ConfigureAwait(true);
+            await logger.LogInformation("MyModule Deleted {Id}", myModule.Id).ConfigureAwait(true);
             
-            var listRequest = new ListMyModuleRequest { ModuleId = ModuleState.ModuleId };
-            var pagedResult = await MyModuleService.ListAsync(listRequest);
+            var pagedResult = await MyModuleService.ListAsync(ModuleState.ModuleId).ConfigureAwait(true);
             _MyModules = pagedResult?.Items?.ToList();
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            await logger.LogError(ex, "Error Deleting MyModule {Id} {Error}", myModule.Id, ex.Message);
+            await logger.LogError(ex, "Error Deleting MyModule {Id} {Error}", myModule.Id, ex.Message).ConfigureAwait(true);
             AddModuleMessage(Localizer["Message.DeleteError"], MessageType.Error);
         }
     }

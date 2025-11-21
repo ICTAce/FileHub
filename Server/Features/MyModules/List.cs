@@ -1,6 +1,23 @@
 // Licensed to ICTAce under the MIT license.
 
+using ICTAce.FileHub.Services;
+
 namespace ICTAce.FileHub.Server.Features.MyModules;
+
+public record ListMyModuleRequest : RequestBase, IRequest<PagedResult<ListMyModuleDto>>
+{
+    /// <summary>
+    /// Page number (1-based). Defaults to 1 if not specified.
+    /// </summary>
+    [Range(1, int.MaxValue, ErrorMessage = "Page number must be greater than 0")]
+    public int PageNumber { get; set; } = 1;
+
+    /// <summary>
+    /// Number of items per page. Defaults to 10 if not specified.
+    /// </summary>
+    [Range(1, 100, ErrorMessage = "Page size must be between 1 and 100")]
+    public int PageSize { get; set; } = 10;
+}
 
 public class ListHandler(
     IDbContextFactory<ApplicationQueryContext> contextFactory,
@@ -8,11 +25,11 @@ public class ListHandler(
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListMyModuleRequest, PagedResult<ListMyModuleResponse>?>
+    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListMyModuleRequest, PagedResult<ListMyModuleDto>?>
 {
     private static readonly ListMapper _mapper = new();
 
-    public async Task<PagedResult<ListMyModuleResponse>?> Handle(ListMyModuleRequest request, CancellationToken cancellationToken)
+    public async Task<PagedResult<ListMyModuleDto>?> Handle(ListMyModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
 
@@ -38,7 +55,7 @@ public class ListHandler(
                 .Select(_mapper.ToListResponse)
                 .ToList();
 
-            return new PagedResult<ListMyModuleResponse>
+            return new PagedResult<ListMyModuleDto>
             {
                 Items = items,
                 PageNumber = request.PageNumber,
@@ -60,5 +77,5 @@ internal sealed partial class ListMapper
     /// <summary>
     /// Maps MyModule entity to ListMyModuleResponse DTO
     /// </summary>
-    public partial ListMyModuleResponse ToListResponse(Persistence.Entities.MyModule myModule);
+    public partial ListMyModuleDto ToListResponse(Persistence.Entities.MyModule myModule);
 }

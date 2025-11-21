@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="Contracts\Category\" />
+    <Folder Include="Contracts\MyModules\" />
   </ItemGroup>
 
 </Project>

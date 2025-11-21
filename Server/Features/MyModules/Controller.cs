@@ -1,5 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
+using ICTAce.FileHub.Services;
+
 namespace ICTAce.FileHub.Server.Features.MyModules;
 
 /// <summary>
@@ -25,12 +27,15 @@ public class MyModuleController : ModuleControllerBase
     /// GET SLICE: Retrieves a specific MyModule by ID
     /// This slice contains all logic for getting a single MyModule.
     /// </summary>
-    [HttpGet("{moduleId}/{id}")]
+    [HttpGet("{id}")]
     [Authorize(Policy = PolicyNames.ViewModule)]
-    [ProducesResponseType(typeof(GetMyModuleResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetMyModuleDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<GetMyModuleResponse>> GetAsync(int moduleId, int id, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<GetMyModuleDto>> GetAsync(
+        int id,
+        [FromQuery] int moduleId,
+        CancellationToken cancellationToken = default)
     {
         if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
         {
@@ -70,11 +75,15 @@ public class MyModuleController : ModuleControllerBase
     /// LIST SLICE: Retrieves a paginated list of MyModules for the specified module
     /// This slice contains all logic for listing MyModules in one cohesive unit.
     /// </summary>
-    [HttpGet("{moduleId}")]
+    [HttpGet("")]
     [Authorize(Policy = PolicyNames.ViewModule)]
-    [ProducesResponseType(typeof(PagedResult<ListMyModuleResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PagedResult<ListMyModuleDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<PagedResult<ListMyModuleResponse>>> ListAsync(int moduleId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<PagedResult<ListMyModuleDto>>> ListAsync(
+        [FromQuery] int moduleId,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10,
+        CancellationToken cancellationToken = default)
     {
         if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
         {
@@ -118,34 +127,31 @@ public class MyModuleController : ModuleControllerBase
     /// CREATE SLICE: Creates a new MyModule
     /// This slice contains all logic for creating a MyModule from request to response.
     /// </summary>
-    [HttpPost("{moduleId}")]
+    [HttpPost("")]
     [Authorize(Policy = PolicyNames.EditModule)]
-    [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<int>> CreateAsync(int moduleId, [FromBody] CreateMyModuleRequest command, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<int>> CreateAsync(
+        [FromQuery] int moduleId,
+        [FromBody] CreateUpdateMyModuleDto dto,
+        CancellationToken cancellationToken = default)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        if (!IsAuthorizedEntityId(EntityNames.Module, command.ModuleId))
+        var request = new CreateMyModuleRequest
         {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security,
-                "Unauthorized MyModule Create Attempt ModuleId={ModuleId}", command);
-            return Forbid();
-        }
+            ModuleId = moduleId,
+            Name = dto.Name,
+        };
 
-        if (string.IsNullOrWhiteSpace(command.Name))
-        {
-            return BadRequest("MyModule name is required");
-        }
-
-        var id = await _mediator.Send(command, cancellationToken).ConfigureAwait(false);
+        var id = await _mediator.Send(request, cancellationToken).ConfigureAwait(false);
 
         return Created(
-            Url.Action(nameof(GetAsync), new { id, moduleid = command.ModuleId }) ?? string.Empty,
+            Url.Action(nameof(GetAsync), new { id, moduleId = request.ModuleId }) ?? string.Empty,
             id);
     }
 
@@ -157,36 +163,30 @@ public class MyModuleController : ModuleControllerBase
     /// UPDATE SLICE: Updates an existing MyModule
     /// This slice contains all logic for updating a MyModule.
     /// </summary>
-    [HttpPut("{moduleId}/{id}")]
+    [HttpPut("{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<int>> UpdateAsync(int moduleId, int id, [FromBody] UpdateMyModuleRequest command, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<int>> UpdateAsync(
+        int id,
+        [FromQuery] int moduleId,
+        [FromBody] CreateUpdateMyModuleDto dto,
+        CancellationToken cancellationToken = default)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        if (command.Id != id)
+        var request = new UpdateMyModuleRequest
         {
-            return BadRequest("ID mismatch between route and body");
-        }
+            Id = id,
+            ModuleId = moduleId,
+            Name = dto.Name,
+        };
 
-        if (!IsAuthorizedEntityId(EntityNames.Module, command.ModuleId))
-        {
-            _logger.Log(LogLevel.Error, this, LogFunction.Security,
-                "Unauthorized MyModule Update Attempt ModuleId={ModuleId}", command);
-            return Forbid();
-        }
-
-        if (string.IsNullOrWhiteSpace(command.Name))
-        {
-            return BadRequest("MyModule name is required");
-        }
-
-        var result = await _mediator.Send(command, cancellationToken).ConfigureAwait(false);
+        var result = await _mediator.Send(request, cancellationToken).ConfigureAwait(false);
 
         return Ok(result);
     }
@@ -199,12 +199,14 @@ public class MyModuleController : ModuleControllerBase
     /// DELETE SLICE: Deletes a specific MyModule
     /// This slice contains all logic for deleting a MyModule.
     /// </summary>
-    [HttpDelete("{moduleId}/{id}")]
+    [HttpDelete("{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteAsync(int moduleId, int id, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> DeleteAsync(
+        int id,
+        [FromQuery] int moduleId,
+        CancellationToken cancellationToken = default)
     {
         if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
         {
@@ -216,16 +218,6 @@ public class MyModuleController : ModuleControllerBase
         if (id <= 0)
         {
             return BadRequest("Invalid MyModule ID");
-        }
-
-        var checkQuery = new GetMyModuleRequest { Id = id, ModuleId = moduleId };
-        var exists = await _mediator.Send(checkQuery, cancellationToken).ConfigureAwait(false);
-
-        if (exists is null)
-        {
-            _logger.Log(LogLevel.Warning, this, LogFunction.Delete,
-                "Attempted to delete non-existent MyModule Id={Id} in ModuleId={ModuleId}", id, moduleId);
-            return NotFound();
         }
 
         var command = new DeleteMyModuleRequest

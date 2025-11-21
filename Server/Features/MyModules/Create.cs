@@ -2,6 +2,12 @@
 
 namespace ICTAce.FileHub.Server.Features.MyModules;
 
+public record CreateMyModuleRequest : IRequest<int>
+{
+    public int ModuleId { get; set; }
+    public string Name { get; set; } = string.Empty;
+}
+
 public class CreateHandler(
     IDbContextFactory<ApplicationCommandContext> contextFactory,
     IUserPermissions userPermissions,

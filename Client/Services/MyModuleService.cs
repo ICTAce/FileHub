@@ -2,50 +2,77 @@
 
 namespace ICTAce.FileHub.Services;
 
+public record GetMyModuleDto
+{
+    public int Id { get; set; }
+    public int ModuleId { get; set; }
+    public required string Name { get; set; }
+
+    public required string CreatedBy { get; set; }
+    public required DateTime CreatedOn { get; set; }
+    public required string ModifiedBy { get; set; }
+    public required DateTime ModifiedOn { get; set; }
+}
+
+public record ListMyModuleDto
+{
+    public int Id { get; set; }
+    public required string Name { get; set; }
+}
+
+public record CreateUpdateMyModuleDto
+{
+    [Required(ErrorMessage = "Name is required")]
+    [StringLength(100, MinimumLength = 1, ErrorMessage = "Name must be between 1 and 100 characters")]
+    public string Name { get; set; } = string.Empty;
+}
+
+
 public interface IMyModuleService
 {
-    Task<GetMyModuleResponse> GetAsync(int moduleId, int id);
+    Task<GetMyModuleDto> GetAsync(int id, int moduleId);
 
-    Task<PagedResult<ListMyModuleResponse>> ListAsync(int moduleId,int pageNumber, int pageSize);
+    Task<PagedResult<ListMyModuleDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10);
 
-    Task<int> CreateAsync(int moduleId, CreateMyModuleRequest request);
+    Task<int> CreateAsync(int moduleId, CreateUpdateMyModuleDto dto);
 
-    Task<int> UpdateAsync(int moduleId, UpdateMyModuleRequest request);
+    Task<int> UpdateAsync(int id, int moduleId, CreateUpdateMyModuleDto dto);
 
-    Task DeleteAsync(int moduleId, int id);
+    Task DeleteAsync(int id, int moduleId);
 }
+
 
 public class MyModuleService(HttpClient http, SiteState siteState) : ServiceBase(http, siteState), IMyModuleService
 {
     private string Apiurl => CreateApiUrl("MyModule");
 
-    public Task<GetMyModuleResponse> GetAsync(int moduleId, int id)
+    public Task<GetMyModuleDto> GetAsync(int id, int moduleId)
     {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{moduleId}/{id}", EntityNames.Module, moduleId);
-        return GetJsonAsync<GetMyModuleResponse>(url);
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
+        return GetJsonAsync<GetMyModuleDto>(url);
     }
 
-    public Task<PagedResult<ListMyModuleResponse>> ListAsync(int moduleId, int pageNumber, int pageSize)
+    public Task<PagedResult<ListMyModuleDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10)
     {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{moduleId}/?pageNumber={pageNumber}&pageSize={pageSize}", EntityNames.Module, moduleId);
-        return GetJsonAsync<PagedResult<ListMyModuleResponse>>(url, new PagedResult<ListMyModuleResponse>());
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}&pageNumber={pageNumber}&pageSize={pageSize}", EntityNames.Module, moduleId);
+        return GetJsonAsync<PagedResult<ListMyModuleDto>>(url, new PagedResult<ListMyModuleDto>());
     }
 
-    public Task<int> CreateAsync(int moduleId, CreateMyModuleRequest request)
+    public Task<int> CreateAsync(int moduleId, CreateUpdateMyModuleDto dto)
     {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{moduleId}", EntityNames.Module, moduleId);
-        return PostJsonAsync<CreateMyModuleRequest, int>(url, request);
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}", EntityNames.Module, moduleId);
+        return PostJsonAsync<CreateUpdateMyModuleDto, int>(url, dto);
     }
 
-    public Task<int> UpdateAsync(int moduleId, UpdateMyModuleRequest request)
+    public Task<int> UpdateAsync(int id, int moduleId, CreateUpdateMyModuleDto dto)
     {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{moduleId}/{request.Id}", EntityNames.Module, moduleId);
-        return PutJsonAsync<UpdateMyModuleRequest, int>(url, request);
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
+        return PutJsonAsync<CreateUpdateMyModuleDto, int>(url, dto);
     }
 
-    public Task DeleteAsync(int moduleId, int id)
+    public Task DeleteAsync(int id, int moduleId)
     {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{moduleId}/{id}", EntityNames.Module, moduleId);
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
         return DeleteAsync(url);
     }
 }

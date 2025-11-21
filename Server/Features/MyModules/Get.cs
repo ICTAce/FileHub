@@ -2,17 +2,22 @@
 
 namespace ICTAce.FileHub.Server.Features.MyModules;
 
+public record GetMyModuleRequest : RequestBase, IRequest<GetMyModuleDto>
+{
+    public int Id { get; set; }
+}
+
 public class GetHandler(
     IDbContextFactory<ApplicationQueryContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<GetMyModuleRequest, GetMyModuleResponse?>
+    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<GetMyModuleRequest, GetMyModuleDto?>
 {
     private static readonly GetMapper _mapper = new();
 
-    public async Task<GetMyModuleResponse?> Handle(GetMyModuleRequest request, CancellationToken cancellationToken)
+    public async Task<GetMyModuleDto?> Handle(GetMyModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
 
@@ -43,5 +48,5 @@ internal sealed partial class GetMapper
     /// <summary>
     /// Maps MyModule entity to GetMyModuleResponse DTO
     /// </summary>
-    public partial GetMyModuleResponse ToGetResponse(Persistence.Entities.MyModule myModule);
+    public partial GetMyModuleDto ToGetResponse(Persistence.Entities.MyModule myModule);
 }

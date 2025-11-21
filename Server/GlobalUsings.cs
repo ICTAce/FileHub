@@ -5,7 +5,7 @@ global using System.Security.Claims;
 global using System.Text.Json;
 global using ICTAce.FileHub.Client.Contracts.Categories;
 global using ICTAce.FileHub.Client.Contracts.Common;
-global using ICTAce.FileHub.Client.Contracts.MyModules;
+global using ICTAce.FileHub.Services;
 global using ICTAce.FileHub.Server.Features.Common;
 global using ICTAce.FileHub.Server.Persistence;
 global using ICTAce.FileHub.Server.Persistence.Common;

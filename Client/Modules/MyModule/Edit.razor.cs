@@ -36,7 +36,7 @@ public partial class Edit
             if (string.Equals(PageState.Action, "Edit", StringComparison.Ordinal))
             {
                 _id = Int32.Parse(PageState.QueryString["id"], System.Globalization.CultureInfo.InvariantCulture);
-                var myModule = await MyModuleService.GetAsync(ModuleState.ModuleId, _id).ConfigureAwait(true);
+                var myModule = await MyModuleService.GetAsync(_id, ModuleState.ModuleId).ConfigureAwait(true);
                 if (myModule != null)
                 {
                     _name = myModule.Name;
@@ -64,23 +64,20 @@ public partial class Edit
             {
                 if (string.Equals(PageState.Action, "Add", StringComparison.Ordinal))
                 {
-                    var command = new CreateMyModuleRequest
+                    var dto = new CreateUpdateMyModuleDto
                     {
-                        ModuleId = ModuleState.ModuleId,
                         Name = _name
                     };
-                    var id = await MyModuleService.CreateAsync(ModuleState.ModuleId, command).ConfigureAwait(true);
+                    var id = await MyModuleService.CreateAsync(ModuleState.ModuleId, dto).ConfigureAwait(true);
                     await logger.LogInformation("MyModule Created {Id}", id).ConfigureAwait(true);
                 }
                 else
                 {
-                    var command = new UpdateMyModuleRequest
+                    var dto = new CreateUpdateMyModuleDto
                     {
-                        Id = _id,
-                        ModuleId = ModuleState.ModuleId,
                         Name = _name
                     };
-                    var id = await MyModuleService.UpdateAsync(ModuleState.ModuleId, command).ConfigureAwait(true);
+                    var id = await MyModuleService.UpdateAsync(_id, ModuleState.ModuleId, dto).ConfigureAwait(true);
                     await logger.LogInformation("MyModule Updated {Id}", id).ConfigureAwait(true);
                 }
                 NavigationManager.NavigateTo(NavigateUrl());

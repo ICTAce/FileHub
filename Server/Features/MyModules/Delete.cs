@@ -2,6 +2,13 @@
 
 namespace ICTAce.FileHub.Server.Features.MyModules;
 
+public record DeleteMyModuleRequest : RequestBase, IRequest<int>
+{
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
+    public int Id { get; set; }
+}
+
 public class DeleteHandler(
     IDbContextFactory<ApplicationCommandContext> contextFactory,
     IUserPermissions userPermissions,

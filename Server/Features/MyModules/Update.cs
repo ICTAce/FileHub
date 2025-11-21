@@ -2,7 +2,12 @@
 
 namespace ICTAce.FileHub.Server.Features.MyModules;
 
-// Handler
+public record UpdateMyModuleRequest : RequestBase, IRequest<int>
+{
+    public int Id { get; set; }
+    public required string Name { get; set; }
+}
+
 public class UpdateHandler(
     IDbContextFactory<ApplicationCommandContext> contextFactory,
     IUserPermissions userPermissions,

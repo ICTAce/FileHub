@@ -180,7 +180,6 @@ public class CategoryController(
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteAsync(int id, int moduleid, CancellationToken cancellationToken = default)
     {
         if (!IsAuthorizedEntityId(EntityNames.Module, moduleid))
@@ -193,16 +192,6 @@ public class CategoryController(
         if (id <= 0)
         {
             return BadRequest("Invalid Category ID");
-        }
-
-        var checkQuery = new GetCategoryRequest { Id = id, ModuleId = moduleid };
-        var exists = await _mediator.Send(checkQuery, cancellationToken).ConfigureAwait(false);
-
-        if (exists is null)
-        {
-            _logger.Log(LogLevel.Warning, this, LogFunction.Delete,
-                "Attempted to delete non-existent Category {Id} {ModuleId}", id, moduleid);
-            return NotFound();
         }
 
         var command = new DeleteCategoryRequest
