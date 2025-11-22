@@ -1,13 +1,13 @@
 {
   "details": {
-    "endpoint": "http://localhost:5145/",
+    "endpoint": "{{env.apiUrl}}",
     "path": "/api/MyModule",
     "method": "GET",
     "headers": [],
     "queryParams": [
       {
         "key": "moduleId",
-        "value": "35"
+        "value": "{{env.moduleId}}"
       },
       {
         "key": "pageNumber",
@@ -19,7 +19,7 @@
       },
       {
         "key": "authmoduleid",
-        "value": "35"
+        "value": "{{env.moduleId}}"
       }
     ]
   },
