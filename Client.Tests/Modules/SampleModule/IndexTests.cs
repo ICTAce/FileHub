@@ -1,10 +1,10 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Client.Tests.Modules.MyModule;
+namespace ICTAce.FileHub.Client.Tests.Modules.SampleModule;
 
 public class IndexTests : BaseTest
 {
-    private readonly IRenderedComponent<ICTAce.FileHub.MyModule.Index>? renderedPage;
+    private readonly IRenderedComponent<ICTAce.FileHub.SampleModule.Index>? renderedPage;
 
     public IndexTests()
     {
@@ -45,7 +45,7 @@ public class IndexTests : BaseTest
             Site = site
         };
 
-        renderedPage = TestContext.Render<ICTAce.FileHub.MyModule.Index>(parameters => parameters
+        renderedPage = TestContext.Render<ICTAce.FileHub.SampleModule.Index>(parameters => parameters
             .AddCascadingValue("ModuleState", moduleState)
             .AddCascadingValue("PageState", pageState)
             .AddCascadingValue("Alias", alias)

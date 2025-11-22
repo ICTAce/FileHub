@@ -1,18 +1,19 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Client.Tests.Modules.MyModule;
+namespace ICTAce.FileHub.Client.Tests.Modules.SampleModule;
+
 public class EditTests : BaseTest
 {
     private readonly MockNavigationManager? _mockNavigationManager;
     private readonly MockSampleModuleService? _mockMyModuleService;
-    
+
     public EditTests()
     {
         _mockNavigationManager = TestContext.Services.GetRequiredService<NavigationManager>() as MockNavigationManager;
         _mockMyModuleService = TestContext.Services.GetRequiredService<ISampleModuleService>() as MockSampleModuleService;
         TestContext.JSInterop.Setup<bool>("Oqtane.Interop.formValid", _ => true).SetResult(true);
     }
-  
+
     [Test]
     public async Task OnInitializedAsync_EditModeLoadsExistingData()
     {
@@ -73,7 +74,7 @@ public class EditTests : BaseTest
     public async Task CancelDoesNotSaveChanges()
     {
         TestContext.JSInterop.Setup<bool>("Oqtane.Interop.formValid", _ => true).SetResult(true);
-        
+
         var component = CreateAddModeComponent();
         var initialCount = _mockMyModuleService!.GetModuleCount();
 
@@ -100,21 +101,21 @@ public class EditTests : BaseTest
         await Assert.That(value).IsEqualTo("Test Module 2");
     }
 
-    private IRenderedComponent<ICTAce.FileHub.MyModule.Edit> CreateAddModeComponent()
+    private IRenderedComponent<ICTAce.FileHub.SampleModule.Edit> CreateAddModeComponent()
     {
         _mockNavigationManager!.Reset();
 
         var (pageState, alias, site) = CreateTestContext("Add", []);
         var moduleState = new Module { ModuleId = 1 };
 
-        return TestContext.Render<ICTAce.FileHub.MyModule.Edit>(parameters => parameters
+        return TestContext.Render<FileHub.SampleModule.Edit>(parameters => parameters
             .AddCascadingValue("ModuleState", moduleState)
             .AddCascadingValue("PageState", pageState)
             .AddCascadingValue("Alias", alias)
             .AddCascadingValue("Site", site));
     }
 
-    private IRenderedComponent<ICTAce.FileHub.MyModule.Edit> CreateEditModeComponent(int id)
+    private IRenderedComponent<Edit> CreateEditModeComponent(int id)
     {
         _mockNavigationManager!.Reset();
 
@@ -122,11 +123,11 @@ public class EditTests : BaseTest
         {
             { "id", id.ToString(System.Globalization.CultureInfo.InvariantCulture) }
         };
-        
+
         var (pageState, alias, site) = CreateTestContext("Edit", queryString);
         var moduleState = new Module { ModuleId = 1 };
 
-        return TestContext.Render<ICTAce.FileHub.MyModule.Edit>(parameters => parameters
+        return (IRenderedComponent<Edit>)TestContext.Render<FileHub.SampleModule.Edit>(parameters => parameters
             .AddCascadingValue("ModuleState", moduleState)
             .AddCascadingValue("PageState", pageState)
             .AddCascadingValue("Alias", alias)
