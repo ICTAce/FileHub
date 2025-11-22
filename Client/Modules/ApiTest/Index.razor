@@ -2,7 +2,14 @@
 @inherits ModuleBase
 
 <div class="row mb-3">
-    <div class="col-md-4">
+    <div class="col-md-3">
+        <label class="form-label">Service</label>
+        <select class="form-select" @bind="_selectedService">
+            <option value="MyModule">MyModule</option>
+            <option value="Category">Category</option>
+        </select>
+    </div>
+    <div class="col-md-3">
         <label class="form-label">Endpoint</label>
         <select class="form-select" @bind="_selectedEndpoint">
             <option value="List">List (GET)</option>
@@ -20,11 +27,11 @@
         <label class="form-label">ModuleId</label>
         <input class="form-control" @bind="_moduleId" type="number" />
     </div>
-    <div class="col-md-2">
-        <label class="form-label">Page Number</label>
+    <div class="col-md-1">
+        <label class="form-label">Page #</label>
         <input class="form-control" @bind="_pageNumber" type="number" min="1" />
     </div>
-    <div class="col-md-2">
+    <div class="col-md-1">
         <label class="form-label">Page Size</label>
         <input class="form-control" @bind="_pageSize" type="number" min="1" max="100" />
     </div>
@@ -32,9 +39,22 @@
 
 @if (_selectedEndpoint == "Create" || _selectedEndpoint == "Update")
 {
-    <div class="mb-3">
-        <label class="form-label">Name</label>
-        <input class="form-control" @bind="_name" placeholder="Enter name" />
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label class="form-label">Name</label>
+            <input class="form-control" @bind="_name" placeholder="Enter name" />
+        </div>
+        @if (_selectedService == "Category")
+        {
+            <div class="col-md-3">
+                <label class="form-label">View Order</label>
+                <input class="form-control" @bind="_viewOrder" type="number" min="0" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Parent Id</label>
+                <input class="form-control" @bind="_parentId" type="number" min="0" />
+            </div>
+        }
     </div>
 }
 
