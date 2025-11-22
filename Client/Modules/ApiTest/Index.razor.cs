@@ -1,6 +1,6 @@
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using ICTAce.FileHub.Client.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace ICTAce.FileHub.ApiTest;
@@ -8,25 +8,29 @@ namespace ICTAce.FileHub.ApiTest;
 public partial class Index : ModuleBase
 {
     [Inject]
-    private HttpClient Http { get; set; } = default!;
+    private IMyModuleService MyModuleService { get; set; } = default!;
 
-    private string _method = "GET";
+    private string _selectedEndpoint = "List";
     private int _moduleId;
-    private int _id;
-    private string _url = "api/MyModule";
-    private string _body = string.Empty;
+    private int _id = 1;
+    private string _name = string.Empty;
+    private int _pageNumber = 1;
+    private int _pageSize = 10;
 
     private bool _loading;
     private string _error = string.Empty;
     private string _responseStatus = string.Empty;
     private string _responseBody = string.Empty;
 
-    private readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        WriteIndented = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
 
     private int CurrentModuleId => _moduleId != 0 ? _moduleId : ModuleState.ModuleId;
-    private int CurrentId => _id != 0 ? _id : 1;
 
-    private async Task SendRequest()
+    private async Task ExecuteEndpoint()
     {
         _error = string.Empty;
         _responseStatus = string.Empty;
@@ -36,53 +40,25 @@ public partial class Index : ModuleBase
         {
             _loading = true;
 
-            using var request = new HttpRequestMessage(new HttpMethod(_method), _url);
-
-            // set body if applicable; content type is always application/json
-            if (_method != "GET" && _method != "DELETE")
+            object? result = _selectedEndpoint switch
             {
-                if (!string.IsNullOrWhiteSpace(_body))
-                {
-                    // try to prettify JSON
-                    try
-                    {
-                        using var doc = JsonDocument.Parse(_body);
-                        var pretty = JsonSerializer.Serialize(doc.RootElement, _jsonOptions);
-                        request.Content = new StringContent(pretty, Encoding.UTF8, "application/json");
-                    }
-                    catch (JsonException)
-                    {
-                        // not valid JSON, send raw
-                        request.Content = new StringContent(_body, Encoding.UTF8, "application/json");
-                    }
-                }
-                else
-                {
-                    request.Content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
-                }
-            }
+                "List" => await MyModuleService.ListAsync(CurrentModuleId, _pageNumber, _pageSize),
+                "Get" => await MyModuleService.GetAsync(_id, CurrentModuleId),
+                "Create" => await MyModuleService.CreateAsync(CurrentModuleId, new CreateUpdateMyModuleDto { Name = _name }),
+                "Update" => await MyModuleService.UpdateAsync(_id, CurrentModuleId, new CreateUpdateMyModuleDto { Name = _name }),
+                "Delete" => await ExecuteDelete(),
+                _ => null
+            };
 
-            using var response = await Http.SendAsync(request);
-            _responseStatus = $"{(int)response.StatusCode} {response.ReasonPhrase}";
-            var respText = await response.Content.ReadAsStringAsync();
-
-            // try parse JSON for pretty output
-            if (!string.IsNullOrWhiteSpace(respText))
-            {
-                try
-                {
-                    using var doc = JsonDocument.Parse(respText);
-                    _responseBody = JsonSerializer.Serialize(doc.RootElement, _jsonOptions);
-                }
-                catch (JsonException)
-                {
-                    _responseBody = respText;
-                }
-            }
+            _responseStatus = $"Success - {_selectedEndpoint} operation completed";
+            _responseBody = result is not null
+                ? JsonSerializer.Serialize(result, _jsonOptions)
+                : "Operation completed successfully";
         }
         catch (Exception ex)
         {
             _error = ex.Message;
+            _responseStatus = "Error";
         }
         finally
         {
@@ -90,41 +66,9 @@ public partial class Index : ModuleBase
         }
     }
 
-    // convenience prefill helpers for CRUD operations
-    private void PrefillList()
+    private async Task<object?> ExecuteDelete()
     {
-        _method = "GET";
-        _url = $"api/MyModule?moduleId={CurrentModuleId}&pageNumber=1&pageSize=10";
-        _body = string.Empty;
-    }
-
-    private void PrefillGet()
-    {
-        _method = "GET";
-        _url = $"api/MyModule/{CurrentId}?moduleId={CurrentModuleId}";
-        _body = string.Empty;
-    }
-
-    private void PrefillCreate()
-    {
-        _method = "POST";
-        _url = $"api/MyModule?moduleId={CurrentModuleId}";
-        var sample = new { Name = "ApiTest created " + DateTime.UtcNow.ToString("O") };
-        _body = JsonSerializer.Serialize(sample, _jsonOptions);
-    }
-
-    private void PrefillUpdate()
-    {
-        _method = "PUT";
-        _url = $"api/MyModule/{CurrentId}?moduleId={CurrentModuleId}";
-        var sample = new { Name = "ApiTest updated " + DateTime.UtcNow.ToString("O") };
-        _body = JsonSerializer.Serialize(sample, _jsonOptions);
-    }
-
-    private void PrefillDelete()
-    {
-        _method = "DELETE";
-        _url = $"api/MyModule/{CurrentId}?moduleId={CurrentModuleId}";
-        _body = string.Empty;
+        await MyModuleService.DeleteAsync(_id, CurrentModuleId);
+        return null;
     }
 }

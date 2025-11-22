@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -11,17 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR.Contracts" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="System.Net.Http.Json" />
     <PackageReference Include="Oqtane.Client" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Contracts\Category\" />
-    <Folder Include="Contracts\MyModules\" />
   </ItemGroup>
 
 </Project>

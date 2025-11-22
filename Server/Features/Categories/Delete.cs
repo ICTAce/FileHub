@@ -2,6 +2,11 @@
 
 namespace ICTAce.FileHub.Server.Features.Categories;
 
+public record DeleteCategoryRequest : RequestBase, IRequest<int>
+{
+    public int Id { get; set; }
+}
+
 public class DeleteHandler(
     IDbContextFactory<ApplicationCommandContext> contextFactory,
     IUserPermissions userPermissions,

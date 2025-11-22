@@ -2,17 +2,24 @@
 
 namespace ICTAce.FileHub.Server.Features.Categories;
 
+public record GetCategoryRequest : RequestBase, IRequest<GetCategoryDto>
+{
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
+    public int Id { get; set; }
+}
+
 public class GetHandler(
     IDbContextFactory<ApplicationQueryContext> contextFactory,
     IUserPermissions userPermissions,
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<GetCategoryRequest, GetCategoryResponse?>
+    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<GetCategoryRequest, GetCategoryDto?>
 {
     private static readonly GetMapper _mapper = new();
 
-    public async Task<GetCategoryResponse?> Handle(GetCategoryRequest request, CancellationToken cancellationToken)
+    public async Task<GetCategoryDto?> Handle(GetCategoryRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
 
@@ -42,5 +49,5 @@ internal sealed partial class GetMapper
     /// <summary>
     /// Maps Category entity to GetCategoryResponse DTO
     /// </summary>
-    public partial GetCategoryResponse ToGetResponse(Persistence.Entities.Category category);
+    public partial GetCategoryDto ToGetResponse(Persistence.Entities.Category category);
 }

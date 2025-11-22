@@ -1,16 +1,17 @@
 ﻿@namespace ICTAce.FileHub.ApiTest
 @inherits ModuleBase
 
-<h3>ApiTest - Generic API Tester</h3>
+<h3>ApiTest - MyModule Service Tester</h3>
 
 <div class="row mb-3">
-    <div class="col-md-2">
-        <label class="form-label">Method</label>
-        <select class="form-select" @bind="_method">
-            <option>GET</option>
-            <option>POST</option>
-            <option>PUT</option>
-            <option>DELETE</option>
+    <div class="col-md-4">
+        <label class="form-label">Endpoint</label>
+        <select class="form-select" @bind="_selectedEndpoint">
+            <option value="List">List (GET)</option>
+            <option value="Get">Get (GET)</option>
+            <option value="Create">Create (POST)</option>
+            <option value="Update">Update (PUT)</option>
+            <option value="Delete">Delete (DELETE)</option>
         </select>
     </div>
     <div class="col-md-2">
@@ -21,24 +22,26 @@
         <label class="form-label">ModuleId</label>
         <input class="form-control" @bind="_moduleId" type="number" />
     </div>
-    <div class="col-md-6">
-        <label class="form-label">Relative URL</label>
-        <input class="form-control" @bind="_url" placeholder="e.g. api/MyModule or api/MyModule/1" />
+    <div class="col-md-2">
+        <label class="form-label">Page Number</label>
+        <input class="form-control" @bind="_pageNumber" type="number" min="1" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Page Size</label>
+        <input class="form-control" @bind="_pageSize" type="number" min="1" max="100" />
     </div>
 </div>
 
-<div class="mb-3">
-    <label class="form-label">Body (JSON)</label>
-    <textarea class="form-control" rows="6" @bind="_body"></textarea>
-</div>
+@if (_selectedEndpoint == "Create" || _selectedEndpoint == "Update")
+{
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input class="form-control" @bind="_name" placeholder="Enter name" />
+    </div>
+}
 
 <div class="mb-3">
-    <button class="btn btn-primary me-2" @onclick="SendRequest">Send</button>
-    <button class="btn btn-outline-secondary me-2" @onclick="PrefillList">List (GET)</button>
-    <button class="btn btn-outline-secondary me-2" @onclick="PrefillGet">Get (GET)</button>
-    <button class="btn btn-outline-secondary me-2" @onclick="PrefillCreate">Create (POST)</button>
-    <button class="btn btn-outline-secondary me-2" @onclick="PrefillUpdate">Update (PUT)</button>
-    <button class="btn btn-outline-danger" @onclick="PrefillDelete">Delete (DELETE)</button>
+    <button class="btn btn-primary" @onclick="ExecuteEndpoint">Execute</button>
 </div>
 
 @if (_loading)

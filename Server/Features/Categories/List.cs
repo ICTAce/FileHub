@@ -1,6 +1,23 @@
 // Licensed to ICTAce under the MIT license.
 
+using ICTAce.FileHub.Client.Services.Common;
+
 namespace ICTAce.FileHub.Server.Features.Categories;
+
+public record ListCategoryRequest : RequestBase, IRequest<PagedResult<ListCategoryDto>>
+{
+    /// <summary>
+    /// Page number (1-based). Defaults to 1 if not specified.
+    /// </summary>
+    [Range(1, int.MaxValue, ErrorMessage = "Page number must be greater than 0")]
+    public int PageNumber { get; set; } = 1;
+
+    /// <summary>
+    /// Number of items per page. Defaults to 10 if not specified.
+    /// </summary>
+    [Range(1, 100, ErrorMessage = "Page size must be between 1 and 100")]
+    public int PageSize { get; set; } = 10;
+}
 
 public class ListHandler(
     IDbContextFactory<ApplicationQueryContext> contextFactory,
@@ -8,11 +25,11 @@ public class ListHandler(
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListCategoryRequest, PagedResult<ListCategoryResponse>?>
+    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListCategoryRequest, PagedResult<ListCategoryDto>?>
 {
     private static readonly ListMapper _mapper = new();
 
-    public async Task<PagedResult<ListCategoryResponse>?> Handle(ListCategoryRequest request, CancellationToken cancellationToken)
+    public async Task<PagedResult<ListCategoryDto>?> Handle(ListCategoryRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
 
@@ -39,7 +56,7 @@ public class ListHandler(
                 .Select(_mapper.ToListResponse)
                 .ToList();
 
-            return new PagedResult<ListCategoryResponse>
+            return new PagedResult<ListCategoryDto>
             {
                 Items = items,
                 PageNumber = request.PageNumber,
@@ -61,5 +78,5 @@ internal sealed partial class ListMapper
     /// <summary>
     /// Maps Category entity to ListCategoryResponse DTO
     /// </summary>
-    public partial ListCategoryResponse ToListResponse(Persistence.Entities.Category category);
+    public partial ListCategoryDto ToListResponse(Persistence.Entities.Category category);
 }

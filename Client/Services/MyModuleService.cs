@@ -1,6 +1,8 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Services;
+using ICTAce.FileHub.Client.Services.Common;
+
+namespace ICTAce.FileHub.Client.Services;
 
 public record GetMyModuleDto
 {

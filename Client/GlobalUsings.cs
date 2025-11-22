@@ -1,9 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
 global using System.ComponentModel.DataAnnotations;
-global using ICTAce.FileHub.Client.Contracts.Common;
-global using ICTAce.FileHub.Services;
-global using MediatR;
+global using ICTAce.FileHub.Client.Services;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Localization;

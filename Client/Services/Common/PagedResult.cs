@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Client.Contracts.Common;
+namespace ICTAce.FileHub.Client.Services.Common;
 
 /// <summary>
 /// Represents a paginated result set for RESTful API responses
