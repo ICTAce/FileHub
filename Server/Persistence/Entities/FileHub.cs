@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Server.Persistence.Entities;
+namespace ICTAce.FileHub.Persistence.Entities;
 
 public class FileHub : AuditableModuleBase
 {

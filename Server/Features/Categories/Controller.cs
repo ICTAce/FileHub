@@ -2,7 +2,7 @@
 
 using ICTAce.FileHub.Client.Services.Common;
 
-namespace ICTAce.FileHub.Server.Features.Categories;
+namespace ICTAce.FileHub.Features.Categories;
 
 /// <summary>
 /// DTO for creating or updating a Category

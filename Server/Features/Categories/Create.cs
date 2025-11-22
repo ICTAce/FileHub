@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Server.Features.Categories;
+namespace ICTAce.FileHub.Features.Categories;
 
 public record CreateCategoryRequest : RequestBase, IRequest<int>
 {

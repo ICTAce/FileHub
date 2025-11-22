@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Server.Features.Common;
+namespace ICTAce.FileHub.Features.Common;
 
 /// <summary>
 /// Base handler class that provides common dependencies for all command and query handlers.

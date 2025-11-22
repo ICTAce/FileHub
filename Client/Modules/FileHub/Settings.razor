@@ -1,0 +1,29 @@
+﻿@namespace ICTAce.FileHub
+@inherits ModuleBase
+
+<div class="container">
+    <div class="row mb-1 align-items-center">
+        <Label Class="col-sm-3" 
+               For="value" 
+               HelpText="Enter a value" 
+               ResourceKey="SettingName" 
+               ResourceType="@Settings.ResourceType">
+            Name:
+        </Label>
+        <div class="col-sm-9">
+            <input id="value" 
+                   type="text" 
+                   class="form-control" 
+                   @bind="_value" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <button type="button" 
+                    class="btn btn-primary" 
+                    @onclick="UpdateSettings">
+                @Localizer["Save"]
+            </button>
+        </div>
+    </div>
+</div>

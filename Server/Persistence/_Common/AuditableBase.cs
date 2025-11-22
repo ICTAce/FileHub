@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Server.Persistence.Common;
+namespace ICTAce.FileHub.Persistence.Common;
 
 public abstract class AuditableBase : IAuditable
 {

@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Server.Persistence;
+namespace ICTAce.FileHub.Persistence;
 
 public class ApplicationContext : DBContextBase, ITransientService, IMultiDatabase
 {

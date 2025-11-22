@@ -2,7 +2,7 @@
 
 using ICTAce.FileHub.Client.Services.Common;
 
-namespace ICTAce.FileHub.Server.Features.Categories;
+namespace ICTAce.FileHub.Features.Categories;
 
 public record ListCategoryRequest : RequestBase, IRequest<PagedResult<ListCategoryDto>>
 {

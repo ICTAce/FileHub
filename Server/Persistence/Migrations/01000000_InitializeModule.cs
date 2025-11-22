@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Server.Persistence.Migrations;
+namespace ICTAce.FileHub.Persistence.Migrations;
 
 [DbContext(typeof(ApplicationCommandContext))]
 [Migration("ICTAce.FileHub.01.00.00.00")]

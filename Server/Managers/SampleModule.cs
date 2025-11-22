@@ -1,9 +1,9 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Server;
+namespace ICTAce.FileHub.Managers;
 
-public class ApplicationManager(
-    IDbContextFactory<ApplicationCommandContext> contextFactory, 
+public class SampleModule(
+    IDbContextFactory<ApplicationCommandContext> contextFactory,
     IDBContextDependencies DBContextDependencies)
     : MigratableModuleBase, IInstallable, IPortable, ISearchable
 {

@@ -3,12 +3,11 @@
 global using System.ComponentModel.DataAnnotations;
 global using System.Security.Claims;
 global using System.Text.Json;
-global using ICTAce.FileHub.Client.Contracts.Common;
 global using ICTAce.FileHub.Client.Services;
-global using ICTAce.FileHub.Server.Features.Common;
-global using ICTAce.FileHub.Server.Persistence;
-global using ICTAce.FileHub.Server.Persistence.Common;
-global using ICTAce.FileHub.Server.Persistence.Migrations.EntityBuilders;
+global using ICTAce.FileHub.Features.Common;
+global using ICTAce.FileHub.Persistence;
+global using ICTAce.FileHub.Persistence.Common;
+global using ICTAce.FileHub.Persistence.Migrations.EntityBuilders;
 global using MediatR;
 global using Microsoft.AspNetCore;
 global using Microsoft.AspNetCore.Authorization;

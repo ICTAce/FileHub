@@ -2,7 +2,7 @@
 
 using ICTAce.FileHub.Client.Services.Common;
 
-namespace ICTAce.FileHub.Server.Features.MyModules;
+namespace ICTAce.FileHub.Features.MyModules;
 
 public record ListMyModuleRequest : RequestBase, IRequest<PagedResult<ListMyModuleDto>>
 {

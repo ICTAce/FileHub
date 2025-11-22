@@ -1,4 +1,4 @@
-﻿@namespace ICTAce.FileHub.MyModule
+﻿@namespace ICTAce.FileHub
 @inherits ModuleBase
 
 @if (_MyModules == null)
@@ -29,4 +29,6 @@ else
     {
         <p>@Localizer["Message.DisplayNone"]</p>
     }
+
+    <ICTAce.FileHub.Client.Modules.MyModule.Category />
 }
