@@ -1,0 +1,34 @@
+{
+  "details": {
+    "endpoint": "http://localhost:5145/",
+    "path": "/api/MyModule",
+    "method": "GET",
+    "headers": [],
+    "queryParams": [
+      {
+        "key": "moduleId",
+        "value": "35"
+      },
+      {
+        "key": "pageNumber",
+        "value": "1"
+      },
+      {
+        "key": "pageSize",
+        "value": "10"
+      },
+      {
+        "key": "authmoduleid",
+        "value": "35"
+      }
+    ]
+  },
+  "requests": [
+    {
+      "contentType": "none"
+    }
+  ],
+  "operationType": "unary",
+  "invokerName": "rest",
+  "typeHint": "GET"
+}
