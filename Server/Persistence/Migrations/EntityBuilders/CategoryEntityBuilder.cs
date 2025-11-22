@@ -4,9 +4,9 @@ namespace ICTAce.FileHub.Persistence.Migrations.EntityBuilders;
 
 public class CategoryEntityBuilder : AuditableBaseEntityBuilder<CategoryEntityBuilder>
 {
-    private const string _entityTableName = "FileHub_Category";
-    private readonly PrimaryKey<CategoryEntityBuilder> _primaryKey = new("PK_FileHub_Category", x => x.Id);
-    private readonly ForeignKey<CategoryEntityBuilder> _moduleForeignKey = new("FK_FileHub_Category_Module", x => x.ModuleId, "Module", "ModuleId", ReferentialAction.Cascade);
+    private const string _entityTableName = "ICTAce_FileHub_Category";
+    private readonly PrimaryKey<CategoryEntityBuilder> _primaryKey = new("PK_ICTAce_FileHub_Category", x => x.Id);
+    private readonly ForeignKey<CategoryEntityBuilder> _moduleForeignKey = new("FK_ICTAce_FileHub_Category_Module", x => x.ModuleId, "Module", "ModuleId", ReferentialAction.Cascade);
 
     public CategoryEntityBuilder(MigrationBuilder migrationBuilder, IDatabase database) : base(migrationBuilder, database)
     {
