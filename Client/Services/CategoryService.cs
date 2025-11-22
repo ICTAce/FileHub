@@ -2,9 +2,6 @@
 
 namespace ICTAce.FileHub.Services;
 
-/// <summary>
-/// DTO for getting a Category with full details
-/// </summary>
 public record GetCategoryDto
 {
     public int Id { get; set; }
@@ -19,9 +16,6 @@ public record GetCategoryDto
     public required DateTime ModifiedOn { get; set; }
 }
 
-/// <summary>
-/// DTO for listing Categories
-/// </summary>
 public record ListCategoryDto
 {
     public int Id { get; set; }
@@ -30,9 +24,6 @@ public record ListCategoryDto
     public int ParentId { get; set; }
 }
 
-/// <summary>
-/// DTO for creating or updating a Category
-/// </summary>
 public record CreateAndUpdateCategoryDto
 {
     [Required(ErrorMessage = "Name is required")]

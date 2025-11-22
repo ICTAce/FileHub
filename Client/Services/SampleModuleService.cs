@@ -42,7 +42,7 @@ public interface ISampleModuleService
 
 public class SampleModuleService(HttpClient http, SiteState siteState) : ServiceBase(http, siteState), ISampleModuleService
 {
-    private string Apiurl => CreateApiUrl("company/sampleModule");
+    private string Apiurl => CreateApiUrl("company/sampleModules");
 
     public Task<GetSampleModuleDto> GetAsync(int id, int moduleId)
     {
