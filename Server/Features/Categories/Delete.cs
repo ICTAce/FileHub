@@ -21,7 +21,7 @@ public class DeleteHandler(
 
         if (!IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
         {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized Category Delete Attempt {Id} {ModuleId}", request.Id, request.ModuleId);
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized FileHub Category Delete Attempt {Id} {ModuleId}", request.Id, request.ModuleId);
             return -1;
         }
 
@@ -33,11 +33,11 @@ public class DeleteHandler(
 
         if (rowsAffected > 0)
         {
-            Logger.Log(LogLevel.Information, this, LogFunction.Delete, "Category Deleted {Id}", request.Id);
+            Logger.Log(LogLevel.Information, this, LogFunction.Delete, "FileHub Category Deleted {Id}", request.Id);
             return request.Id;
         }
 
-        Logger.Log(LogLevel.Warning, this, LogFunction.Delete, "Category Not Found {Id}", request.Id);
+        Logger.Log(LogLevel.Warning, this, LogFunction.Delete, "FileHub Category Not Found {Id}", request.Id);
         return -1;
     }
 }

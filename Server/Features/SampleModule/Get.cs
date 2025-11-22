@@ -27,17 +27,15 @@ public class GetHandler(
             var entity = await db.SampleModule.SingleOrDefaultAsync(m => m.Id == request.Id && m.ModuleId == request.ModuleId, cancellationToken).ConfigureAwait(false);
             if (entity is null)
             {
-                Logger.Log(LogLevel.Error, this, LogFunction.Security, "MyModule not found Id={Id} in ModuleId= {ModuleId}", request.Id, request.ModuleId);
+                Logger.Log(LogLevel.Error, this, LogFunction.Security, "SampleModule not found Id={Id} in ModuleId= {ModuleId}", request.Id, request.ModuleId);
                 return null;
             }
 
             return _mapper.ToGetResponse(entity);
         }
-        else
-        {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Get Attempt {Id} {ModuleId}", request.Id, request.ModuleId);
-            return null;
-        }
+
+        Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized SampleModule Get Attempt {Id} {ModuleId}", request.Id, request.ModuleId);
+        return null;
     }
 }
 

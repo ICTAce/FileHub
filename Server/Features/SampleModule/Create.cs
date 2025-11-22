@@ -23,19 +23,19 @@ public class CreateHandler(
         if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
         {
             // Build the entity from command data
-            var myModule = new Persistence.Entities.SampleModule
+            var sampleModule = new Persistence.Entities.SampleModule
             {
                 ModuleId = request.ModuleId,
-                Name = request.Name
+                Name = request.Name,
                 // CreatedBy, CreatedOn, ModifiedBy, ModifiedOn will be set by IAuditable/database
             };
 
             using var db = CreateDbContext();
-            db.SampleModule.Add(myModule);
+            db.SampleModule.Add(sampleModule);
             await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-            Logger.Log(LogLevel.Information, this, LogFunction.Create, "MyModule Added {MyModule}", myModule);
-            return myModule.Id;
+            Logger.Log(LogLevel.Information, this, LogFunction.Create, "SampleModule Added {MyModule}", sampleModule);
+            return sampleModule.Id;
         }
         else
         {

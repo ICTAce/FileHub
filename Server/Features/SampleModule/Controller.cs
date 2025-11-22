@@ -4,15 +4,13 @@ namespace ICTAce.FileHub.Features.SampleModule;
 
 [Route("api/company/sampleModules")]
 [ApiController]
-public class CompanySampleModulesController : ModuleControllerBase
+public class CompanySampleModulesController(
+    IMediator mediator,
+    ILogManager logger,
+    IHttpContextAccessor accessor)
+    : ModuleControllerBase(logger, accessor)
 {
-    private readonly IMediator _mediator;
-
-    public CompanySampleModulesController(IMediator mediator, ILogManager logger, IHttpContextAccessor accessor)
-        : base(logger, accessor)
-    {
-        _mediator = mediator;
-    }
+    private readonly IMediator _mediator = mediator;
 
     [HttpGet("{id}")]
     [Authorize(Policy = PolicyNames.ViewModule)]
@@ -27,13 +25,13 @@ public class CompanySampleModulesController : ModuleControllerBase
         if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
         {
             _logger.Log(LogLevel.Error, this, LogFunction.Security,
-                "Unauthorized MyModule Get Attempt Id={Id} in ModuleId={ModuleId}", id, moduleId);
+                "Unauthorized SampleModule Get Attempt Id={Id} in ModuleId={ModuleId}", id, moduleId);
             return Forbid();
         }
 
         if (id <= 0)
         {
-            return BadRequest("Invalid MyModule ID");
+            return BadRequest("Invalid SampleModule ID");
         }
 
         var query = new GetMyModuleRequest
@@ -47,7 +45,7 @@ public class CompanySampleModulesController : ModuleControllerBase
         if (myModule is null)
         {
             _logger.Log(LogLevel.Warning, this, LogFunction.Read,
-                "MyModule Not Found Id={Id} in ModuleId={ModuleId}", id, moduleId);
+                "SampleModule Not Found Id={Id} in ModuleId={ModuleId}", id, moduleId);
             return NotFound();
         }
 
@@ -67,7 +65,7 @@ public class CompanySampleModulesController : ModuleControllerBase
         if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
         {
             _logger.Log(LogLevel.Error, this, LogFunction.Security,
-                "Unauthorized MyModule List Attempt ModuleId={ModuleId}", moduleId);
+                "Unauthorized SampleModule List Attempt ModuleId={ModuleId}", moduleId);
             return Forbid();
         }
 
@@ -113,6 +111,13 @@ public class CompanySampleModulesController : ModuleControllerBase
             return BadRequest(ModelState);
         }
 
+        if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
+        {
+            _logger.Log(LogLevel.Error, this, LogFunction.Security,
+                "Unauthorized SampleModule Create Attempt ModuleId={ModuleId}", moduleId);
+            return Forbid();
+        }
+
         var request = new CreateSampleModuleRequest
         {
             ModuleId = moduleId,
@@ -140,6 +145,14 @@ public class CompanySampleModulesController : ModuleControllerBase
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
+        }
+
+
+        if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
+        {
+            _logger.Log(LogLevel.Error, this, LogFunction.Security,
+                "Unauthorized SampleModule Update Attempt Id={Id} in ModuleId={ModuleId}", id, moduleId);
+            return Forbid();
         }
 
         var request = new UpdateSampleModuleRequest

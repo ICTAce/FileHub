@@ -4,16 +4,7 @@ namespace ICTAce.FileHub.Features.Categories;
 
 public record ListCategoryRequest : RequestBase, IRequest<PagedResult<ListCategoryDto>>
 {
-    /// <summary>
-    /// Page number (1-based). Defaults to 1 if not specified.
-    /// </summary>
-    [Range(1, int.MaxValue, ErrorMessage = "Page number must be greater than 0")]
     public int PageNumber { get; set; } = 1;
-
-    /// <summary>
-    /// Number of items per page. Defaults to 10 if not specified.
-    /// </summary>
-    [Range(1, 100, ErrorMessage = "Page size must be between 1 and 100")]
     public int PageSize { get; set; } = 10;
 }
 
@@ -35,12 +26,10 @@ public class ListHandler(
         {
             using var db = CreateDbContext();
 
-            // Get total count for pagination metadata
             var totalCount = await db.Category
                 .Where(item => item.ModuleId == request.ModuleId)
                 .CountAsync(cancellationToken).ConfigureAwait(false);
 
-            // Apply pagination
             var categories = await db.Category
                 .Where(item => item.ModuleId == request.ModuleId)
                 .OrderBy(c => c.ViewOrder)
@@ -49,7 +38,6 @@ public class ListHandler(
                 .Take(request.PageSize)
                 .ToListAsync(cancellationToken).ConfigureAwait(false);
 
-            // Map Category entities to ListCategoryResponse DTOs using Mapperly
             var items = categories
                 .Select(_mapper.ToListResponse)
                 .ToList();
@@ -59,22 +47,17 @@ public class ListHandler(
                 Items = items,
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize,
-                TotalCount = totalCount
+                TotalCount = totalCount,
             };
         }
-        else
-        {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized Category Get Attempt {ModuleId}", request.ModuleId);
-            return null;
-        }
+
+        Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized FileHUb Category Get Attempt {ModuleId}", request.ModuleId);
+        return null;
     }
 }
 
 [Mapper]
 internal sealed partial class ListMapper
 {
-    /// <summary>
-    /// Maps Category entity to ListCategoryResponse DTO
-    /// </summary>
     public partial ListCategoryDto ToListResponse(Persistence.Entities.Category category);
 }

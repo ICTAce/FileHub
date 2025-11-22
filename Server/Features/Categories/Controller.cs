@@ -2,30 +2,15 @@
 
 namespace ICTAce.FileHub.Features.Categories;
 
-public record CreateUpdateCategoryDto
-{
-    [Required(ErrorMessage = "Name is required")]
-    [StringLength(100, MinimumLength = 1, ErrorMessage = "Name must be between 1 and 100 characters")]
-    public string Name { get; set; } = string.Empty;
-
-    [Range(0, int.MaxValue, ErrorMessage = "ViewOrder must be greater than or equal to 0")]
-    public int ViewOrder { get; set; }
-
-    [Range(0, int.MaxValue, ErrorMessage = "ParentId must be greater than or equal to 0")]
-    public int ParentId { get; set; }
-}
-
 [Route("api/ictace/fileHub/categories")]
 [ApiController]
-public class FileHubCategoriesController : ModuleControllerBase
+public class FileHubCategoriesController(
+    IMediator mediator,
+    ILogManager logger,
+    IHttpContextAccessor accessor)
+    : ModuleControllerBase(logger, accessor)
 {
-    private readonly IMediator _mediator;
-
-    public FileHubCategoriesController(IMediator mediator, ILogManager logger, IHttpContextAccessor accessor)
-        : base(logger, accessor)
-    {
-        _mediator = mediator;
-    }
+    private readonly IMediator _mediator = mediator;
 
     [HttpGet("{id}")]
     [Authorize(Policy = PolicyNames.ViewModule)]
@@ -40,7 +25,7 @@ public class FileHubCategoriesController : ModuleControllerBase
         if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
         {
             _logger.Log(LogLevel.Error, this, LogFunction.Security,
-                "Unauthorized Category Get Attempt Id={Id} in ModuleId={ModuleId}", id, moduleId);
+                "Unauthorized FileHub Category Get Attempt Id={Id} in ModuleId={ModuleId}", id, moduleId);
             return Forbid();
         }
 
@@ -52,7 +37,7 @@ public class FileHubCategoriesController : ModuleControllerBase
         var query = new GetCategoryRequest
         {
             ModuleId = moduleId,
-            Id = id
+            Id = id,
         };
 
         var category = await _mediator.Send(query, cancellationToken).ConfigureAwait(false);
@@ -118,7 +103,7 @@ public class FileHubCategoriesController : ModuleControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<int>> CreateAsync(
         [FromQuery] int moduleId,
-        [FromBody] CreateUpdateCategoryDto dto,
+        [FromBody] CreateAndUpdateCategoryDto dto,
         CancellationToken cancellationToken = default)
     {
         if (!ModelState.IsValid)
@@ -138,7 +123,7 @@ public class FileHubCategoriesController : ModuleControllerBase
             ModuleId = moduleId,
             Name = dto.Name,
             ViewOrder = dto.ViewOrder,
-            ParentId = dto.ParentId
+            ParentId = dto.ParentId,
         };
 
         var id = await _mediator.Send(command, cancellationToken).ConfigureAwait(false);
@@ -156,7 +141,7 @@ public class FileHubCategoriesController : ModuleControllerBase
     public async Task<ActionResult<int>> UpdateAsync(
         int id,
         [FromQuery] int moduleId,
-        [FromBody] CreateUpdateCategoryDto dto,
+        [FromBody] CreateAndUpdateCategoryDto dto,
         CancellationToken cancellationToken = default)
     {
         if (!ModelState.IsValid)
@@ -177,7 +162,7 @@ public class FileHubCategoriesController : ModuleControllerBase
             ModuleId = moduleId,
             Name = dto.Name,
             ViewOrder = dto.ViewOrder,
-            ParentId = dto.ParentId
+            ParentId = dto.ParentId,
         };
 
         var result = await _mediator.Send(command, cancellationToken).ConfigureAwait(false);
@@ -209,7 +194,7 @@ public class FileHubCategoriesController : ModuleControllerBase
         var command = new DeleteCategoryRequest
         {
             ModuleId = moduleId,
-            Id = id
+            Id = id,
         };
 
         await _mediator.Send(command, cancellationToken).ConfigureAwait(false);

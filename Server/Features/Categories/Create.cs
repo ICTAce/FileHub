@@ -29,7 +29,7 @@ public class CreateHandler(
                 ModuleId = request.ModuleId,
                 Name = request.Name,
                 ViewOrder = request.ViewOrder,
-                ParentId = request.ParentId
+                ParentId = request.ParentId,
                 // CreatedBy, CreatedOn, ModifiedBy, ModifiedOn will be set by IAuditable/database
             };
 
@@ -37,12 +37,12 @@ public class CreateHandler(
             db.Category.Add(category);
             await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-            Logger.Log(LogLevel.Information, this, LogFunction.Create, "Category Added {Category}", category);
+            Logger.Log(LogLevel.Information, this, LogFunction.Create, "FileHub Category Added {Category}", category);
             return category.Id;
         }
         else
         {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized Category Add Attempt {ModuleId} {Name}", request.ModuleId, request.Name);
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized FileHub Category Add Attempt {ModuleId} {Name}", request.ModuleId, request.Name);
             return -1;
         }
     }

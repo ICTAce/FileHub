@@ -4,8 +4,6 @@ namespace ICTAce.FileHub.Features.Categories;
 
 public record GetCategoryRequest : RequestBase, IRequest<GetCategoryDto>
 {
-    [Required]
-    [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
     public int Id { get; set; }
 }
 
@@ -29,17 +27,15 @@ public class GetHandler(
             var entity = await db.Category.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
             if (entity is null)
             {
-                Logger.Log(LogLevel.Error, this, LogFunction.Security, "Category not found {Id} {ModuleId}", request.Id, request.ModuleId);
+                Logger.Log(LogLevel.Error, this, LogFunction.Security, "FileHub Category not found {Id} {ModuleId}", request.Id, request.ModuleId);
                 return null;
             }
 
             return _mapper.ToGetResponse(entity);
         }
-        else
-        {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized Category Get Attempt {Id} {ModuleId}", request.Id, request.ModuleId);
-            return null;
-        }
+
+        Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized FileHub Category Get Attempt {Id} {ModuleId}", request.Id, request.ModuleId);
+        return null;
     }
 }
 

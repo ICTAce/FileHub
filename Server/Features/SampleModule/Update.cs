@@ -28,9 +28,7 @@ public class UpdateHandler(
             var myModule = await db.SampleModule.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
             if (myModule != null)
             {
-                // Update only user-editable fields
                 myModule.Name = request.Name;
-                // ModifiedBy, ModifiedOn will be updated by IAuditable/database
 
                 await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
@@ -40,10 +38,8 @@ public class UpdateHandler(
 
             return -1;
         }
-        else
-        {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized SampleModule Update Attempt {Id}", request.Id);
-            return -1;
-        }
+
+        Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized SampleModule Update Attempt {Id}", request.Id);
+        return -1;
     }
 }

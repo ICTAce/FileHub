@@ -4,8 +4,6 @@ namespace ICTAce.FileHub.Features.SampleModule;
 
 public record DeleteSampleModuleRequest : RequestBase, IRequest<int>
 {
-    [Required]
-    [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
     public int Id { get; set; }
 }
 
@@ -29,7 +27,6 @@ public class DeleteHandler(
         }
 
         using var db = CreateDbContext();
-        // Use ExecuteDeleteAsync for efficient direct deletion
         var rowsAffected = await db.SampleModule
             .Where(m => m.Id == request.Id && m.ModuleId == request.ModuleId)
             .ExecuteDeleteAsync(cancellationToken)
