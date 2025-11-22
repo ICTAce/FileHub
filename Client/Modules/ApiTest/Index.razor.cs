@@ -1,9 +1,6 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using ICTAce.FileHub.Client.Services;
-using Microsoft.AspNetCore.Components;
+// Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.ApiTest;
+namespace ICTAce.FileHub.Modules.ApiTest;
 
 public partial class Index : ModuleBase
 {

@@ -4,7 +4,7 @@ namespace ICTAce.FileHub.Modules.MyModule;
 
 public class ModuleInfo : IModule
 {
-    public ModuleDefinition ModuleDefinition => new ModuleDefinition
+    public ModuleDefinition ModuleDefinition => new()
     {
         Name = "MyModule",
         Description = "Example module",

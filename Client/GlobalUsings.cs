@@ -10,3 +10,5 @@ global using Oqtane.Models;
 global using Oqtane.Modules;
 global using Oqtane.Services;
 global using Oqtane.Shared;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
