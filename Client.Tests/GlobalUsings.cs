@@ -5,10 +5,9 @@ global using System.Collections.Generic;
 global using System.Linq;
 global using System.Threading.Tasks;
 
-global using ICTAce.FileHub.Services;
+global using ICTAce.FileHub.Client.Services;
+global using ICTAce.FileHub.Client.Services.Common;
 global using ICTAce.FileHub.Client.Tests.Mocks;
-global using ICTAce.FileHub.Client.Contracts.MyModules;
-global using ICTAce.FileHub.Client.Contracts.Common;
 
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.DependencyInjection;

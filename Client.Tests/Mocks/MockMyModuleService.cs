@@ -4,12 +4,12 @@ namespace ICTAce.FileHub.Client.Tests.Mocks;
 
 public class MockMyModuleService : IMyModuleService
 {
-    private readonly List<GetMyModuleResponse> _modules = new();
+    private readonly List<GetMyModuleDto> _modules = new();
     private int _nextId = 1;
 
     public MockMyModuleService()
     {
-        _modules.Add(new GetMyModuleResponse
+        _modules.Add(new GetMyModuleDto
         {
             Id = 1,
             ModuleId = 1,
@@ -20,7 +20,7 @@ public class MockMyModuleService : IMyModuleService
             ModifiedOn = DateTime.Now.AddDays(-5)
         });
 
-        _modules.Add(new GetMyModuleResponse
+        _modules.Add(new GetMyModuleDto
         {
             Id = 2,
             ModuleId = 1,
@@ -34,45 +34,49 @@ public class MockMyModuleService : IMyModuleService
         _nextId = 3;
     }
 
-    public Task<GetMyModuleResponse> GetAsync(GetMyModuleRequest request)
+    public Task<GetMyModuleDto> GetAsync(int id, int moduleId)
     {
-        var module = _modules.FirstOrDefault(m => m.Id == request.Id);
+        var module = _modules.FirstOrDefault(m => m.Id == id && m.ModuleId == moduleId);
         if (module == null)
         {
-            throw new InvalidOperationException($"Module with Id {request.Id} not found");
+            throw new InvalidOperationException($"Module with Id {id} and ModuleId {moduleId} not found");
         }
         return Task.FromResult(module);
     }
 
-    public Task<PagedResult<ListMyModuleResponse>> ListAsync(ListMyModuleRequest request)
+    public Task<PagedResult<ListMyModuleDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10)
     {
         var items = _modules
-            .Where(m => m.ModuleId == request.ModuleId)
-            .Select(m => new ListMyModuleResponse
+            .Where(m => m.ModuleId == moduleId)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Select(m => new ListMyModuleDto
             {
                 Id = m.Id,
                 Name = m.Name
             })
             .ToList();
 
-        var pagedResult = new PagedResult<ListMyModuleResponse>
+        var totalCount = _modules.Count(m => m.ModuleId == moduleId);
+
+        var pagedResult = new PagedResult<ListMyModuleDto>
         {
             Items = items,
-            TotalCount = items.Count,
-            PageNumber = request.PageNumber,
-            PageSize = request.PageSize
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
         };
 
         return Task.FromResult(pagedResult);
     }
 
-    public Task<int> CreateAsync(CreateMyModuleRequest request)
+    public Task<int> CreateAsync(int moduleId, CreateUpdateMyModuleDto dto)
     {
-        var newModule = new GetMyModuleResponse
+        var newModule = new GetMyModuleDto
         {
             Id = _nextId++,
-            ModuleId = request.ModuleId,
-            Name = request.Name,
+            ModuleId = moduleId,
+            Name = dto.Name,
             CreatedBy = "Test User",
             CreatedOn = DateTime.Now,
             ModifiedBy = "Test User",
@@ -83,24 +87,24 @@ public class MockMyModuleService : IMyModuleService
         return Task.FromResult(newModule.Id);
     }
 
-    public Task<int> UpdateAsync(UpdateMyModuleRequest request)
+    public Task<int> UpdateAsync(int id, int moduleId, CreateUpdateMyModuleDto dto)
     {
-        var module = _modules.FirstOrDefault(m => m.Id == request.Id);
+        var module = _modules.FirstOrDefault(m => m.Id == id && m.ModuleId == moduleId);
         if (module == null)
         {
-            throw new InvalidOperationException($"Module with Id {request.Id} not found");
+            throw new InvalidOperationException($"Module with Id {id} and ModuleId {moduleId} not found");
         }
 
-        module.Name = request.Name;
+        module.Name = dto.Name;
         module.ModifiedBy = "Test User";
         module.ModifiedOn = DateTime.Now;
 
         return Task.FromResult(module.Id);
     }
 
-    public Task DeleteAsync(DeleteMyModuleRequest request)
+    public Task DeleteAsync(int id, int moduleId)
     {
-        var module = _modules.FirstOrDefault(m => m.Id == request.Id);
+        var module = _modules.FirstOrDefault(m => m.Id == id && m.ModuleId == moduleId);
         if (module != null)
         {
             _modules.Remove(module);
@@ -114,7 +118,7 @@ public class MockMyModuleService : IMyModuleService
         _nextId = 1;
     }
 
-    public void AddTestData(GetMyModuleResponse module)
+    public void AddTestData(GetMyModuleDto module)
     {
         _modules.Add(module);
     }

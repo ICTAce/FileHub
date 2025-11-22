@@ -63,11 +63,7 @@ public class EditTests : BaseTest
 
         await Task.Delay(200);
 
-        var updatedModule = await _mockMyModuleService!.GetAsync(new GetMyModuleRequest
-        {
-            Id = 1,
-            ModuleId = 1
-        });
+        var updatedModule = await _mockMyModuleService!.GetAsync(1, 1);
 
         await Assert.That(updatedModule.Name).IsEqualTo("Updated Module Name");
         await Assert.That(_mockNavigationManager!.NavigateToInvoked).IsTrue();
