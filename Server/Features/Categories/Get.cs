@@ -46,8 +46,5 @@ public class GetHandler(
 [Mapper]
 internal sealed partial class GetMapper
 {
-    /// <summary>
-    /// Maps Category entity to GetCategoryResponse DTO
-    /// </summary>
     public partial GetCategoryDto ToGetResponse(Persistence.Entities.Category category);
 }

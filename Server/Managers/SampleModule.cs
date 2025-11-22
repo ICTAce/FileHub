@@ -26,30 +26,30 @@ public class SampleModule(
 
         // Direct data access - no repository layer
         using var db = _contextFactory.CreateDbContext();
-        var MyModules = db.SampleModule
+        var sampleModule = db.SampleModule
             .Where(item => item.ModuleId == module.ModuleId)
             .ToList();
 
-        if (MyModules != null)
+        if (sampleModule != null)
         {
-            content = JsonSerializer.Serialize(MyModules);
+            content = JsonSerializer.Serialize(sampleModule);
         }
         return content;
     }
 
     public void ImportModule(Module module, string content, string version)
     {
-        List<Persistence.Entities.SampleModule> MyModules = null;
+        List<Persistence.Entities.SampleModule> SampleModules = null;
         if (!string.IsNullOrEmpty(content))
         {
-            MyModules = JsonSerializer.Deserialize<List<Persistence.Entities.SampleModule>>(content);
+            SampleModules = JsonSerializer.Deserialize<List<Persistence.Entities.SampleModule>>(content);
         }
 
-        if (MyModules is not null)
+        if (SampleModules is not null)
         {
             // Direct data access - no repository layer
             using var db = _contextFactory.CreateDbContext();
-            foreach (var task in MyModules)
+            foreach (var task in SampleModules)
             {
                 db.SampleModule.Add(new Persistence.Entities.SampleModule { ModuleId = module.ModuleId, Name = task.Name });
             }
@@ -63,18 +63,18 @@ public class SampleModule(
 
         // Direct data access - no repository layer
         using var db = _contextFactory.CreateDbContext();
-        foreach (var MyModule in db.SampleModule.Where(item => item.ModuleId == pageModule.ModuleId))
+        foreach (var sampleModule in db.SampleModule.Where(item => item.ModuleId == pageModule.ModuleId))
         {
-            if (MyModule.ModifiedOn >= lastIndexedOn)
+            if (sampleModule.ModifiedOn >= lastIndexedOn)
             {
                 searchContentList.Add(new SearchContent
                 {
                     EntityName = "MyModule",
-                    EntityId = MyModule.Id.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                    Title = MyModule.Name,
-                    Body = MyModule.Name,
-                    ContentModifiedBy = MyModule.ModifiedBy,
-                    ContentModifiedOn = MyModule.ModifiedOn
+                    EntityId = sampleModule.Id.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                    Title = sampleModule.Name,
+                    Body = sampleModule.Name,
+                    ContentModifiedBy = sampleModule.ModifiedBy,
+                    ContentModifiedOn = sampleModule.ModifiedOn
                 });
             }
         }

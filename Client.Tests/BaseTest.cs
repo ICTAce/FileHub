@@ -17,7 +17,7 @@ public abstract class BaseTest : IDisposable
         TestContext.Services.AddSingleton(new SiteState());
         TestContext.Services.AddLogging();
         TestContext.Services.AddScoped<ILogService, MockLogService>();
-        TestContext.Services.AddScoped<ISampleModuleService, MockMyModuleService>();
+        TestContext.Services.AddScoped<ISampleModuleService, MockSampleModuleService>();
         
         // Add PageState mock for cascading parameter
         TestContext.Services.AddScoped(_ => new Mocks.PageState

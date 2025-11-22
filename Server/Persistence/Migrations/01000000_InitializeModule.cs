@@ -12,8 +12,8 @@ public class InitializeModule : MultiDatabaseMigration
 
     protected override void Up(MigrationBuilder migrationBuilder)
     {
-        var myModuleEntityBuilder = new SampleModuleEntityBuilder(migrationBuilder, ActiveDatabase);
-        myModuleEntityBuilder.Create();
+        var sampleModuleEntityBuilder = new SampleModuleEntityBuilder(migrationBuilder, ActiveDatabase);
+        sampleModuleEntityBuilder.Create();
 
         var fileHubEntityBuilder = new FileHubEntityBuilder(migrationBuilder, ActiveDatabase);
         fileHubEntityBuilder.Create();
@@ -24,8 +24,8 @@ public class InitializeModule : MultiDatabaseMigration
 
     protected override void Down(MigrationBuilder migrationBuilder)
     {
-        var myModuleEntityBuilder = new SampleModuleEntityBuilder(migrationBuilder, ActiveDatabase);
-        myModuleEntityBuilder.Drop();
+        var sampleModuleEntityBuilder = new SampleModuleEntityBuilder(migrationBuilder, ActiveDatabase);
+        sampleModuleEntityBuilder.Drop();
 
         var fileHubEntityBuilder = new FileHubEntityBuilder(migrationBuilder, ActiveDatabase);
         fileHubEntityBuilder.Drop();

@@ -5,8 +5,8 @@ namespace ICTAce.FileHub.Persistence.Migrations.EntityBuilders;
 public class SampleModuleEntityBuilder : AuditableBaseEntityBuilder<SampleModuleEntityBuilder>
 {
     private const string _entityTableName = "Company_SampleModule";
-    private readonly PrimaryKey<SampleModuleEntityBuilder> _primaryKey = new("PK_MyModule", x => x.Id);
-    private readonly ForeignKey<SampleModuleEntityBuilder> _moduleForeignKey = new("FK_MyModule_Module", x => x.ModuleId, "Module", "ModuleId", ReferentialAction.Cascade);
+    private readonly PrimaryKey<SampleModuleEntityBuilder> _primaryKey = new("PK_SampleModule", x => x.Id);
+    private readonly ForeignKey<SampleModuleEntityBuilder> _moduleForeignKey = new("FK_SampleModule_Module", x => x.ModuleId, "Module", "ModuleId", ReferentialAction.Cascade);
 
     public SampleModuleEntityBuilder(MigrationBuilder migrationBuilder, IDatabase database) : base(migrationBuilder, database)
     {

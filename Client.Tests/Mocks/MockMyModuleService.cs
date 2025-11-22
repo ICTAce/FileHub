@@ -2,12 +2,12 @@
 
 namespace ICTAce.FileHub.Client.Tests.Mocks;
 
-public class MockMyModuleService : ISampleModuleService
+public class MockSampleModuleService : ISampleModuleService
 {
     private readonly List<GetSampleModuleDto> _modules = new();
     private int _nextId = 1;
 
-    public MockMyModuleService()
+    public MockSampleModuleService()
     {
         _modules.Add(new GetSampleModuleDto
         {

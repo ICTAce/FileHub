@@ -26,7 +26,6 @@ public class DeleteHandler(
         }
 
         using var db = CreateDbContext();
-        // Use ExecuteDeleteAsync for efficient direct deletion
         var rowsAffected = await db.Category
             .Where(c => c.Id == request.Id && c.ModuleId == request.ModuleId)
             .ExecuteDeleteAsync(cancellationToken)

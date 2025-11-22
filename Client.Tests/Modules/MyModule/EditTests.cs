@@ -4,12 +4,12 @@ namespace ICTAce.FileHub.Client.Tests.Modules.MyModule;
 public class EditTests : BaseTest
 {
     private readonly MockNavigationManager? _mockNavigationManager;
-    private readonly MockMyModuleService? _mockMyModuleService;
+    private readonly MockSampleModuleService? _mockMyModuleService;
     
     public EditTests()
     {
         _mockNavigationManager = TestContext.Services.GetRequiredService<NavigationManager>() as MockNavigationManager;
-        _mockMyModuleService = TestContext.Services.GetRequiredService<ISampleModuleService>() as MockMyModuleService;
+        _mockMyModuleService = TestContext.Services.GetRequiredService<ISampleModuleService>() as MockSampleModuleService;
         TestContext.JSInterop.Setup<bool>("Oqtane.Interop.formValid", _ => true).SetResult(true);
     }
   

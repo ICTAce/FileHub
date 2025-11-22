@@ -1,6 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.MyModule;
+namespace ICTAce.FileHub.SampleModule;
 
 public partial class Settings : ModuleBase
 {

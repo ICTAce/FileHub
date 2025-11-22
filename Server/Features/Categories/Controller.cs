@@ -2,9 +2,6 @@
 
 namespace ICTAce.FileHub.Features.Categories;
 
-/// <summary>
-/// DTO for creating or updating a Category
-/// </summary>
 public record CreateUpdateCategoryDto
 {
     [Required(ErrorMessage = "Name is required")]
