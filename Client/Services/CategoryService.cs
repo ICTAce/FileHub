@@ -69,7 +69,7 @@ public interface ICategoryService
 /// </summary>
 public class CategoryService(HttpClient http, SiteState siteState) : ServiceBase(http, siteState), ICategoryService
 {
-    private string Apiurl => CreateApiUrl("Category");
+    private string Apiurl => CreateApiUrl("FileHubCategory");
 
     public Task<GetCategoryDto> GetAsync(int id, int moduleId)
     {

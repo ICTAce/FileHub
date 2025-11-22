@@ -21,17 +21,17 @@ public record CreateUpdateCategoryDto
 }
 
 /// <summary>
-/// Vertical slice controller for Category operations.
+/// Vertical slice controller for FileHub Category operations.
 /// Each action method contains its complete request/response logic in one place,
 /// following VSA principles while maintaining Oqtane controller conventions.
 /// </summary>
 [Route(ControllerRoutes.ApiRoute)]
 [ApiController]
-public class CategoryController : ModuleControllerBase
+public class FileHubCategoryController : ModuleControllerBase
 {
     private readonly IMediator _mediator;
 
-    public CategoryController(IMediator mediator, ILogManager logger, IHttpContextAccessor accessor)
+    public FileHubCategoryController(IMediator mediator, ILogManager logger, IHttpContextAccessor accessor)
         : base(logger, accessor)
     {
         _mediator = mediator;
