@@ -11,7 +11,7 @@ public partial class Settings : ModuleBase
     protected IStringLocalizer<Settings> Localizer { get; set; } = default!;
 
     private const string ResourceType = "ICTAce.FileHub.MyModule.Settings, ICTAce.FileHub.Client.Oqtane";
-    
+
     public override string Title => "MyModule Settings";
 
     private string _value = string.Empty;
@@ -36,7 +36,7 @@ public partial class Settings : ModuleBase
             var settings = await SettingService.GetModuleSettingsAsync(ModuleState.ModuleId);
             SettingService.SetSetting(settings, "SettingName", _value);
             await SettingService.UpdateModuleSettingsAsync(settings, ModuleState.ModuleId);
-            
+
             AddModuleMessage("Settings updated successfully", MessageType.Success);
         }
         catch (Exception ex)

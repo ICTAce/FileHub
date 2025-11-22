@@ -345,6 +345,12 @@ dotnet_diagnostic.IDE2000.severity = warning
 # MA0048: File name must match type name
 dotnet_diagnostic.MA0048.severity = none
 
+[*.razor]
+dotnet_diagnostic.CA2007.severity = none
+
+[*.razor.cs]
+dotnet_diagnostic.CA2007.severity = none
+
 [{eng/tools/**.cs,**/{test,testassets,samples,Samples,perf,benchmarkapps,scripts,stress}/**.cs,src/Hosting/Server.IntegrationTesting/**.cs,src/Servers/IIS/IntegrationTesting.IIS/**.cs,src/Shared/Http2cat/**.cs,src/Testing/**.cs}]
 # CA1018: Mark attributes with AttributeUsageAttribute
 dotnet_diagnostic.CA1018.severity = suggestion

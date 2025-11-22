@@ -29,7 +29,6 @@ public record CreateUpdateMyModuleDto
     public string Name { get; set; } = string.Empty;
 }
 
-
 public interface IMyModuleService
 {
     Task<GetMyModuleDto> GetAsync(int id, int moduleId);
@@ -42,7 +41,6 @@ public interface IMyModuleService
 
     Task DeleteAsync(int id, int moduleId);
 }
-
 
 public class MyModuleService(HttpClient http, SiteState siteState) : ServiceBase(http, siteState), IMyModuleService
 {
