@@ -4,7 +4,7 @@ namespace ICTAce.FileHub;
 
 public partial class Index
 {
-    [Inject] protected IMyModuleService MyModuleService { get; set; } = default!;
+    [Inject] protected ISampleModuleService MyModuleService { get; set; } = default!;
     [Inject] protected NavigationManager NavigationManager { get; set; } = default!;
     [Inject] protected IStringLocalizer<Index> Localizer { get; set; } = default!;
 
@@ -14,7 +14,7 @@ public partial class Index
         new Script(ModulePath() + "Module.js")
     };
 
-    private List<ListMyModuleDto>? _MyModules;
+    private List<ListSampleModuleDto>? _MyModules;
 
     protected override async Task OnInitializedAsync()
     {
@@ -30,7 +30,7 @@ public partial class Index
         }
     }
 
-    private async Task Delete(ListMyModuleDto myModule)
+    private async Task Delete(ListSampleModuleDto myModule)
     {
         try
         {

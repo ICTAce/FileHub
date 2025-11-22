@@ -77,7 +77,7 @@ public class IndexTests : BaseTest
     [Test]
     public async Task DeleteValidModuleRemovesModuleAndRefreshesUI()
     {
-        var mockService = TestContext.Services.GetRequiredService<IMyModuleService>() as MockMyModuleService;
+        var mockService = TestContext.Services.GetRequiredService<ISampleModuleService>() as MockMyModuleService;
         
         await Task.Delay(200);
         renderedPage!.WaitForState(() => renderedPage.Markup.Contains("Test Module 1"), TimeSpan.FromSeconds(3));

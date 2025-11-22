@@ -1,10 +1,8 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Client.Services.Common;
+namespace ICTAce.FileHub.Services;
 
-namespace ICTAce.FileHub.Client.Services;
-
-public record GetMyModuleDto
+public record GetSampleModuleDto
 {
     public int Id { get; set; }
     public int ModuleId { get; set; }
@@ -16,58 +14,58 @@ public record GetMyModuleDto
     public required DateTime ModifiedOn { get; set; }
 }
 
-public record ListMyModuleDto
+public record ListSampleModuleDto
 {
     public int Id { get; set; }
     public required string Name { get; set; }
 }
 
-public record CreateUpdateMyModuleDto
+public record CreateAndUpdateSampleModuleDto
 {
     [Required(ErrorMessage = "Name is required")]
     [StringLength(100, MinimumLength = 1, ErrorMessage = "Name must be between 1 and 100 characters")]
     public string Name { get; set; } = string.Empty;
 }
 
-public interface IMyModuleService
+public interface ISampleModuleService
 {
-    Task<GetMyModuleDto> GetAsync(int id, int moduleId);
+    Task<GetSampleModuleDto> GetAsync(int id, int moduleId);
 
-    Task<PagedResult<ListMyModuleDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10);
+    Task<PagedResult<ListSampleModuleDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10);
 
-    Task<int> CreateAsync(int moduleId, CreateUpdateMyModuleDto dto);
+    Task<int> CreateAsync(int moduleId, CreateAndUpdateSampleModuleDto dto);
 
-    Task<int> UpdateAsync(int id, int moduleId, CreateUpdateMyModuleDto dto);
+    Task<int> UpdateAsync(int id, int moduleId, CreateAndUpdateSampleModuleDto dto);
 
     Task DeleteAsync(int id, int moduleId);
 }
 
-public class MyModuleService(HttpClient http, SiteState siteState) : ServiceBase(http, siteState), IMyModuleService
+public class SampleModuleService(HttpClient http, SiteState siteState) : ServiceBase(http, siteState), ISampleModuleService
 {
     private string Apiurl => CreateApiUrl("MyModule");
 
-    public Task<GetMyModuleDto> GetAsync(int id, int moduleId)
+    public Task<GetSampleModuleDto> GetAsync(int id, int moduleId)
     {
         var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return GetJsonAsync<GetMyModuleDto>(url);
+        return GetJsonAsync<GetSampleModuleDto>(url);
     }
 
-    public Task<PagedResult<ListMyModuleDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10)
+    public Task<PagedResult<ListSampleModuleDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10)
     {
         var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}&pageNumber={pageNumber}&pageSize={pageSize}", EntityNames.Module, moduleId);
-        return GetJsonAsync<PagedResult<ListMyModuleDto>>(url, new PagedResult<ListMyModuleDto>());
+        return GetJsonAsync<PagedResult<ListSampleModuleDto>>(url, new PagedResult<ListSampleModuleDto>());
     }
 
-    public Task<int> CreateAsync(int moduleId, CreateUpdateMyModuleDto dto)
+    public Task<int> CreateAsync(int moduleId, CreateAndUpdateSampleModuleDto dto)
     {
         var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return PostJsonAsync<CreateUpdateMyModuleDto, int>(url, dto);
+        return PostJsonAsync<CreateAndUpdateSampleModuleDto, int>(url, dto);
     }
 
-    public Task<int> UpdateAsync(int id, int moduleId, CreateUpdateMyModuleDto dto)
+    public Task<int> UpdateAsync(int id, int moduleId, CreateAndUpdateSampleModuleDto dto)
     {
         var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return PutJsonAsync<CreateUpdateMyModuleDto, int>(url, dto);
+        return PutJsonAsync<CreateAndUpdateSampleModuleDto, int>(url, dto);
     }
 
     public Task DeleteAsync(int id, int moduleId)

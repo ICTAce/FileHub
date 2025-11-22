@@ -4,7 +4,7 @@ namespace ICTAce.FileHub.MyModule;
 
 public partial class Edit
 {
-    [Inject] protected IMyModuleService MyModuleService { get; set; } = default!;
+    [Inject] protected ISampleModuleService MyModuleService { get; set; } = default!;
     [Inject] protected NavigationManager NavigationManager { get; set; } = default!;
     [Inject] protected IStringLocalizer<Edit> Localizer { get; set; } = default!;
 
@@ -64,7 +64,7 @@ public partial class Edit
             {
                 if (string.Equals(PageState.Action, "Add", StringComparison.Ordinal))
                 {
-                    var dto = new CreateUpdateMyModuleDto
+                    var dto = new CreateAndUpdateSampleModuleDto
                     {
                         Name = _name
                     };
@@ -73,7 +73,7 @@ public partial class Edit
                 }
                 else
                 {
-                    var dto = new CreateUpdateMyModuleDto
+                    var dto = new CreateAndUpdateSampleModuleDto
                     {
                         Name = _name
                     };

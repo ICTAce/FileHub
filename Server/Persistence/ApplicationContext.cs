@@ -4,7 +4,7 @@ namespace ICTAce.FileHub.Persistence;
 
 public class ApplicationContext : DBContextBase, ITransientService, IMultiDatabase
 {
-    public virtual DbSet<Entities.MyModule> MyModule { get; set; }
+    public virtual DbSet<Entities.SampleModule> SampleModule { get; set; }
     public virtual DbSet<Entities.Category> Category { get; set; }
 
     public ApplicationContext(IDBContextDependencies DBContextDependencies) : base(DBContextDependencies)
@@ -16,7 +16,7 @@ public class ApplicationContext : DBContextBase, ITransientService, IMultiDataba
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<Entities.MyModule>().ToTable(ActiveDatabase.RewriteName("MyModule"));
+        builder.Entity<Entities.SampleModule>().ToTable(ActiveDatabase.RewriteName("Company_SampleModule"));
         builder.Entity<Entities.Category>().ToTable(ActiveDatabase.RewriteName("FileHub_Category"));
     }
 }

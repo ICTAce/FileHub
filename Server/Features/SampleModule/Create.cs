@@ -1,8 +1,8 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Features.MyModules;
+namespace ICTAce.FileHub.Features.SampleModule;
 
-public record CreateMyModuleRequest : IRequest<int>
+public record CreateSampleModuleRequest : IRequest<int>
 {
     public int ModuleId { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -14,16 +14,16 @@ public class CreateHandler(
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<CreateMyModuleRequest, int>
+    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<CreateSampleModuleRequest, int>
 {
-    public async Task<int> Handle(CreateMyModuleRequest request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateSampleModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
 
         if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
         {
             // Build the entity from command data
-            var myModule = new Persistence.Entities.MyModule
+            var myModule = new Persistence.Entities.SampleModule
             {
                 ModuleId = request.ModuleId,
                 Name = request.Name
@@ -31,7 +31,7 @@ public class CreateHandler(
             };
 
             using var db = CreateDbContext();
-            db.MyModule.Add(myModule);
+            db.SampleModule.Add(myModule);
             await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             Logger.Log(LogLevel.Information, this, LogFunction.Create, "MyModule Added {MyModule}", myModule);

@@ -1,38 +1,25 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Client.Services.Common;
+namespace ICTAce.FileHub.Features.SampleModule;
 
-namespace ICTAce.FileHub.Features.MyModules;
-
-/// <summary>
-/// Vertical slice controller for MyModule operations.
-/// Each action method contains its complete request/response logic in one place,
-/// following VSA principles while maintaining Oqtane controller conventions.
-/// </summary>
 [Route(ControllerRoutes.ApiRoute)]
 [ApiController]
-public class MyModuleController : ModuleControllerBase
+public class CompanySampleModuleController : ModuleControllerBase
 {
     private readonly IMediator _mediator;
 
-    public MyModuleController(IMediator mediator, ILogManager logger, IHttpContextAccessor accessor)
+    public CompanySampleModuleController(IMediator mediator, ILogManager logger, IHttpContextAccessor accessor)
         : base(logger, accessor)
     {
         _mediator = mediator;
     }
 
-    #region Get MyModule Slice
-
-    /// <summary>
-    /// GET SLICE: Retrieves a specific MyModule by ID
-    /// This slice contains all logic for getting a single MyModule.
-    /// </summary>
     [HttpGet("{id}")]
     [Authorize(Policy = PolicyNames.ViewModule)]
-    [ProducesResponseType(typeof(GetMyModuleDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetSampleModuleDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<GetMyModuleDto>> GetAsync(
+    public async Task<ActionResult<GetSampleModuleDto>> GetAsync(
         int id,
         [FromQuery] int moduleId,
         CancellationToken cancellationToken = default)
@@ -67,19 +54,11 @@ public class MyModuleController : ModuleControllerBase
         return Ok(myModule);
     }
 
-    #endregion
-
-    #region List MyModules Slice
-
-    /// <summary>
-    /// LIST SLICE: Retrieves a paginated list of MyModules for the specified module
-    /// This slice contains all logic for listing MyModules in one cohesive unit.
-    /// </summary>
     [HttpGet("")]
     [Authorize(Policy = PolicyNames.ViewModule)]
-    [ProducesResponseType(typeof(PagedResult<ListMyModuleDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PagedResult<ListSampleModuleDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<PagedResult<ListMyModuleDto>>> ListAsync(
+    public async Task<ActionResult<PagedResult<ListSampleModuleDto>>> ListAsync(
         [FromQuery] int moduleId,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10,
@@ -102,7 +81,7 @@ public class MyModuleController : ModuleControllerBase
             pageNumber = 1;
         }
 
-        var query = new ListMyModuleRequest
+        var query = new ListSampleModuleRequest
         {
             ModuleId = moduleId,
             PageNumber = pageNumber,
@@ -119,14 +98,6 @@ public class MyModuleController : ModuleControllerBase
         return Ok(result);
     }
 
-    #endregion
-
-    #region Create MyModule Slice
-
-    /// <summary>
-    /// CREATE SLICE: Creates a new MyModule
-    /// This slice contains all logic for creating a MyModule from request to response.
-    /// </summary>
     [HttpPost("")]
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
@@ -134,7 +105,7 @@ public class MyModuleController : ModuleControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<int>> CreateAsync(
         [FromQuery] int moduleId,
-        [FromBody] CreateUpdateMyModuleDto dto,
+        [FromBody] CreateAndUpdateSampleModuleDto dto,
         CancellationToken cancellationToken = default)
     {
         if (!ModelState.IsValid)
@@ -142,7 +113,7 @@ public class MyModuleController : ModuleControllerBase
             return BadRequest(ModelState);
         }
 
-        var request = new CreateMyModuleRequest
+        var request = new CreateSampleModuleRequest
         {
             ModuleId = moduleId,
             Name = dto.Name,
@@ -155,14 +126,6 @@ public class MyModuleController : ModuleControllerBase
             id);
     }
 
-    #endregion
-
-    #region Update MyModule Slice
-
-    /// <summary>
-    /// UPDATE SLICE: Updates an existing MyModule
-    /// This slice contains all logic for updating a MyModule.
-    /// </summary>
     [HttpPut("{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
@@ -171,7 +134,7 @@ public class MyModuleController : ModuleControllerBase
     public async Task<ActionResult<int>> UpdateAsync(
         int id,
         [FromQuery] int moduleId,
-        [FromBody] CreateUpdateMyModuleDto dto,
+        [FromBody] CreateAndUpdateSampleModuleDto dto,
         CancellationToken cancellationToken = default)
     {
         if (!ModelState.IsValid)
@@ -179,7 +142,7 @@ public class MyModuleController : ModuleControllerBase
             return BadRequest(ModelState);
         }
 
-        var request = new UpdateMyModuleRequest
+        var request = new UpdateSampleModuleRequest
         {
             Id = id,
             ModuleId = moduleId,
@@ -191,14 +154,6 @@ public class MyModuleController : ModuleControllerBase
         return Ok(result);
     }
 
-    #endregion
-
-    #region Delete MyModule Slice
-
-    /// <summary>
-    /// DELETE SLICE: Deletes a specific MyModule
-    /// This slice contains all logic for deleting a MyModule.
-    /// </summary>
     [HttpDelete("{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -220,7 +175,7 @@ public class MyModuleController : ModuleControllerBase
             return BadRequest("Invalid MyModule ID");
         }
 
-        var command = new DeleteMyModuleRequest
+        var command = new DeleteSampleModuleRequest
         {
             ModuleId = moduleId,
             Id = id,
@@ -230,6 +185,4 @@ public class MyModuleController : ModuleControllerBase
 
         return NoContent();
     }
-
-    #endregion
 }

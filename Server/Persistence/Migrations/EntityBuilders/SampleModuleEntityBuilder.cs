@@ -2,20 +2,20 @@
 
 namespace ICTAce.FileHub.Persistence.Migrations.EntityBuilders;
 
-public class MyModuleEntityBuilder : AuditableBaseEntityBuilder<MyModuleEntityBuilder>
+public class SampleModuleEntityBuilder : AuditableBaseEntityBuilder<SampleModuleEntityBuilder>
 {
-    private const string _entityTableName = "MyModule";
-    private readonly PrimaryKey<MyModuleEntityBuilder> _primaryKey = new("PK_MyModule", x => x.Id);
-    private readonly ForeignKey<MyModuleEntityBuilder> _moduleForeignKey = new("FK_MyModule_Module", x => x.ModuleId, "Module", "ModuleId", ReferentialAction.Cascade);
+    private const string _entityTableName = "Company_SampleModule";
+    private readonly PrimaryKey<SampleModuleEntityBuilder> _primaryKey = new("PK_MyModule", x => x.Id);
+    private readonly ForeignKey<SampleModuleEntityBuilder> _moduleForeignKey = new("FK_MyModule_Module", x => x.ModuleId, "Module", "ModuleId", ReferentialAction.Cascade);
 
-    public MyModuleEntityBuilder(MigrationBuilder migrationBuilder, IDatabase database) : base(migrationBuilder, database)
+    public SampleModuleEntityBuilder(MigrationBuilder migrationBuilder, IDatabase database) : base(migrationBuilder, database)
     {
         EntityTableName = _entityTableName;
         PrimaryKey = _primaryKey;
         ForeignKeys.Add(_moduleForeignKey);
     }
 
-    protected override MyModuleEntityBuilder BuildTable(ColumnsBuilder table)
+    protected override SampleModuleEntityBuilder BuildTable(ColumnsBuilder table)
     {
         Id = AddAutoIncrementColumn(table, "Id");
         ModuleId = AddIntegerColumn(table, "ModuleId");

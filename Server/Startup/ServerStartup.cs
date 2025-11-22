@@ -17,10 +17,7 @@ public class ServerStartup : IServerStartup
     public void ConfigureServices(IServiceCollection services)
     {
         // Register MediatR with pipeline behaviors
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(typeof(ServerStartup).Assembly);
-        });
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ServerStartup).Assembly));
 
         // Register DbContext factory
         services.AddDbContextFactory<ApplicationCommandContext>(opt => { }, ServiceLifetime.Transient);

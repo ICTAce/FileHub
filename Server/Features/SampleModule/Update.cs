@@ -1,8 +1,8 @@
 // Licensed to ICTAce under the MIT license.
 
-namespace ICTAce.FileHub.Features.MyModules;
+namespace ICTAce.FileHub.Features.SampleModule;
 
-public record UpdateMyModuleRequest : RequestBase, IRequest<int>
+public record UpdateSampleModuleRequest : RequestBase, IRequest<int>
 {
     public int Id { get; set; }
     public required string Name { get; set; }
@@ -14,9 +14,9 @@ public class UpdateHandler(
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<UpdateMyModuleRequest, int>
+    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<UpdateSampleModuleRequest, int>
 {
-    public async Task<int> Handle(UpdateMyModuleRequest request, CancellationToken cancellationToken)
+    public async Task<int> Handle(UpdateSampleModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
 
@@ -25,7 +25,7 @@ public class UpdateHandler(
             using var db = CreateDbContext();
 
             // Fetch existing entity
-            var myModule = await db.MyModule.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
+            var myModule = await db.SampleModule.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
             if (myModule != null)
             {
                 // Update only user-editable fields
@@ -34,7 +34,7 @@ public class UpdateHandler(
 
                 await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-                Logger.Log(LogLevel.Information, this, LogFunction.Update, "MyModule Updated {MyModule}", myModule);
+                Logger.Log(LogLevel.Information, this, LogFunction.Update, "SampleModule Updated {SampleModule}", myModule);
                 return request.Id;
             }
 
@@ -42,7 +42,7 @@ public class UpdateHandler(
         }
         else
         {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Update Attempt {Id}", request.Id);
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized SampleModule Update Attempt {Id}", request.Id);
             return -1;
         }
     }

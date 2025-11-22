@@ -2,7 +2,7 @@
 
 namespace ICTAce.FileHub.Persistence.Entities;
 
-public class MyModule : AuditableModuleBase
+public class SampleModule : AuditableModuleBase
 {
     public required string Name { get; set; }
 }

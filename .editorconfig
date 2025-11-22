@@ -345,6 +345,9 @@ dotnet_diagnostic.IDE2000.severity = warning
 # MA0048: File name must match type name
 dotnet_diagnostic.MA0048.severity = none
 
+# IDE0130: Namespace does not match folder structure
+dotnet_diagnostic.IDE0130.severity = none
+
 [*.razor]
 dotnet_diagnostic.CA2007.severity = none
 

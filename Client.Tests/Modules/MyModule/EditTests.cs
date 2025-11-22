@@ -9,7 +9,7 @@ public class EditTests : BaseTest
     public EditTests()
     {
         _mockNavigationManager = TestContext.Services.GetRequiredService<NavigationManager>() as MockNavigationManager;
-        _mockMyModuleService = TestContext.Services.GetRequiredService<IMyModuleService>() as MockMyModuleService;
+        _mockMyModuleService = TestContext.Services.GetRequiredService<ISampleModuleService>() as MockMyModuleService;
         TestContext.JSInterop.Setup<bool>("Oqtane.Interop.formValid", _ => true).SetResult(true);
     }
   

@@ -1,8 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Client.Services.Common;
-
-namespace ICTAce.FileHub.Client.Services;
+namespace ICTAce.FileHub.Services;
 
 /// <summary>
 /// DTO for getting a Category with full details
@@ -35,7 +33,7 @@ public record ListCategoryDto
 /// <summary>
 /// DTO for creating or updating a Category
 /// </summary>
-public record CreateUpdateCategoryDto
+public record CreateAndUpdateCategoryDto
 {
     [Required(ErrorMessage = "Name is required")]
     [StringLength(100, MinimumLength = 1, ErrorMessage = "Name must be between 1 and 100 characters")]
@@ -57,9 +55,9 @@ public interface ICategoryService
 
     Task<PagedResult<ListCategoryDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10);
 
-    Task<int> CreateAsync(int moduleId, CreateUpdateCategoryDto dto);
+    Task<int> CreateAsync(int moduleId, CreateAndUpdateCategoryDto dto);
 
-    Task<int> UpdateAsync(int id, int moduleId, CreateUpdateCategoryDto dto);
+    Task<int> UpdateAsync(int id, int moduleId, CreateAndUpdateCategoryDto dto);
 
     Task DeleteAsync(int id, int moduleId);
 }
@@ -83,16 +81,16 @@ public class CategoryService(HttpClient http, SiteState siteState) : ServiceBase
         return GetJsonAsync<PagedResult<ListCategoryDto>>(url, new PagedResult<ListCategoryDto>());
     }
 
-    public Task<int> CreateAsync(int moduleId, CreateUpdateCategoryDto dto)
+    public Task<int> CreateAsync(int moduleId, CreateAndUpdateCategoryDto dto)
     {
         var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return PostJsonAsync<CreateUpdateCategoryDto, int>(url, dto);
+        return PostJsonAsync<CreateAndUpdateCategoryDto, int>(url, dto);
     }
 
-    public Task<int> UpdateAsync(int id, int moduleId, CreateUpdateCategoryDto dto)
+    public Task<int> UpdateAsync(int id, int moduleId, CreateAndUpdateCategoryDto dto)
     {
         var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return PutJsonAsync<CreateUpdateCategoryDto, int>(url, dto);
+        return PutJsonAsync<CreateAndUpdateCategoryDto, int>(url, dto);
     }
 
     public Task DeleteAsync(int id, int moduleId)

@@ -1,7 +1,5 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Client.Services.Common;
-
 namespace ICTAce.FileHub.Features.Categories;
 
 /// <summary>
@@ -20,11 +18,6 @@ public record CreateUpdateCategoryDto
     public int ParentId { get; set; }
 }
 
-/// <summary>
-/// Vertical slice controller for FileHub Category operations.
-/// Each action method contains its complete request/response logic in one place,
-/// following VSA principles while maintaining Oqtane controller conventions.
-/// </summary>
 [Route(ControllerRoutes.ApiRoute)]
 [ApiController]
 public class FileHubCategoryController : ModuleControllerBase
@@ -37,12 +30,6 @@ public class FileHubCategoryController : ModuleControllerBase
         _mediator = mediator;
     }
 
-    #region Get Category Slice
-
-    /// <summary>
-    /// GET SLICE: Retrieves a specific Category by ID
-    /// This slice contains all logic for getting a single Category.
-    /// </summary>
     [HttpGet("{id}")]
     [Authorize(Policy = PolicyNames.ViewModule)]
     [ProducesResponseType(typeof(GetCategoryDto), StatusCodes.Status200OK)]
@@ -83,14 +70,6 @@ public class FileHubCategoryController : ModuleControllerBase
         return Ok(category);
     }
 
-    #endregion
-
-    #region List Categories Slice
-
-    /// <summary>
-    /// LIST SLICE: Retrieves a paginated list of Categories for the specified module
-    /// This slice contains all logic for listing Categories in one cohesive unit.
-    /// </summary>
     [HttpGet("")]
     [Authorize(Policy = PolicyNames.ViewModule)]
     [ProducesResponseType(typeof(PagedResult<ListCategoryDto>), StatusCodes.Status200OK)]
@@ -135,14 +114,6 @@ public class FileHubCategoryController : ModuleControllerBase
         return Ok(result);
     }
 
-    #endregion
-
-    #region Create Category Slice
-
-    /// <summary>
-    /// CREATE SLICE: Creates a new Category
-    /// This slice contains all logic for creating a Category from request to response.
-    /// </summary>
     [HttpPost("")]
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
@@ -180,14 +151,6 @@ public class FileHubCategoryController : ModuleControllerBase
             id);
     }
 
-    #endregion
-
-    #region Update Category Slice
-
-    /// <summary>
-    /// UPDATE SLICE: Updates an existing Category
-    /// This slice contains all logic for updating a Category.
-    /// </summary>
     [HttpPut("{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
@@ -225,14 +188,6 @@ public class FileHubCategoryController : ModuleControllerBase
         return Ok(result);
     }
 
-    #endregion
-
-    #region Delete Category Slice
-
-    /// <summary>
-    /// DELETE SLICE: Deletes a specific Category
-    /// This slice contains all logic for deleting a Category.
-    /// </summary>
     [HttpDelete("{id}")]
     [Authorize(Policy = PolicyNames.EditModule)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -264,6 +219,4 @@ public class FileHubCategoryController : ModuleControllerBase
 
         return NoContent();
     }
-
-    #endregion
 }

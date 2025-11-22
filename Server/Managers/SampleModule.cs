@@ -26,7 +26,7 @@ public class SampleModule(
 
         // Direct data access - no repository layer
         using var db = _contextFactory.CreateDbContext();
-        var MyModules = db.MyModule
+        var MyModules = db.SampleModule
             .Where(item => item.ModuleId == module.ModuleId)
             .ToList();
 
@@ -39,10 +39,10 @@ public class SampleModule(
 
     public void ImportModule(Module module, string content, string version)
     {
-        List<Persistence.Entities.MyModule> MyModules = null;
+        List<Persistence.Entities.SampleModule> MyModules = null;
         if (!string.IsNullOrEmpty(content))
         {
-            MyModules = JsonSerializer.Deserialize<List<Persistence.Entities.MyModule>>(content);
+            MyModules = JsonSerializer.Deserialize<List<Persistence.Entities.SampleModule>>(content);
         }
 
         if (MyModules is not null)
@@ -51,7 +51,7 @@ public class SampleModule(
             using var db = _contextFactory.CreateDbContext();
             foreach (var task in MyModules)
             {
-                db.MyModule.Add(new Persistence.Entities.MyModule { ModuleId = module.ModuleId, Name = task.Name });
+                db.SampleModule.Add(new Persistence.Entities.SampleModule { ModuleId = module.ModuleId, Name = task.Name });
             }
             db.SaveChanges();
         }
@@ -63,7 +63,7 @@ public class SampleModule(
 
         // Direct data access - no repository layer
         using var db = _contextFactory.CreateDbContext();
-        foreach (var MyModule in db.MyModule.Where(item => item.ModuleId == pageModule.ModuleId))
+        foreach (var MyModule in db.SampleModule.Where(item => item.ModuleId == pageModule.ModuleId))
         {
             if (MyModule.ModifiedOn >= lastIndexedOn)
             {

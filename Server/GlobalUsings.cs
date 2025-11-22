@@ -3,11 +3,12 @@
 global using System.ComponentModel.DataAnnotations;
 global using System.Security.Claims;
 global using System.Text.Json;
-global using ICTAce.FileHub.Client.Services;
 global using ICTAce.FileHub.Features.Common;
+global using ICTAce.FileHub.Features.SampleModule;
 global using ICTAce.FileHub.Persistence;
 global using ICTAce.FileHub.Persistence.Common;
 global using ICTAce.FileHub.Persistence.Migrations.EntityBuilders;
+global using ICTAce.FileHub.Services.Common;
 global using MediatR;
 global using Microsoft.AspNetCore;
 global using Microsoft.AspNetCore.Authorization;
@@ -34,3 +35,4 @@ global using Oqtane.Security;
 global using Oqtane.Shared;
 global using Riok.Mapperly.Abstractions;
 global using LogLevel = Oqtane.Shared.LogLevel;
+global using ICTAce.FileHub.Services;

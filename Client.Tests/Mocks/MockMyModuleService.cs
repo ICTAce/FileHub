@@ -2,14 +2,14 @@
 
 namespace ICTAce.FileHub.Client.Tests.Mocks;
 
-public class MockMyModuleService : IMyModuleService
+public class MockMyModuleService : ISampleModuleService
 {
-    private readonly List<GetMyModuleDto> _modules = new();
+    private readonly List<GetSampleModuleDto> _modules = new();
     private int _nextId = 1;
 
     public MockMyModuleService()
     {
-        _modules.Add(new GetMyModuleDto
+        _modules.Add(new GetSampleModuleDto
         {
             Id = 1,
             ModuleId = 1,
@@ -20,7 +20,7 @@ public class MockMyModuleService : IMyModuleService
             ModifiedOn = DateTime.Now.AddDays(-5)
         });
 
-        _modules.Add(new GetMyModuleDto
+        _modules.Add(new GetSampleModuleDto
         {
             Id = 2,
             ModuleId = 1,
@@ -34,7 +34,7 @@ public class MockMyModuleService : IMyModuleService
         _nextId = 3;
     }
 
-    public Task<GetMyModuleDto> GetAsync(int id, int moduleId)
+    public Task<GetSampleModuleDto> GetAsync(int id, int moduleId)
     {
         var module = _modules.FirstOrDefault(m => m.Id == id && m.ModuleId == moduleId);
         if (module == null)
@@ -44,13 +44,13 @@ public class MockMyModuleService : IMyModuleService
         return Task.FromResult(module);
     }
 
-    public Task<PagedResult<ListMyModuleDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10)
+    public Task<PagedResult<ListSampleModuleDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10)
     {
         var items = _modules
             .Where(m => m.ModuleId == moduleId)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
-            .Select(m => new ListMyModuleDto
+            .Select(m => new ListSampleModuleDto
             {
                 Id = m.Id,
                 Name = m.Name
@@ -59,7 +59,7 @@ public class MockMyModuleService : IMyModuleService
 
         var totalCount = _modules.Count(m => m.ModuleId == moduleId);
 
-        var pagedResult = new PagedResult<ListMyModuleDto>
+        var pagedResult = new PagedResult<ListSampleModuleDto>
         {
             Items = items,
             TotalCount = totalCount,
@@ -70,9 +70,9 @@ public class MockMyModuleService : IMyModuleService
         return Task.FromResult(pagedResult);
     }
 
-    public Task<int> CreateAsync(int moduleId, CreateUpdateMyModuleDto dto)
+    public Task<int> CreateAsync(int moduleId, CreateAndUpdateSampleModuleDto dto)
     {
-        var newModule = new GetMyModuleDto
+        var newModule = new GetSampleModuleDto
         {
             Id = _nextId++,
             ModuleId = moduleId,
@@ -87,7 +87,7 @@ public class MockMyModuleService : IMyModuleService
         return Task.FromResult(newModule.Id);
     }
 
-    public Task<int> UpdateAsync(int id, int moduleId, CreateUpdateMyModuleDto dto)
+    public Task<int> UpdateAsync(int id, int moduleId, CreateAndUpdateSampleModuleDto dto)
     {
         var module = _modules.FirstOrDefault(m => m.Id == id && m.ModuleId == moduleId);
         if (module == null)
@@ -118,7 +118,7 @@ public class MockMyModuleService : IMyModuleService
         _nextId = 1;
     }
 
-    public void AddTestData(GetMyModuleDto module)
+    public void AddTestData(GetSampleModuleDto module)
     {
         _modules.Add(module);
     }

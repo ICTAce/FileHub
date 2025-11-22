@@ -1,10 +1,8 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Client.Services.Common;
+namespace ICTAce.FileHub.Features.SampleModule;
 
-namespace ICTAce.FileHub.Features.MyModules;
-
-public record ListMyModuleRequest : RequestBase, IRequest<PagedResult<ListMyModuleDto>>
+public record ListSampleModuleRequest : RequestBase, IRequest<PagedResult<ListSampleModuleDto>>
 {
     /// <summary>
     /// Page number (1-based). Defaults to 1 if not specified.
@@ -25,11 +23,11 @@ public class ListHandler(
     ITenantManager tenantManager,
     IHttpContextAccessor httpContextAccessor,
     ILogManager logger)
-    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListMyModuleRequest, PagedResult<ListMyModuleDto>?>
+    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListSampleModuleRequest, PagedResult<ListSampleModuleDto>?>
 {
     private static readonly ListMapper _mapper = new();
 
-    public async Task<PagedResult<ListMyModuleDto>?> Handle(ListMyModuleRequest request, CancellationToken cancellationToken)
+    public async Task<PagedResult<ListSampleModuleDto>?> Handle(ListSampleModuleRequest request, CancellationToken cancellationToken)
     {
         var alias = GetAlias();
 
@@ -38,12 +36,12 @@ public class ListHandler(
             using var db = CreateDbContext();
 
             // Get total count for pagination metadata
-            var totalCount = await db.MyModule
+            var totalCount = await db.SampleModule
                 .Where(item => item.ModuleId == request.ModuleId)
                 .CountAsync(cancellationToken).ConfigureAwait(false);
 
             // Apply pagination
-            var modules = await db.MyModule
+            var modules = await db.SampleModule
                 .Where(item => item.ModuleId == request.ModuleId)
                 .OrderBy(m => m.Name) // Consistent ordering for pagination
                 .Skip((request.PageNumber - 1) * request.PageSize)
@@ -55,7 +53,7 @@ public class ListHandler(
                 .Select(_mapper.ToListResponse)
                 .ToList();
 
-            return new PagedResult<ListMyModuleDto>
+            return new PagedResult<ListSampleModuleDto>
             {
                 Items = items,
                 PageNumber = request.PageNumber,
@@ -77,5 +75,5 @@ internal sealed partial class ListMapper
     /// <summary>
     /// Maps MyModule entity to ListMyModuleResponse DTO
     /// </summary>
-    public partial ListMyModuleDto ToListResponse(Persistence.Entities.MyModule myModule);
+    public partial ListSampleModuleDto ToListResponse(Persistence.Entities.SampleModule myModule);
 }

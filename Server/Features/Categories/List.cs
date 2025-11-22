@@ -1,7 +1,5 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Client.Services.Common;
-
 namespace ICTAce.FileHub.Features.Categories;
 
 public record ListCategoryRequest : RequestBase, IRequest<PagedResult<ListCategoryDto>>

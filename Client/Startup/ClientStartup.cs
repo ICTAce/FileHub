@@ -6,9 +6,9 @@ public class ClientStartup : IClientStartup
 {
     public void ConfigureServices(IServiceCollection services)
     {
-        if (!services.Any(s => s.ServiceType == typeof(IMyModuleService)))
+        if (!services.Any(s => s.ServiceType == typeof(ISampleModuleService)))
         {
-            services.AddScoped<IMyModuleService, MyModuleService>();
+            services.AddScoped<ISampleModuleService, SampleModuleService>();
         }
 
         if (!services.Any(s => s.ServiceType == typeof(ICategoryService)))
