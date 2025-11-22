@@ -19,23 +19,26 @@ public class DeleteHandler(
     {
         var alias = GetAlias();
 
-        if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
-        {
-            using var db = CreateDbContext();
-            var category = await db.Category.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
-            if (category != null)
-            {
-                db.Category.Remove(category);
-                await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-                Logger.Log(LogLevel.Information, this, LogFunction.Delete, "Category Deleted {Id}", request.Id);
-                return request.Id;
-            }
-            return -1;
-        }
-        else
+        if (!IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
         {
             Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized Category Delete Attempt {Id} {ModuleId}", request.Id, request.ModuleId);
             return -1;
         }
+
+        using var db = CreateDbContext();
+        // Use ExecuteDeleteAsync for efficient direct deletion
+        var rowsAffected = await db.Category
+            .Where(c => c.Id == request.Id && c.ModuleId == request.ModuleId)
+            .ExecuteDeleteAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        if (rowsAffected > 0)
+        {
+            Logger.Log(LogLevel.Information, this, LogFunction.Delete, "Category Deleted {Id}", request.Id);
+            return request.Id;
+        }
+
+        Logger.Log(LogLevel.Warning, this, LogFunction.Delete, "Category Not Found {Id}", request.Id);
+        return -1;
     }
 }
