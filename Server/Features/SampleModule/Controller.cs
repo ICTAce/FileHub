@@ -2,13 +2,13 @@
 
 namespace ICTAce.FileHub.Features.SampleModule;
 
-[Route(ControllerRoutes.ApiRoute)]
+[Route("api/company/sampleModules")]
 [ApiController]
-public class CompanySampleModuleController : ModuleControllerBase
+public class CompanySampleModulesController : ModuleControllerBase
 {
     private readonly IMediator _mediator;
 
-    public CompanySampleModuleController(IMediator mediator, ILogManager logger, IHttpContextAccessor accessor)
+    public CompanySampleModulesController(IMediator mediator, ILogManager logger, IHttpContextAccessor accessor)
         : base(logger, accessor)
     {
         _mediator = mediator;

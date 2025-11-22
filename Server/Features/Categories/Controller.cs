@@ -15,13 +15,13 @@ public record CreateUpdateCategoryDto
     public int ParentId { get; set; }
 }
 
-[Route(ControllerRoutes.ApiRoute)]
+[Route("api/ictace/fileHub/categories")]
 [ApiController]
-public class FileHubCategoryController : ModuleControllerBase
+public class FileHubCategoriesController : ModuleControllerBase
 {
     private readonly IMediator _mediator;
 
-    public FileHubCategoryController(IMediator mediator, ILogManager logger, IHttpContextAccessor accessor)
+    public FileHubCategoriesController(IMediator mediator, ILogManager logger, IHttpContextAccessor accessor)
         : base(logger, accessor)
     {
         _mediator = mediator;
