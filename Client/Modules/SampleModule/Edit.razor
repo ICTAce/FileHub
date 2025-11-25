@@ -11,10 +11,13 @@
         </div>
     </div>
     <button type="button" class="btn btn-success" @onclick="Save">@Localizer["Save"]</button>
-    <NavLink class="btn btn-secondary" href="@NavigateUrl()">@Localizer["Cancel"]</NavLink>
-    <br /><br />
-    @if (PageState.Action == "Edit")
+    @if (!string.IsNullOrEmpty(_cancelUrl))
     {
-    <AuditInfo CreatedBy="@_createdby" CreatedOn="@_createdon" ModifiedBy="@_modifiedby" ModifiedOn="@_modifiedon"></AuditInfo>
+        <NavLink class="btn btn-secondary" href="@_cancelUrl">@Localizer["Cancel"]</NavLink>
+    }
+    <br /><br />
+    @if (_showAuditInfo)
+    {
+        <AuditInfo CreatedBy="@_createdby" CreatedOn="@_createdon" ModifiedBy="@_modifiedby" ModifiedOn="@_modifiedon"></AuditInfo>
     }
 </form>
