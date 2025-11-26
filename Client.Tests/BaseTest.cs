@@ -11,9 +11,9 @@ public abstract class BaseTest : IDisposable
     protected Alias TestAlias { get; private set; }
     protected Site TestSite { get; private set; }
     protected Page TestPage { get; private set; }
-    
+
     // Access to mocks for verification
-    protected MockLogService MockLogService => TestContext.Services.GetRequiredService<ILogService>() as MockLogService 
+    protected MockLogService MockLogService => TestContext.Services.GetRequiredService<ILogService>() as MockLogService
         ?? throw new InvalidOperationException("MockLogService not registered");
 
     protected BaseTest()

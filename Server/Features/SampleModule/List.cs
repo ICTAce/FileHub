@@ -58,5 +58,5 @@ public class ListHandler(
 [Mapper]
 internal sealed partial class ListMapper
 {
-    public partial ListSampleModuleDto ToListResponse(Persistence.Entities.SampleModule myModule);
+    public partial ListSampleModuleDto ToListResponse(Persistence.Entities.SampleModule sampleModule);
 }

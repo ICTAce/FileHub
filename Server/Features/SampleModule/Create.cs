@@ -34,12 +34,12 @@ public class CreateHandler(
             db.SampleModule.Add(sampleModule);
             await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-            Logger.Log(LogLevel.Information, this, LogFunction.Create, "SampleModule Added {MyModule}", sampleModule);
+            Logger.Log(LogLevel.Information, this, LogFunction.Create, "SampleModule Added {SampleModule}", sampleModule);
             return sampleModule.Id;
         }
         else
         {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized MyModule Add Attempt {ModuleId} {Name}", request.ModuleId, request.Name);
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized SampleModule Add Attempt {ModuleId} {Name}", request.ModuleId, request.Name);
             return -1;
         }
     }

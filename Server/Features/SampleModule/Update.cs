@@ -25,14 +25,14 @@ public class UpdateHandler(
             using var db = CreateDbContext();
 
             // Fetch existing entity
-            var myModule = await db.SampleModule.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
-            if (myModule != null)
+            var sampleModule = await db.SampleModule.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
+            if (sampleModule != null)
             {
-                myModule.Name = request.Name;
+                sampleModule.Name = request.Name;
 
                 await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-                Logger.Log(LogLevel.Information, this, LogFunction.Update, "SampleModule Updated {SampleModule}", myModule);
+                Logger.Log(LogLevel.Information, this, LogFunction.Update, "SampleModule Updated {SampleModule}", sampleModule);
                 return request.Id;
             }
 

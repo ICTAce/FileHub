@@ -10,9 +10,9 @@ public partial class Settings : ModuleBase
     [Inject]
     protected IStringLocalizer<Settings> Localizer { get; set; } = default!;
 
-    private const string ResourceType = "ICTAce.FileHub.MyModule.Settings, ICTAce.FileHub.Client.Oqtane";
+    private const string ResourceType = "ICTAce.FileHub.SampleModule.Settings, ICTAce.FileHub.Client.Oqtane";
 
-    public override string Title => "MyModule Settings";
+    public override string Title => "SampleModule Settings";
 
     private string _value = string.Empty;
 

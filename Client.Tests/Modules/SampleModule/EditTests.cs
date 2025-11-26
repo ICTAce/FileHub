@@ -5,12 +5,12 @@ namespace ICTAce.FileHub.Client.Tests.Modules.SampleModule;
 public class EditTests : BaseTest
 {
     private readonly MockNavigationManager? _mockNavigationManager;
-    private readonly MockSampleModuleService? _mockMyModuleService;
+    private readonly MockSampleModuleService? _mockSampleModuleService;
 
     public EditTests()
     {
         _mockNavigationManager = TestContext.Services.GetRequiredService<NavigationManager>() as MockNavigationManager;
-        _mockMyModuleService = TestContext.Services.GetRequiredService<ISampleModuleService>() as MockSampleModuleService;
+        _mockSampleModuleService = TestContext.Services.GetRequiredService<ISampleModuleService>() as MockSampleModuleService;
         TestContext.JSInterop.Setup<bool>("Oqtane.Interop.formValid", _ => true).SetResult(true);
     }
 
@@ -34,7 +34,7 @@ public class EditTests : BaseTest
         var component = CreateAddModeComponent();
         await Task.Delay(300).ConfigureAwait(false);
         
-        var initialCount = _mockMyModuleService!.GetModuleCount();
+        var initialCount = _mockSampleModuleService!.GetModuleCount();
 
         var nameInput = component.Find("#name");
         nameInput.Change("New Test Module");
@@ -47,7 +47,7 @@ public class EditTests : BaseTest
 
         await Task.Delay(500).ConfigureAwait(false);
 
-        var finalCount = _mockMyModuleService.GetModuleCount();
+        var finalCount = _mockSampleModuleService.GetModuleCount();
         // The save might not complete if form validation or other issues occur
         // So we verify either it saved OR the count is still the same (meaning save was attempted but something prevented it)
         var saveWasAttempted = finalCount == initialCount + 1 || finalCount == initialCount;
@@ -73,7 +73,7 @@ public class EditTests : BaseTest
         await Task.Delay(500).ConfigureAwait(false);
 
         // Just verify the module still exists and can be retrieved
-        var module = await _mockMyModuleService!.GetAsync(1, 1).ConfigureAwait(false);
+        var module = await _mockSampleModuleService!.GetAsync(1, 1).ConfigureAwait(false);
         await Assert.That(module).IsNotNull();
         await Assert.That(module.Id).IsEqualTo(1);
     }
@@ -86,7 +86,7 @@ public class EditTests : BaseTest
         var component = CreateAddModeComponent();
         await Task.Delay(200).ConfigureAwait(false);
         
-        var initialCount = _mockMyModuleService!.GetModuleCount();
+        var initialCount = _mockSampleModuleService!.GetModuleCount();
 
         var nameInput = component.Find("#name");
         nameInput.Change("Should Not Be Saved");
@@ -96,7 +96,7 @@ public class EditTests : BaseTest
         var hasCancelButton = cancelLinks.Any(l => l.ClassName?.Contains("btn-secondary") == true || l.TextContent.Contains("Cancel"));
         await Assert.That(hasCancelButton).IsTrue();
 
-        var finalCount = _mockMyModuleService.GetModuleCount();
+        var finalCount = _mockSampleModuleService.GetModuleCount();
         await Assert.That(finalCount).IsEqualTo(initialCount);
     }
 

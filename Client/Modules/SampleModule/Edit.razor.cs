@@ -4,7 +4,7 @@ namespace ICTAce.FileHub.SampleModule;
 
 public partial class Edit
 {
-    [Inject] protected ISampleModuleService MyModuleService { get; set; } = default!;
+    [Inject] protected ISampleModuleService SampleModuleService { get; set; } = default!;
     [Inject] protected NavigationManager NavigationManager { get; set; } = default!;
     [Inject] protected IStringLocalizer<Edit> Localizer { get; set; } = default!;
 
@@ -12,7 +12,7 @@ public partial class Edit
 
     public override string Actions => "Add,Edit";
 
-    public override string Title => "Manage MyModule";
+    public override string Title => "Manage SampleModule";
 
     public override List<Resource> Resources => new List<Resource>()
     {
@@ -43,54 +43,27 @@ public partial class Edit
             {
                 _cancelUrl = "#";
             }
-            
+
             _showAuditInfo = string.Equals(PageState.Action, "Edit", StringComparison.Ordinal);
-            
+
             if (_showAuditInfo)
             {
                 _id = Int32.Parse(PageState.QueryString["id"], System.Globalization.CultureInfo.InvariantCulture);
-                var myModule = await MyModuleService.GetAsync(_id, ModuleState.ModuleId).ConfigureAwait(true);
-                if (myModule != null)
+                var sampleModule = await SampleModuleService.GetAsync(_id, ModuleState.ModuleId).ConfigureAwait(true);
+                if (sampleModule != null)
                 {
-                    _name = myModule.Name;
-                    _createdby = myModule.CreatedBy;
-                    _createdon = myModule.CreatedOn;
-                    _modifiedby = myModule.ModifiedBy;
-                    _modifiedon = myModule.ModifiedOn;
+                    _name = sampleModule.Name;
+                    _createdby = sampleModule.CreatedBy;
+                    _createdon = sampleModule.CreatedOn;
+                    _modifiedby = sampleModule.ModifiedBy;
+                    _modifiedon = sampleModule.ModifiedOn;
                 }
             }
         }
         catch (Exception ex)
         {
-            try
-            {
-                await logger.LogError(ex, "Error Loading MyModule {Id} {Error}", _id, ex.Message).ConfigureAwait(true);
-            }
-            catch (NullReferenceException)
-            {
-                // Logger may fail if Alias is not initialized in test environments
-            }
-            
-            try
-            {
-                AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
-            }
-            catch (NullReferenceException)
-            {
-                // AddModuleMessage may fail in test environments
-            }
-        }
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        try
-        {
-            await base.OnAfterRenderAsync(firstRender).ConfigureAwait(true);
-        }
-        catch (NullReferenceException)
-        {
-            // Oqtane ModuleBase lifecycle methods may fail in test environments
+            await logger.LogError(ex, "Error Loading SampleModule {Id} {Error}", _id, ex.Message).ConfigureAwait(true);
+            AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
         }
     }
 
@@ -108,16 +81,9 @@ public partial class Edit
                     {
                         Name = _name
                     };
-                    var id = await MyModuleService.CreateAsync(ModuleState.ModuleId, dto).ConfigureAwait(true);
-                    
-                    try
-                    {
-                        await logger.LogInformation("MyModule Created {Id}", id).ConfigureAwait(true);
-                    }
-                    catch (NullReferenceException)
-                    {
-                        // Logger may fail if Alias is not initialized in test environments
-                    }
+                    var id = await SampleModuleService.CreateAsync(ModuleState.ModuleId, dto).ConfigureAwait(true);
+
+                    await logger.LogInformation("SampleModule Created {Id}", id).ConfigureAwait(true);
                 }
                 else
                 {
@@ -125,18 +91,11 @@ public partial class Edit
                     {
                         Name = _name
                     };
-                    var id = await MyModuleService.UpdateAsync(_id, ModuleState.ModuleId, dto).ConfigureAwait(true);
-                    
-                    try
-                    {
-                        await logger.LogInformation("MyModule Updated {Id}", id).ConfigureAwait(true);
-                    }
-                    catch (NullReferenceException)
-                    {
-                        // Logger may fail if Alias is not initialized in test environments
-                    }
+                    var id = await SampleModuleService.UpdateAsync(_id, ModuleState.ModuleId, dto).ConfigureAwait(true);
+
+                    await logger.LogInformation("SampleModule Updated {Id}", id).ConfigureAwait(true);
                 }
-                
+
                 try
                 {
                     NavigationManager.NavigateTo(NavigateUrl());
@@ -148,35 +107,13 @@ public partial class Edit
             }
             else
             {
-                try
-                {
-                    AddModuleMessage(Localizer["Message.SaveValidation"], MessageType.Warning);
-                }
-                catch (NullReferenceException)
-                {
-                    // AddModuleMessage may fail in test environments
-                }
+                AddModuleMessage(Localizer["Message.SaveValidation"], MessageType.Warning);
             }
         }
         catch (Exception ex)
         {
-            try
-            {
-                await logger.LogError(ex, "Error Saving MyModule {Error}", ex.Message).ConfigureAwait(true);
-            }
-            catch (NullReferenceException)
-            {
-                // Logger may fail if Alias is not initialized in test environments
-            }
-            
-            try
-            {
-                AddModuleMessage(Localizer["Message.SaveError"], MessageType.Error);
-            }
-            catch (NullReferenceException)
-            {
-                // AddModuleMessage may fail in test environments
-            }
+            await logger.LogError(ex, "Error Saving SampleModule {Error}", ex.Message).ConfigureAwait(true);
+            AddModuleMessage(Localizer["Message.SaveError"], MessageType.Error);
         }
     }
 }

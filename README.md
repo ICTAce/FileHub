@@ -38,14 +38,14 @@ The solution consists of 5 projects organized in a modular architecture:
 
 ### Production Projects
 - **ICTAce.FileHub.Server** - ASP.NET Core backend with:
-  - Feature-based organization (`Features/MyModules/`)
+  - Feature-based organization (`Features/SampleModules/`)
   - MediatR handlers for CQRS implementation
   - Entity Framework Core entities and migrations
   - RESTful API controllers
   - Oqtane module manager integration
 
 - **ICTAce.FileHub.Client** - Blazor WebAssembly frontend with:
-  - Blazor components for UI (`Modules/MyModule/`)
+  - Blazor components for UI (`Modules/SampleModule/`)
   - HTTP service layer for API communication
   - MediatR contracts for request/response DTOs
   - Oqtane client integration

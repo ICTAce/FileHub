@@ -4,18 +4,16 @@ namespace ICTAce.FileHub.Client.Tests.Modules.SampleModule;
 
 public class IndexTests : BaseTest
 {
-    private readonly IRenderedComponent<ICTAce.FileHub.SampleModule.Index>? renderedPage;
+    private readonly IRenderedComponent<FileHub.SampleModule.Index>? _renderedPage;
 
     public IndexTests()
     {
         var moduleState = CreateModuleState();
         var pageState = CreatePageState("Index");
 
-        renderedPage = TestContext.Render<ICTAce.FileHub.SampleModule.Index>(parameters => parameters
-            .AddCascadingValue<Module>("ModuleState", moduleState)
-            .AddCascadingValue("PageState", pageState)
-            .AddCascadingValue("Alias", TestAlias)
-            .AddCascadingValue("Site", TestSite));
+        _renderedPage = TestContext.Render<FileHub.SampleModule.Index>(parameters => parameters
+            .AddCascadingValue(moduleState)
+            .AddCascadingValue(pageState));
     }
 
     /// <summary>
@@ -26,7 +24,7 @@ public class IndexTests : BaseTest
     {
         await Task.Delay(500).ConfigureAwait(false);
 
-        var markup = renderedPage!.Markup;
+        var markup = _renderedPage!.Markup;
 
         // Check if the component rendered successfully
         await Assert.That(markup).IsNotNull();
@@ -45,13 +43,13 @@ public class IndexTests : BaseTest
     {
         await Task.Delay(500).ConfigureAwait(false);
 
-        var markup = renderedPage!.Markup;
+        var markup = _renderedPage!.Markup;
 
         // Just check that the component rendered something
         await Assert.That(markup.Length).IsGreaterThan(0);
 
         // Check if basic page elements exist
-        var hasContent = markup.Contains("Add") || markup.Contains("MyModule") || markup.Contains("Loading");
+        var hasContent = markup.Contains("Add") || markup.Contains("SampleModule") || markup.Contains("Loading");
         await Assert.That(hasContent).IsTrue();
     }
 
@@ -68,11 +66,11 @@ public class IndexTests : BaseTest
         var initialCount = mockService!.GetModuleCount();
         await Assert.That(initialCount).IsEqualTo(2);
 
-        var markup = renderedPage!.Markup;
+        var markup = _renderedPage!.Markup;
         Console.WriteLine("Initial markup: " + markup);
 
         // Try to find delete button
-        var deleteButtons = renderedPage.FindAll("button");
+        var deleteButtons = _renderedPage.FindAll("button");
         Console.WriteLine($"Found {deleteButtons.Count} buttons");
 
         if (deleteButtons.Count > 0)

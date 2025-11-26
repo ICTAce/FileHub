@@ -69,7 +69,7 @@ public class SampleModule(
             {
                 searchContentList.Add(new SearchContent
                 {
-                    EntityName = "MyModule",
+                    EntityName = "Company_SampleModule",
                     EntityId = sampleModule.Id.ToString(System.Globalization.CultureInfo.InvariantCulture),
                     Title = sampleModule.Name,
                     Body = sampleModule.Name,

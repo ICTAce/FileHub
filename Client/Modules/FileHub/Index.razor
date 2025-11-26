@@ -1,18 +1,18 @@
 ﻿@namespace ICTAce.FileHub
 @inherits ModuleBase
 
-@if (_MyModules == null)
+@if (_filehubs == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <ActionLink Action="Add" Security="SecurityAccessLevel.Edit" Text="Add MyModule" ResourceKey="Add" />
+    <ActionLink Action="Add" Security="SecurityAccessLevel.Edit" Text="Add FileHub" ResourceKey="Add" />
     <br />
     <br />
-    @if (@_MyModules.Count != 0)
+    @if (_filehubs.Count != 0)
     {
-        <Pager Items="@_MyModules">
+        <Pager Items="@_filehubs">
             <Header>
                 <th style="width: 1px;">&nbsp;</th>
                 <th style="width: 1px;">&nbsp;</th>
@@ -20,7 +20,7 @@ else
             </Header>
             <Row>
                 <td><ActionLink Action="Edit" Parameters="@($"id=" + context.Id.ToString())" ResourceKey="Edit" /></td>
-                <td><ActionDialog Header="Delete MyModule" Message="Are You Sure You Wish To Delete This MyModule?" Action="Delete" Security="SecurityAccessLevel.Edit" Class="btn btn-danger" OnClick="@(async () => await Delete(context))" ResourceKey="Delete" Id="@context.Id.ToString()" /></td>
+                <td><ActionDialog Header="Delete SampleModule" Message="Are You Sure You Wish To Delete This FileHub?" Action="Delete" Security="SecurityAccessLevel.Edit" Class="btn btn-danger" OnClick="@(async () => await Delete(context))" ResourceKey="Delete" Id="@context.Id.ToString()" /></td>
                 <td>@context.Name</td>
             </Row>
         </Pager>

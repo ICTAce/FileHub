@@ -4,7 +4,7 @@ namespace ICTAce.FileHub.SampleModule;
 
 public partial class Index
 {
-    [Inject] protected ISampleModuleService MyModuleService { get; set; } = default!;
+    [Inject] protected ISampleModuleService SampleModuleService { get; set; } = default!;
     [Inject] protected NavigationManager NavigationManager { get; set; } = default!;
     [Inject] protected IStringLocalizer<Index> Localizer { get; set; } = default!;
 
@@ -14,87 +14,36 @@ public partial class Index
         new Script(ModulePath() + "Module.js")
     };
 
-    private List<ListSampleModuleDto>? _MyModules;
+    private List<ListSampleModuleDto>? _samplesModules;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            var pagedResult = await MyModuleService.ListAsync(ModuleState.ModuleId).ConfigureAwait(true);
-            _MyModules = pagedResult?.Items?.ToList();
+            var pagedResult = await SampleModuleService.ListAsync(ModuleState.ModuleId).ConfigureAwait(true);
+            _samplesModules = pagedResult?.Items?.ToList();
         }
         catch (Exception ex)
         {
-            try
-            {
-                await logger.LogError(ex, "Error Loading MyModule {Error}", ex.Message).ConfigureAwait(true);
-            }
-            catch (NullReferenceException)
-            {
-                // Logger may fail if Alias is not initialized in test environments
-            }
-            
-            try
-            {
-                AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
-            }
-            catch (NullReferenceException)
-            {
-                // AddModuleMessage may fail in test environments
-            }
+            await logger.LogError(ex, "Error Loading SampleModule {Error}", ex.Message).ConfigureAwait(true);
+            AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
         }
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private async Task Delete(ListSampleModuleDto sampleModule)
     {
         try
         {
-            await base.OnAfterRenderAsync(firstRender).ConfigureAwait(true);
-        }
-        catch (NullReferenceException)
-        {
-            // Oqtane ModuleBase lifecycle methods may fail in test environments
-        }
-    }
-
-    private async Task Delete(ListSampleModuleDto myModule)
-    {
-        try
-        {
-            await MyModuleService.DeleteAsync(myModule.Id, ModuleState.ModuleId).ConfigureAwait(true);
-            
-            try
-            {
-                await logger.LogInformation("MyModule Deleted {Id}", myModule.Id).ConfigureAwait(true);
-            }
-            catch (NullReferenceException)
-            {
-                // Logger may fail if Alias is not initialized in test environments
-            }
-            
-            var pagedResult = await MyModuleService.ListAsync(ModuleState.ModuleId).ConfigureAwait(true);
-            _MyModules = pagedResult?.Items?.ToList();
+            await SampleModuleService.DeleteAsync(sampleModule.Id, ModuleState.ModuleId).ConfigureAwait(true);
+            await logger.LogInformation("SampleModule Deleted {Id}", sampleModule.Id).ConfigureAwait(true);
+            var pagedResult = await SampleModuleService.ListAsync(ModuleState.ModuleId).ConfigureAwait(true);
+            _samplesModules = pagedResult?.Items?.ToList();
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            try
-            {
-                await logger.LogError(ex, "Error Deleting MyModule {Id} {Error}", myModule.Id, ex.Message).ConfigureAwait(true);
-            }
-            catch (NullReferenceException)
-            {
-                // Logger may fail if Alias is not initialized in test environments
-            }
-            
-            try
-            {
-                AddModuleMessage(Localizer["Message.DeleteError"], MessageType.Error);
-            }
-            catch (NullReferenceException)
-            {
-                // AddModuleMessage may fail in test environments
-            }
+            await logger.LogError(ex, "Error Deleting SampleModule {Id} {Error}", sampleModule.Id, ex.Message).ConfigureAwait(true);
+            AddModuleMessage(Localizer["Message.DeleteError"], MessageType.Error);
         }
     }
 }

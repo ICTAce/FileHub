@@ -34,22 +34,22 @@ public class CompanySampleModulesController(
             return BadRequest("Invalid SampleModule ID");
         }
 
-        var query = new GetMyModuleRequest
+        var query = new GetSampleModuleRequest
         {
             ModuleId = moduleId,
             Id = id,
         };
 
-        var myModule = await _mediator.Send(query, cancellationToken).ConfigureAwait(false);
+        var sampleModule = await _mediator.Send(query, cancellationToken).ConfigureAwait(false);
 
-        if (myModule is null)
+        if (sampleModule is null)
         {
             _logger.Log(LogLevel.Warning, this, LogFunction.Read,
                 "SampleModule Not Found Id={Id} in ModuleId={ModuleId}", id, moduleId);
             return NotFound();
         }
 
-        return Ok(myModule);
+        return Ok(sampleModule);
     }
 
     [HttpGet("")]
@@ -179,13 +179,13 @@ public class CompanySampleModulesController(
         if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
         {
             _logger.Log(LogLevel.Error, this, LogFunction.Security,
-                "Unauthorized MyModule Delete Attempt Id={Id} in ModuleId={ModuleId}", id, moduleId);
+                "Unauthorized SampleModule Delete Attempt Id={Id} in ModuleId={ModuleId}", id, moduleId);
             return Forbid();
         }
 
         if (id <= 0)
         {
-            return BadRequest("Invalid MyModule ID");
+            return BadRequest("Invalid SampleModule ID");
         }
 
         var command = new DeleteSampleModuleRequest
