@@ -20,7 +20,7 @@ else
             </Header>
             <Row>
                 <td><ActionLink Action="Edit" Parameters="@($"id=" + context.Id.ToString())" ResourceKey="Edit" /></td>
-                <td><ActionDialog Header="Delete SampleModule" Message="Are You Sure You Wish To Delete This FileHub?" Action="Delete" Security="SecurityAccessLevel.Edit" Class="btn btn-danger" OnClick="@(async () => await Delete(context))" ResourceKey="Delete" Id="@context.Id.ToString()" /></td>
+                <td><ActionDialog Header="Delete FileHub" Message="Are You Sure You Wish To Delete This FileHub?" Action="Delete" Security="SecurityAccessLevel.Edit" Class="btn btn-danger" OnClick="@(async () => await Delete(context))" ResourceKey="Delete" Id="@context.Id.ToString()" /></td>
                 <td>@context.Name</td>
             </Row>
         </Pager>

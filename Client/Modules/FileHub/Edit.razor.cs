@@ -4,7 +4,7 @@ namespace ICTAce.FileHub;
 
 public partial class Edit
 {
-    [Inject] protected ISampleModuleService SampleModuleService { get; set; } = default!;
+    [Inject] protected ISampleModuleService FileHubService { get; set; } = default!;
     [Inject] protected NavigationManager NavigationManager { get; set; } = default!;
     [Inject] protected IStringLocalizer<Edit> Localizer { get; set; } = default!;
 
@@ -12,7 +12,7 @@ public partial class Edit
 
     public override string Actions => "Add,Edit";
 
-    public override string Title => "Manage SampleModule";
+    public override string Title => "Manage FileHub";
 
     public override List<Resource> Resources => new List<Resource>()
     {
@@ -36,14 +36,14 @@ public partial class Edit
             if (string.Equals(PageState.Action, "Edit", StringComparison.Ordinal))
             {
                 _id = Int32.Parse(PageState.QueryString["id"], System.Globalization.CultureInfo.InvariantCulture);
-                var sampleModule = await SampleModuleService.GetAsync(_id, ModuleState.ModuleId).ConfigureAwait(true);
-                if (sampleModule != null)
+                var filehub = await FileHubService.GetAsync(_id, ModuleState.ModuleId).ConfigureAwait(true);
+                if (filehub != null)
                 {
-                    _name = sampleModule.Name;
-                    _createdby = sampleModule.CreatedBy;
-                    _createdon = sampleModule.CreatedOn;
-                    _modifiedby = sampleModule.ModifiedBy;
-                    _modifiedon = sampleModule.ModifiedOn;
+                    _name = filehub.Name;
+                    _createdby = filehub.CreatedBy;
+                    _createdon = filehub.CreatedOn;
+                    _modifiedby = filehub.ModifiedBy;
+                    _modifiedon = filehub.ModifiedOn;
                 }
             }
         }
@@ -68,7 +68,7 @@ public partial class Edit
                     {
                         Name = _name
                     };
-                    var id = await SampleModuleService.CreateAsync(ModuleState.ModuleId, dto).ConfigureAwait(true);
+                    var id = await FileHubService.CreateAsync(ModuleState.ModuleId, dto).ConfigureAwait(true);
                     await logger.LogInformation("FileHub Created {Id}", id).ConfigureAwait(true);
                 }
                 else
@@ -77,7 +77,7 @@ public partial class Edit
                     {
                         Name = _name
                     };
-                    var id = await SampleModuleService.UpdateAsync(_id, ModuleState.ModuleId, dto).ConfigureAwait(true);
+                    var id = await FileHubService.UpdateAsync(_id, ModuleState.ModuleId, dto).ConfigureAwait(true);
                     await logger.LogInformation("FileHub Updated {Id}", id).ConfigureAwait(true);
                 }
                 NavigationManager.NavigateTo(NavigateUrl());
