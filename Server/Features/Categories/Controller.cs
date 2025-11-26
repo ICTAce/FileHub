@@ -4,7 +4,7 @@ namespace ICTAce.FileHub.Features.Categories;
 
 [Route("api/ictace/fileHub/categories")]
 [ApiController]
-public class FileHubCategoriesController(
+public class ICTAceFileHubCategoriesController(
     IMediator mediator,
     ILogManager logger,
     IHttpContextAccessor accessor)
