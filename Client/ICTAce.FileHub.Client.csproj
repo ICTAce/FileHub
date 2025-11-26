@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -16,6 +16,12 @@
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="System.Net.Http.Json" />
     <PackageReference Include="Oqtane.Client" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\**\*.resx">
+      <LogicalName>$(AssemblyName).$([System.String]::new('%(RelativeDir)%(Filename)').Replace('\','.')).resources</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
