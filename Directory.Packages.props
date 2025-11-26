@@ -20,11 +20,11 @@
     <PackageVersion Include="Oqtane.Shared" Version="$(OqtaneVersion)" />
     <PackageVersion Include="TUnit" Version="1.2.11" />
     <PackageVersion Include="TUnit.Playwright" Version="1.2.11" />
-    <PackageVersion Include="bunit" Version="2.0.66" />
+    <PackageVersion Include="bunit" Version="2.1.1" />
     <PackageVersion Include="Bogus" Version="35.6.1" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.15.0.120848" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.16.0.128591" />
     <PackageVersion Include="Meziantou.Analyzer" Version="2.0.256" />
     <PackageVersion Include="AsyncFixer" Version="1.6.0" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.14.1" />
