@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+// Licensed to ICTAce under the MIT license.
 
 namespace ICTAce.FileHub.Server;
 
@@ -9,14 +9,11 @@ public class Program
         // defer server startup to Oqtane - do not modify
         var host = BuildWebHost(args);
         var databaseManager = host.Services.GetService<IDatabaseManager>();
-        var install = databaseManager.Install();
-        if (!string.IsNullOrEmpty(install.Message))
+        var install = databaseManager?.Install();
+        if (install != null && !string.IsNullOrEmpty(install.Message))
         {
             var filelogger = host.Services.GetRequiredService<ILogger<Program>>();
-            if (filelogger != null)
-            {
-                filelogger.LogError($"[ICTAce.FileHub.Server.Program.Main] {install.Message}");
-            }
+            filelogger?.LogError("[ICTAce.FileHub.Server.Program.Main] {Message}", install.Message);
         }
         else
         {

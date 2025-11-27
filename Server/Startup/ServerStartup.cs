@@ -1,3 +1,5 @@
+// Licensed to ICTAce under the MIT license.
+
 namespace ICTAce.FileHub.Startup;
 
 public class ServerStartup : IServerStartup
@@ -14,7 +16,11 @@ public class ServerStartup : IServerStartup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddTransient<IMyModuleService, ServerMyModuleService>();
-        services.AddDbContextFactory<Context>(opt => { }, ServiceLifetime.Transient);
+        // Register MediatR with pipeline behaviors
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ServerStartup).Assembly));
+
+        // Register DbContext factory
+        services.AddDbContextFactory<ApplicationCommandContext>(opt => { }, ServiceLifetime.Transient);
+        services.AddDbContextFactory<ApplicationQueryContext>(opt => { }, ServiceLifetime.Transient);
     }
 }

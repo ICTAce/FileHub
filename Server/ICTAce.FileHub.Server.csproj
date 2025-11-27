@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>ICTAce.FileHub.Server.Oqtane</AssemblyName>
+    <RootNamespace>ICTAce.FileHub.Server</RootNamespace>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <SatelliteResourceLanguages>none</SatelliteResourceLanguages>
     <CompressionEnabled>false</CompressionEnabled>
@@ -10,15 +11,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Oqtane.Server" />
+    <PackageReference Include="Riok.Mapperly" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Client\ICTAce.FileHub.Client.csproj" />
-    <ProjectReference Include="..\Shared\ICTAce.FileHub.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\" />
   </ItemGroup>
 
 </Project>

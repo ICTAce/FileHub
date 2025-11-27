@@ -2,8 +2,9 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
-
   <ItemGroup>
+    <PackageVersion Include="MediatR" Version="13.1.0" />
+    <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(AspNetCoreVersion)" />
@@ -11,15 +12,23 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Localization" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Riok.Mapperly" Version="4.3.0" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageVersion Include="System.Net.Http.Json" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="System.Net.Http.Json" Version="10.0.0" />
     <PackageVersion Include="Oqtane.Client" Version="$(OqtaneVersion)" />
     <PackageVersion Include="Oqtane.Server" Version="$(OqtaneVersion)" />
     <PackageVersion Include="Oqtane.Shared" Version="$(OqtaneVersion)" />
-    <PackageVersion Include="TUnit" Version="1.1.10" />
-    <PackageVersion Include="TUnit.Playwright" Version="1.1.10" />
-    <PackageVersion Include="bunit" Version="2.0.66" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageVersion Include="coverlet.collector" Version="6.0.3" />
+    <PackageVersion Include="TUnit" Version="1.2.11" />
+    <PackageVersion Include="TUnit.Playwright" Version="1.2.11" />
+    <PackageVersion Include="bunit" Version="2.1.1" />
+    <PackageVersion Include="Bogus" Version="35.6.1" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.16.0.128591" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.256" />
+    <PackageVersion Include="AsyncFixer" Version="1.6.0" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.14.1" />
+    <PackageVersion Include="TUnit.Analyzers" Version="0.1.984" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="4.14.0" />
   </ItemGroup>
 </Project>
