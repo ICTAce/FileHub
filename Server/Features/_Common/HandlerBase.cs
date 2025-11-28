@@ -101,8 +101,8 @@ public abstract class HandlerBase<TContext>
     protected async Task<int> HandleDeleteAsync<TRequest, TEntity>(
         TRequest request,
         CancellationToken cancellationToken = default)
-        where TRequest : EntityRequestBase
         where TEntity : AuditableModuleBase
+        where TRequest : EntityRequestBase
     {
         var alias = GetAlias();
 
@@ -123,8 +123,50 @@ public abstract class HandlerBase<TContext>
             Logger.Log(LogLevel.Information, this, LogFunction.Delete, "{EntityName} Deleted {Id}", typeof(TEntity).Name, request.Id);
             return request.Id;
         }
+        else
+        {
+            Logger.Log(LogLevel.Warning, this, LogFunction.Delete, "{EntityName} Not Found {Id}", typeof(TEntity).Name, request.Id);
+            return -1;
+        }
+    }
 
-        Logger.Log(LogLevel.Warning, this, LogFunction.Delete, "{EntityName} Not Found {Id}", typeof(TEntity).Name, request.Id);
-        return -1;
+    /// <summary>
+    /// Generic handler for getting a single entity by Id with authorization and logging.
+    /// </summary>
+    /// <typeparam name="TRequest">The request type containing Id and ModuleId (must inherit from EntityRequestBase)</typeparam>
+    /// <typeparam name="TEntity">The entity type to retrieve (must inherit from AuditableModuleBase)</typeparam>
+    /// <typeparam name="TResponse">The response DTO type</typeparam>
+    /// <param name="request">The request containing the entity Id and ModuleId</param>
+    /// <param name="mapToResponse">Mapper function to convert entity to response DTO</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>The mapped response DTO on success, null on authorization failure or not found</returns>
+    protected async Task<TResponse?> HandleGetAsync<TRequest, TEntity, TResponse>(
+        TRequest request,
+        Func<TEntity, TResponse> mapToResponse,
+        CancellationToken cancellationToken = default)
+        where TRequest : EntityRequestBase
+        where TEntity : AuditableModuleBase
+        where TResponse : class
+    {
+        var alias = GetAlias();
+
+        if (!IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.View))
+        {
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized {EntityName} Get Attempt {Id} {ModuleId}", typeof(TEntity).Name, request.Id, request.ModuleId);
+            return null;
+        }
+
+        using var db = CreateDbContext();
+        var entity = await db.Set<TEntity>()
+            .SingleOrDefaultAsync(e => e.Id == request.Id && e.ModuleId == request.ModuleId, cancellationToken)
+            .ConfigureAwait(false);
+
+        if (entity is null)
+        {
+            Logger.Log(LogLevel.Error, this, LogFunction.Read, "{EntityName} not found {Id} {ModuleId}", typeof(TEntity).Name, request.Id, request.ModuleId);
+            return null;
+        }
+
+        return mapToResponse(entity);
     }
 }
