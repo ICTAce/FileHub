@@ -3,8 +3,9 @@
 namespace ICTAce.FileHub.Server.Tests.Helpers;
 
 /// <summary>
-/// Base class for handler tests providing common test infrastructure and helper methods.
-/// Handles SQLite in-memory database setup, mock creation, and test data seeding.
+/// Base class for handler tests providing common test infrastructure.
+/// Entity-agnostic - handles only databases, mocks, and disposal.
+/// Use entity-specific helper classes (SampleModuleTestHelpers, CategoryTestHelpers) for entity operations.
 /// </summary>
 public abstract class HandlerTestBase : IDisposable
 {
@@ -12,6 +13,8 @@ public abstract class HandlerTestBase : IDisposable
     private DbContextOptions<TestApplicationCommandContext>? _commandOptions;
     private DbContextOptions<TestApplicationQueryContext>? _queryOptions;
     private bool _disposed;
+
+    #region Database Creation
 
     /// <summary>
     /// Creates and configures a SQLite in-memory database for command operations.
@@ -53,10 +56,15 @@ public abstract class HandlerTestBase : IDisposable
         return (_connection, _queryOptions);
     }
 
+    #endregion
+
+    #region Context Factory Creation
+
     /// <summary>
     /// Creates a mock IDbContextFactory that returns TestApplicationCommandContext instances.
     /// </summary>
-    protected IDbContextFactory<ApplicationCommandContext> CreateMockCommandContextFactory(DbContextOptions<TestApplicationCommandContext> options)
+    protected IDbContextFactory<ApplicationCommandContext> CreateMockCommandContextFactory(
+        DbContextOptions<TestApplicationCommandContext> options)
     {
         var mockFactory = Substitute.For<IDbContextFactory<ApplicationCommandContext>>();
         mockFactory.CreateDbContext().Returns(_ => new TestApplicationCommandContext(options));
@@ -66,12 +74,17 @@ public abstract class HandlerTestBase : IDisposable
     /// <summary>
     /// Creates a mock IDbContextFactory that returns TestApplicationQueryContext instances.
     /// </summary>
-    protected IDbContextFactory<ApplicationQueryContext> CreateMockQueryContextFactory(DbContextOptions<TestApplicationQueryContext> options)
+    protected IDbContextFactory<ApplicationQueryContext> CreateMockQueryContextFactory(
+        DbContextOptions<TestApplicationQueryContext> options)
     {
         var mockFactory = Substitute.For<IDbContextFactory<ApplicationQueryContext>>();
         mockFactory.CreateDbContext().Returns(_ => new TestApplicationQueryContext(options));
         return mockFactory;
     }
+
+    #endregion
+
+    #region Mock Creation
 
     /// <summary>
     /// Creates a mock IUserPermissions with configurable authorization.
@@ -117,93 +130,9 @@ public abstract class HandlerTestBase : IDisposable
         return Substitute.For<ILogManager>();
     }
 
-    /// <summary>
-    /// Seeds test data into the command context.
-    /// </summary>
-    protected async Task SeedCommandDataAsync(
-        DbContextOptions<TestApplicationCommandContext> options,
-        params Persistence.Entities.SampleModule[] entities)
-    {
-        using var context = new TestApplicationCommandContext(options);
-        context.SampleModule.AddRange(entities);
-        await context.SaveChangesAsync();
-    }
+    #endregion
 
-    /// <summary>
-    /// Seeds test data into the query context.
-    /// </summary>
-    protected async Task SeedQueryDataAsync(
-        DbContextOptions<TestApplicationQueryContext> options,
-        params Persistence.Entities.SampleModule[] entities)
-    {
-        using var context = new TestApplicationQueryContext(options);
-        context.SampleModule.AddRange(entities);
-        await context.SaveChangesAsync();
-    }
-
-    /// <summary>
-    /// Creates a test SampleModule entity with default values.
-    /// </summary>
-    protected Persistence.Entities.SampleModule CreateTestEntity(
-        int id = 1,
-        int moduleId = 1,
-        string name = "Test Module",
-        string createdBy = "admin",
-        DateTime? createdOn = null,
-        string modifiedBy = "admin",
-        DateTime? modifiedOn = null)
-    {
-        return new Persistence.Entities.SampleModule
-        {
-            Id = id,
-            ModuleId = moduleId,
-            Name = name,
-            CreatedBy = createdBy,
-            CreatedOn = createdOn ?? DateTime.UtcNow,
-            ModifiedBy = modifiedBy,
-            ModifiedOn = modifiedOn ?? DateTime.UtcNow
-        };
-    }
-
-    /// <summary>
-    /// Verifies that an entity exists in the command database.
-    /// </summary>
-    protected async Task<Persistence.Entities.SampleModule?> GetEntityFromCommandDbAsync(
-        DbContextOptions<TestApplicationCommandContext> options,
-        int id)
-    {
-        using var context = new TestApplicationCommandContext(options);
-        return await context.SampleModule.FindAsync(id);
-    }
-
-    /// <summary>
-    /// Verifies that an entity exists in the query database.
-    /// </summary>
-    protected async Task<Persistence.Entities.SampleModule?> GetEntityFromQueryDbAsync(
-        DbContextOptions<TestApplicationQueryContext> options,
-        int id)
-    {
-        using var context = new TestApplicationQueryContext(options);
-        return await context.SampleModule.FindAsync(id);
-    }
-
-    /// <summary>
-    /// Gets the count of entities in the command database.
-    /// </summary>
-    protected async Task<int> GetCommandEntityCountAsync(DbContextOptions<TestApplicationCommandContext> options)
-    {
-        using var context = new TestApplicationCommandContext(options);
-        return await context.SampleModule.CountAsync();
-    }
-
-    /// <summary>
-    /// Gets the count of entities in the query database.
-    /// </summary>
-    protected async Task<int> GetQueryEntityCountAsync(DbContextOptions<TestApplicationQueryContext> options)
-    {
-        using var context = new TestApplicationQueryContext(options);
-        return await context.SampleModule.CountAsync();
-    }
+    #region Disposal
 
     /// <summary>
     /// Disposes of test resources including database connections.
@@ -229,4 +158,6 @@ public abstract class HandlerTestBase : IDisposable
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
+
+    #endregion
 }

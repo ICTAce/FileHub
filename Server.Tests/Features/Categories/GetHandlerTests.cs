@@ -1,26 +1,27 @@
 // Licensed to ICTAce under the MIT license.
 
-using static ICTAce.FileHub.Server.Tests.Helpers.SampleModuleTestHelpers;
+using CategoryHandlers = ICTAce.FileHub.Features.Categories;
+using static ICTAce.FileHub.Server.Tests.Helpers.CategoryTestHelpers;
 
-namespace ICTAce.FileHub.Server.Tests.Features.SampleModule;
+namespace ICTAce.FileHub.Server.Tests.Features.Categories;
 
 public class GetHandlerTests : HandlerTestBase
 {
     [Test]
-    public async Task Handle_WithValidId_ReturnsSampleModule()
+    public async Task Handle_WithValidId_ReturnsCategory()
     {
         // Arrange
         var (connection, options) = await CreateQueryDatabaseAsync();
         await SeedQueryDataAsync(options, CreateTestEntity());
 
-        var handler = new GetHandler(
+        var handler = new CategoryHandlers.GetHandler(
             CreateMockQueryContextFactory(options),
             CreateMockUserPermissions(isAuthorized: true),
             CreateMockTenantManager(),
             CreateMockHttpContextAccessor(),
             CreateMockLogger());
 
-        var request = new GetSampleModuleRequest { ModuleId = 1, Id = 1 };
+        var request = new CategoryHandlers.GetCategoryRequest { ModuleId = 1, Id = 1 };
 
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
@@ -28,8 +29,10 @@ public class GetHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.Id).IsEqualTo(1);
-        await Assert.That(result.Name).IsEqualTo("Test Module");
+        await Assert.That(result.Name).IsEqualTo("Test Category");
         await Assert.That(result.ModuleId).IsEqualTo(1);
+        await Assert.That(result.ViewOrder).IsEqualTo(1);
+        await Assert.That(result.ParentId).IsEqualTo(0);
 
         connection.Close();
     }
@@ -41,21 +44,20 @@ public class GetHandlerTests : HandlerTestBase
         var (connection, options) = await CreateQueryDatabaseAsync();
         await SeedQueryDataAsync(options, CreateTestEntity());
 
-        var handler = new GetHandler(
+        var handler = new CategoryHandlers.GetHandler(
             CreateMockQueryContextFactory(options),
             CreateMockUserPermissions(isAuthorized: true),
             CreateMockTenantManager(),
             CreateMockHttpContextAccessor(),
             CreateMockLogger());
 
-        var request = new GetSampleModuleRequest { ModuleId = 1, Id = 999 };
+        var request = new CategoryHandlers.GetCategoryRequest { ModuleId = 1, Id = 999 };
 
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         await Assert.That(result).IsNull();
-
         connection.Close();
     }
 
@@ -66,39 +68,38 @@ public class GetHandlerTests : HandlerTestBase
         var (connection, options) = await CreateQueryDatabaseAsync();
         await SeedQueryDataAsync(options, CreateTestEntity());
 
-        var handler = new GetHandler(
+        var handler = new CategoryHandlers.GetHandler(
             CreateMockQueryContextFactory(options),
             CreateMockUserPermissions(isAuthorized: false),
             CreateMockTenantManager(),
             CreateMockHttpContextAccessor(),
             CreateMockLogger());
 
-        var request = new GetSampleModuleRequest { ModuleId = 1, Id = 1 };
+        var request = new CategoryHandlers.GetCategoryRequest { ModuleId = 1, Id = 1 };
 
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         await Assert.That(result).IsNull();
-
         connection.Close();
     }
 
     [Test]
-    public async Task Handle_WithWrongModuleId_ReturnsNull()
+    public async Task Handle_WithDifferentModuleId_ReturnsNull()
     {
         // Arrange
         var (connection, options) = await CreateQueryDatabaseAsync();
-        await SeedQueryDataAsync(options, CreateTestEntity());
+        await SeedQueryDataAsync(options, CreateTestEntity(moduleId: 1));
 
-        var handler = new GetHandler(
+        var handler = new CategoryHandlers.GetHandler(
             CreateMockQueryContextFactory(options),
             CreateMockUserPermissions(isAuthorized: true),
             CreateMockTenantManager(),
             CreateMockHttpContextAccessor(),
             CreateMockLogger());
 
-        var request = new GetSampleModuleRequest { ModuleId = 2, Id = 1 };
+        var request = new CategoryHandlers.GetCategoryRequest { ModuleId = 2, Id = 1 };
 
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
@@ -114,28 +115,21 @@ public class GetHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateQueryDatabaseAsync();
-        
         var createdOn = DateTime.UtcNow.AddDays(-5);
         var modifiedOn = DateTime.UtcNow.AddDays(-1);
 
         await SeedQueryDataAsync(options, 
-            CreateTestEntity(
-                id: 1, 
-                moduleId: 1, 
-                name: "Test Module", 
-                createdBy: "creator", 
-                createdOn: createdOn,
-                modifiedBy: "modifier", 
-                modifiedOn: modifiedOn));
+            CreateTestEntity(id: 1, moduleId: 1, name: "Test Category", viewOrder: 1, parentId: 0,
+                createdBy: "creator", createdOn: createdOn, modifiedBy: "modifier", modifiedOn: modifiedOn));
 
-        var handler = new GetHandler(
+        var handler = new CategoryHandlers.GetHandler(
             CreateMockQueryContextFactory(options),
             CreateMockUserPermissions(isAuthorized: true),
             CreateMockTenantManager(),
             CreateMockHttpContextAccessor(),
             CreateMockLogger());
 
-        var request = new GetSampleModuleRequest { ModuleId = 1, Id = 1 };
+        var request = new CategoryHandlers.GetCategoryRequest { ModuleId = 1, Id = 1 };
 
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
@@ -149,5 +143,33 @@ public class GetHandlerTests : HandlerTestBase
 
         connection.Close();
     }
-}
 
+    [Test]
+    public async Task Handle_WithParentCategory_ReturnsCorrectParentId()
+    {
+        // Arrange
+        var (connection, options) = await CreateQueryDatabaseAsync();
+        await SeedQueryDataAsync(options, 
+            CreateTestEntity(id: 1, name: "Parent Category", parentId: 0),
+            CreateTestEntity(id: 2, name: "Child Category", parentId: 1));
+
+        var handler = new CategoryHandlers.GetHandler(
+            CreateMockQueryContextFactory(options),
+            CreateMockUserPermissions(isAuthorized: true),
+            CreateMockTenantManager(),
+            CreateMockHttpContextAccessor(),
+            CreateMockLogger());
+
+        var request = new CategoryHandlers.GetCategoryRequest { ModuleId = 1, Id = 2 };
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result!.ParentId).IsEqualTo(1);
+        await Assert.That(result.Name).IsEqualTo("Child Category");
+
+        connection.Close();
+    }
+}

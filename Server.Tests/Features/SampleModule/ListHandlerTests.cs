@@ -1,5 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
+using static ICTAce.FileHub.Server.Tests.Helpers.SampleModuleTestHelpers;
 namespace ICTAce.FileHub.Server.Tests.Features.SampleModule;
 
 public class ListHandlerTests : HandlerTestBase

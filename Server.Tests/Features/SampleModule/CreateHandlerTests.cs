@@ -1,5 +1,8 @@
 // Licensed to ICTAce under the MIT license.
 
+using static ICTAce.FileHub.Server.Tests.Helpers.SampleModuleTestHelpers;
+// Licensed to ICTAce under the MIT license.
+
 namespace ICTAce.FileHub.Server.Tests.Features.SampleModule;
 
 public class CreateHandlerTests : HandlerTestBase
@@ -29,7 +32,7 @@ public class CreateHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsGreaterThan(0);
 
-        var savedEntity = await GetEntityFromCommandDbAsync(options, result);
+        var savedEntity = await GetFromCommandDbAsync(options, result);
         await Assert.That(savedEntity).IsNotNull();
         await Assert.That(savedEntity!.Name).IsEqualTo("Test Sample Module");
         await Assert.That(savedEntity.ModuleId).IsEqualTo(1);
@@ -62,7 +65,7 @@ public class CreateHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        var count = await GetCommandEntityCountAsync(options);
+        var count = await GetCountFromCommandDbAsync(options);
         await Assert.That(count).IsEqualTo(0);
 
         connection.Close();
@@ -96,7 +99,7 @@ public class CreateHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsGreaterThan(0);
 
-        var savedEntity = await GetEntityFromCommandDbAsync(options, result);
+        var savedEntity = await GetFromCommandDbAsync(options, result);
         await Assert.That(savedEntity).IsNotNull();
         await Assert.That(savedEntity!.Name).IsEqualTo(name);
 
@@ -128,7 +131,7 @@ public class CreateHandlerTests : HandlerTestBase
         await Assert.That(id1).IsNotEqualTo(id2);
         await Assert.That(id2).IsNotEqualTo(id3);
 
-        var count = await GetCommandEntityCountAsync(options);
+        var count = await GetCountFromCommandDbAsync(options);
         await Assert.That(count).IsEqualTo(3);
 
         connection.Close();

@@ -1,5 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
+using static ICTAce.FileHub.Server.Tests.Helpers.SampleModuleTestHelpers;
 namespace ICTAce.FileHub.Server.Tests.Features.SampleModule;
 
 public class UpdateHandlerTests : HandlerTestBase
@@ -31,7 +32,7 @@ public class UpdateHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(1);
 
-        var updatedEntity = await GetEntityFromCommandDbAsync(options, 1);
+        var updatedEntity = await GetFromCommandDbAsync(options, 1);
         await Assert.That(updatedEntity).IsNotNull();
         await Assert.That(updatedEntity!.Name).IsEqualTo("Updated Name");
 
@@ -65,7 +66,7 @@ public class UpdateHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        var entity = await GetEntityFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1);
         await Assert.That(entity!.Name).IsEqualTo("Original Name");
 
         connection.Close();
@@ -130,7 +131,7 @@ public class UpdateHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(1);
 
-        var updatedEntity = await GetEntityFromCommandDbAsync(options, 1);
+        var updatedEntity = await GetFromCommandDbAsync(options, 1);
         await Assert.That(updatedEntity!.Name).IsEqualTo(newName);
 
         connection.Close();
@@ -156,7 +157,7 @@ public class UpdateHandlerTests : HandlerTestBase
         await handler.Handle(new UpdateSampleModuleRequest { Id = 1, ModuleId = 1, Name = "Final Update" }, CancellationToken.None);
 
         // Assert
-        var entity = await GetEntityFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1);
         await Assert.That(entity!.Name).IsEqualTo("Final Update");
 
         connection.Close();

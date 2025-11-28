@@ -1,5 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
+using static ICTAce.FileHub.Server.Tests.Helpers.SampleModuleTestHelpers;
 namespace ICTAce.FileHub.Server.Tests.Features.SampleModule;
 
 public class DeleteHandlerTests : HandlerTestBase
@@ -30,7 +31,7 @@ public class DeleteHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(1);
 
-        var deletedEntity = await GetEntityFromCommandDbAsync(options, 1);
+        var deletedEntity = await GetFromCommandDbAsync(options, 1);
         await Assert.That(deletedEntity).IsNull();
 
         connection.Close();
@@ -62,7 +63,7 @@ public class DeleteHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        var entity = await GetEntityFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1);
         await Assert.That(entity).IsNotNull();
 
         connection.Close();
@@ -122,7 +123,7 @@ public class DeleteHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        var entity = await GetEntityFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1);
         await Assert.That(entity).IsNotNull();
 
         connection.Close();
@@ -153,7 +154,7 @@ public class DeleteHandlerTests : HandlerTestBase
         await Assert.That(result1).IsEqualTo(1);
         await Assert.That(result2).IsEqualTo(2);
 
-        var count = await GetCommandEntityCountAsync(options);
+        var count = await GetCountFromCommandDbAsync(options);
         await Assert.That(count).IsEqualTo(1); // Only ID 3 should remain
 
         connection.Close();

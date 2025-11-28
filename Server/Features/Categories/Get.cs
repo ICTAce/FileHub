@@ -24,7 +24,7 @@ public class GetHandler(
         if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.View))
         {
             using var db = CreateDbContext();
-            var entity = await db.Category.FindAsync(new object[] { request.Id }, cancellationToken).ConfigureAwait(false);
+            var entity = await db.Category.SingleOrDefaultAsync(m => m.Id == request.Id && m.ModuleId == request.ModuleId, cancellationToken).ConfigureAwait(false);
             if (entity is null)
             {
                 Logger.Log(LogLevel.Error, this, LogFunction.Security, "FileHub Category not found {Id} {ModuleId}", request.Id, request.ModuleId);
