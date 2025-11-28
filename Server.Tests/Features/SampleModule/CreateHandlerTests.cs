@@ -104,9 +104,9 @@ public class CreateHandlerTests : HandlerTestBase
             CreateCommandHandlerServices(options, isAuthorized: true));
 
         // Act
-        var id1 = await handler.Handle(new CreateSampleModuleRequest { ModuleId = 1, Name = "Module 1" }, CancellationToken.None);
-        var id2 = await handler.Handle(new CreateSampleModuleRequest { ModuleId = 1, Name = "Module 2" }, CancellationToken.None);
-        var id3 = await handler.Handle(new CreateSampleModuleRequest { ModuleId = 2, Name = "Module 3" }, CancellationToken.None);
+        var id1 = await handler.Handle(new CreateSampleModuleRequest { ModuleId = 1, Name = "Module 1" }, CancellationToken.None).ConfigureAwait(false);
+        var id2 = await handler.Handle(new CreateSampleModuleRequest { ModuleId = 1, Name = "Module 2" }, CancellationToken.None).ConfigureAwait(false);
+        var id3 = await handler.Handle(new CreateSampleModuleRequest { ModuleId = 2, Name = "Module 3" }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(id1).IsGreaterThan(0);

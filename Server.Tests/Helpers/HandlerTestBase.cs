@@ -137,7 +137,7 @@ public abstract class HandlerTestBase : IDisposable
     #region Handler Services Creation
 
     /// <summary>
-    /// Creates HandlerServices<ApplicationQueryContext> for testing query handlers.
+    /// Creates HandlerServices{ApplicationQueryContext} for testing query handlers.
     /// This is the recommended way to create query handlers in tests.
     /// </summary>
     /// <param name="options">Database options for the query context</param>
@@ -159,7 +159,7 @@ public abstract class HandlerTestBase : IDisposable
     }
 
     /// <summary>
-    /// Creates HandlerServices<ApplicationCommandContext> for testing command handlers.
+    /// Creates HandlerServices{ApplicationCommandContext} for testing command handlers.
     /// This is the recommended way to create command handlers in tests.
     /// </summary>
     /// <param name="options">Database options for the command context</param>

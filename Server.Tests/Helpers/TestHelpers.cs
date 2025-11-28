@@ -1,5 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
+using System.Globalization;
+
 namespace ICTAce.FileHub.Server.Tests.Helpers;
 
 public static class TestHelpers
@@ -19,7 +21,7 @@ public static class TestHelpers
     {
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString(CultureInfo.InvariantCulture)),
             new Claim(ClaimTypes.Name, userName)
         };
 

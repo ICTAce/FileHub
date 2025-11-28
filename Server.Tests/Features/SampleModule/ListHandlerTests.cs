@@ -162,7 +162,7 @@ public class ListHandlerTests : HandlerTestBase
         await Assert.That(result.Items.Count()).IsEqualTo(2);
         
         var items = result.Items.ToList();
-        await Assert.That(items.All(x => x.Name.StartsWith("Module 1"))).IsTrue();
+        await Assert.That(items.All(x => x.Name.StartsWith("Module 1", StringComparison.Ordinal))).IsTrue();
 
         await connection.CloseAsync().ConfigureAwait(false);
     }
@@ -200,6 +200,4 @@ public class ListHandlerTests : HandlerTestBase
         await connection.CloseAsync().ConfigureAwait(false);
     }
 }
-
-
 

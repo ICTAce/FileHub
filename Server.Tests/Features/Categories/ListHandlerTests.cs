@@ -160,7 +160,7 @@ public class ListHandlerTests : HandlerTestBase
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.Items).HasCount().EqualTo(2);
         await Assert.That(result.TotalCount).IsEqualTo(2);
-        await Assert.That(result.Items.All(c => c.Name.StartsWith("Module 1"))).IsTrue();
+        await Assert.That(result.Items.All(c => c.Name.StartsWith("Module 1", StringComparison.Ordinal))).IsTrue();
 
         await connection.CloseAsync().ConfigureAwait(false);
     }
@@ -213,8 +213,8 @@ public class ListHandlerTests : HandlerTestBase
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.Items).HasCount().EqualTo(2);
         
-        var parent = result.Items.First(c => c.Name == "Parent");
-        var child = result.Items.First(c => c.Name == "Child");
+        var parent = result.Items.First(c => string.Equals(c.Name, "Parent", StringComparison.Ordinal));
+        var child = result.Items.First(c => string.Equals(c.Name, "Child", StringComparison.Ordinal));
 
         await Assert.That(parent.ParentId).IsEqualTo(0);
         await Assert.That(child.ParentId).IsEqualTo(1);

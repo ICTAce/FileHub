@@ -140,6 +140,3 @@ public class DeleteHandlerTests : HandlerTestBase
         await connection.CloseAsync().ConfigureAwait(false);
     }
 }
-
-
-

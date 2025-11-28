@@ -19,7 +19,7 @@ public class AuthorizationTests : HandlerTestBase
     {
         // Arrange - Entity in Module 1, try to update from Module 2
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
-        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1, name: "Original"));
+        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1, name: "Original")).ConfigureAwait(false);
 
         var handler = new UpdateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -37,7 +37,7 @@ public class AuthorizationTests : HandlerTestBase
         // Assert - Security check prevented update
         await Assert.That(result).IsEqualTo(-1);
 
-        var entity = await GetFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(entity!.Name).IsEqualTo("Original");
         await Assert.That(entity.ModuleId).IsEqualTo(1);
 
@@ -49,7 +49,7 @@ public class AuthorizationTests : HandlerTestBase
     {
         // Arrange - Entity in Module 1, try to delete from Module 2
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
-        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1));
+        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1)).ConfigureAwait(false);
 
         var handler = new DeleteHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -66,7 +66,7 @@ public class AuthorizationTests : HandlerTestBase
         // Assert - Security check prevented delete
         await Assert.That(result).IsEqualTo(-1);
 
-        var entity = await GetFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(entity).IsNotNull();
 
         await connection.CloseAsync().ConfigureAwait(false);

@@ -143,6 +143,3 @@ public class UpdateHandlerTests : HandlerTestBase
         await connection.CloseAsync().ConfigureAwait(false);
     }
 }
-
-
-
