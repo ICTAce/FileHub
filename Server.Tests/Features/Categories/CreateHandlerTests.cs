@@ -21,7 +21,7 @@ public class CreateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "New Category",
             ViewOrder = 1,
-            ParentId = 0
+            ParentId = 0,
         };
 
         // Act
@@ -54,7 +54,7 @@ public class CreateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "New Category",
             ViewOrder = 1,
-            ParentId = 0
+            ParentId = 0,
         };
 
         // Act
@@ -63,7 +63,7 @@ public class CreateHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        var count = await GetCountFromCommandDbAsync(options);
+        var count = await GetCountFromCommandDbAsync(options).ConfigureAwait(false);
         await Assert.That(count).IsEqualTo(0);
 
         await connection.CloseAsync().ConfigureAwait(false);
@@ -74,7 +74,7 @@ public class CreateHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
-        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, name: "Parent Category", parentId: 0));
+        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, name: "Parent Category", parentId: 0)).ConfigureAwait(false);
 
         var handler = new CategoryHandlers.CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -84,7 +84,7 @@ public class CreateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "Child Category",
             ViewOrder = 2,
-            ParentId = 1
+            ParentId = 1,
         };
 
         // Act
@@ -116,23 +116,23 @@ public class CreateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "Category 1",
             ViewOrder = 1,
-            ParentId = 0
-        }, CancellationToken.None);
+            ParentId = 0,
+        }, CancellationToken.None).ConfigureAwait(false);
 
         var id2 = await handler.Handle(new CategoryHandlers.CreateCategoryRequest
         {
             ModuleId = 1,
             Name = "Category 2",
             ViewOrder = 2,
-            ParentId = 0
-        }, CancellationToken.None);
+            ParentId = 0,
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(id1).IsGreaterThan(0);
         await Assert.That(id2).IsGreaterThan(0);
         await Assert.That(id1).IsNotEqualTo(id2);
 
-        var count = await GetCountFromCommandDbAsync(options);
+        var count = await GetCountFromCommandDbAsync(options).ConfigureAwait(false);
         await Assert.That(count).IsEqualTo(2);
 
         await connection.CloseAsync().ConfigureAwait(false);
@@ -152,7 +152,7 @@ public class CreateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "Zero Order Category",
             ViewOrder = 0,
-            ParentId = 0
+            ParentId = 0,
         };
 
         // Act
@@ -183,23 +183,23 @@ public class CreateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "Module 1 Category",
             ViewOrder = 1,
-            ParentId = 0
-        }, CancellationToken.None);
+            ParentId = 0,
+        }, CancellationToken.None).ConfigureAwait(false);
 
         var id2 = await handler.Handle(new CategoryHandlers.CreateCategoryRequest
         {
             ModuleId = 2,
             Name = "Module 2 Category",
             ViewOrder = 1,
-            ParentId = 0
-        }, CancellationToken.None);
+            ParentId = 0,
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(id1).IsGreaterThan(0);
         await Assert.That(id2).IsGreaterThan(0);
 
-        var entity1 = await GetFromCommandDbAsync(options, id1);
-        var entity2 = await GetFromCommandDbAsync(options, id2);
+        var entity1 = await GetFromCommandDbAsync(options, id1).ConfigureAwait(false);
+        var entity2 = await GetFromCommandDbAsync(options, id2).ConfigureAwait(false);
 
         await Assert.That(entity1!.ModuleId).IsEqualTo(1);
         await Assert.That(entity2!.ModuleId).IsEqualTo(2);

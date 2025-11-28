@@ -12,7 +12,7 @@ public class UpdateHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
-        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, name: "Original Name"));
+        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, name: "Original Name")).ConfigureAwait(false);
 
         var handler = new CategoryHandlers.UpdateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -72,7 +72,7 @@ public class UpdateHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
-        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, name: "Original Name"));
+        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, name: "Original Name")).ConfigureAwait(false);
 
         var handler = new CategoryHandlers.UpdateHandler(
             CreateCommandHandlerServices(options, isAuthorized: false));
@@ -92,7 +92,7 @@ public class UpdateHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        var entity = await GetFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(entity!.Name).IsEqualTo("Original Name");
 
         await connection.CloseAsync().ConfigureAwait(false);
