@@ -83,11 +83,9 @@ public abstract class HandlerBase<TContext>
             Logger.Log(LogLevel.Information, this, LogFunction.Create, "{EntityName} Added {Entity}", typeof(TEntity).Name, entity);
             return entity.Id;
         }
-        else
-        {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized {EntityName} Add Attempt {ModuleId}", typeof(TEntity).Name, requestBase.ModuleId);
-            return -1;
-        }
+
+        Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized {EntityName} Add Attempt {ModuleId}", typeof(TEntity).Name, requestBase.ModuleId);
+        return -1;
     }
 
     /// <summary>
@@ -123,11 +121,9 @@ public abstract class HandlerBase<TContext>
             Logger.Log(LogLevel.Information, this, LogFunction.Delete, "{EntityName} Deleted {Id}", typeof(TEntity).Name, request.Id);
             return request.Id;
         }
-        else
-        {
-            Logger.Log(LogLevel.Warning, this, LogFunction.Delete, "{EntityName} Not Found {Id}", typeof(TEntity).Name, request.Id);
-            return -1;
-        }
+
+        Logger.Log(LogLevel.Warning, this, LogFunction.Delete, "{EntityName} Not Found {Id}", typeof(TEntity).Name, request.Id);
+        return -1;
     }
 
     /// <summary>
@@ -144,8 +140,8 @@ public abstract class HandlerBase<TContext>
         TRequest request,
         Func<TEntity, TResponse> mapToResponse,
         CancellationToken cancellationToken = default)
-        where TRequest : EntityRequestBase
         where TEntity : AuditableModuleBase
+        where TRequest : EntityRequestBase
         where TResponse : class
     {
         var alias = GetAlias();
@@ -168,5 +164,63 @@ public abstract class HandlerBase<TContext>
         }
 
         return mapToResponse(entity);
+    }
+
+    /// <summary>
+    /// Generic handler for getting paginated list of entities with authorization and logging.
+    /// </summary>
+    /// <typeparam name="TRequest">The request type containing pagination parameters (must inherit from PagedRequestBase)</typeparam>
+    /// <typeparam name="TEntity">The entity type to retrieve (must inherit from AuditableModuleBase)</typeparam>
+    /// <typeparam name="TResponse">The response DTO type</typeparam>
+    /// <param name="request">The request containing pagination parameters and ModuleId</param>
+    /// <param name="mapToResponse">Mapper function to convert entity to response DTO</param>
+    /// <param name="orderBy">Optional ordering function for the query. If null, entities are ordered by Id</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Paginated result with items on success, null on authorization failure</returns>
+    protected async Task<PagedResult<TResponse>?> HandleListAsync<TRequest, TEntity, TResponse>(
+        TRequest request,
+        Func<TEntity, TResponse> mapToResponse,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : AuditableModuleBase
+        where TRequest : PagedRequestBase
+    {
+        var alias = GetAlias();
+
+        if (!IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.View))
+        {
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized {EntityName} List Attempt {ModuleId}", typeof(TEntity).Name, request.ModuleId);
+            return null;
+        }
+
+        using var db = CreateDbContext();
+
+        var query = db.Set<TEntity>()
+            .Where(e => e.ModuleId == request.ModuleId);
+
+        var totalCount = await query
+            .CountAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        // Apply ordering - use provided orderBy or default to Id
+        var orderedQuery = orderBy?.Invoke(query) ?? query.OrderBy(e => e.Id);
+
+        var entities = await orderedQuery
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        var items = entities
+            .Select(mapToResponse)
+            .ToList();
+
+        return new PagedResult<TResponse>
+        {
+            Items = items,
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize,
+            TotalCount = totalCount,
+        };
     }
 }
