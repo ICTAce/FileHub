@@ -4,9 +4,6 @@ namespace ICTAce.FileHub.Client.Tests.Modules.SampleModule;
 
 public class IndexTests : BaseTest
 {
-    /// <summary>
-    /// Verifies that the mock service has test data
-    /// </summary>
     [Test]
     public async Task MockService_HasTestData()
     {
@@ -20,13 +17,9 @@ public class IndexTests : BaseTest
         await Assert.That(result.Items.Count()).IsEqualTo(2);
     }
 
-    /// <summary>
-    /// Verifies that the Index component's service dependencies can be resolved
-    /// </summary>
     [Test]
     public async Task IndexComponent_ServiceDependencies_CanBeResolved()
     {
-        // Verify all required services are registered
         var sampleModuleService = TestContext.Services.GetService<ISampleModuleService>();
         var navigationManager = TestContext.Services.GetService<NavigationManager>();
         var logService = TestContext.Services.GetService<ILogService>();
@@ -35,16 +28,12 @@ public class IndexTests : BaseTest
         await Assert.That(navigationManager).IsNotNull();
         await Assert.That(logService).IsNotNull();
     }
-
-    /// <summary>
-    /// Verifies that ModuleState is properly initialized
-    /// </summary>
+   
     [Test]
     public async Task ModuleState_ShouldBeInitialized()
     {
         var moduleState = CreateModuleState();
 
-        // Verify ModuleState properties are set
         await Assert.That(moduleState.ModuleId).IsEqualTo(1);
         await Assert.That(moduleState.PageId).IsEqualTo(1);
         await Assert.That(moduleState.ModuleDefinition).IsNotNull();
@@ -53,9 +42,6 @@ public class IndexTests : BaseTest
         await Assert.That(moduleState.Settings).IsNotNull();
     }
 
-    /// <summary>
-    /// Verifies that PageState is properly configured
-    /// </summary>
     [Test]
     public async Task PageState_ShouldBeConfigured()
     {
@@ -69,10 +55,7 @@ public class IndexTests : BaseTest
         await Assert.That(pageState.Site).IsNotNull();
     }
 
-    /// <summary>
-    /// Tests the service layer logic for listing modules
-    /// </summary>
-    [Test]
+       [Test]
     public async Task ServiceLayer_ListAsync_ReturnsModules()
     {
         var mockService = TestContext.Services.GetRequiredService<ISampleModuleService>() as MockSampleModuleService;
@@ -85,9 +68,6 @@ public class IndexTests : BaseTest
         await Assert.That(result.Items.Any(m => m.Name == "Test Module 2")).IsTrue();
     }
 
-    /// <summary>
-    /// Tests the service layer logic for deleting a module
-    /// </summary>
     [Test]
     public async Task ServiceLayer_DeleteAsync_RemovesModule()
     {
@@ -100,15 +80,11 @@ public class IndexTests : BaseTest
         await Assert.That(finalCount).IsEqualTo(initialCount - 1);
     }
 
-    /// <summary>
-    /// Tests pagination logic in the service layer
-    /// </summary>
     [Test]
     public async Task ServiceLayer_ListAsync_SupportsPagination()
     {
         var mockService = TestContext.Services.GetRequiredService<ISampleModuleService>() as MockSampleModuleService;
         
-        // Add more test data
         mockService!.AddTestData(new GetSampleModuleDto
         {
             Id = 3,

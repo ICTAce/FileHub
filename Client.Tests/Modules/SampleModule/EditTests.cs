@@ -14,9 +14,6 @@ public class EditTests : BaseTest
         TestContext.JSInterop.Setup<bool>("Oqtane.Interop.formValid", _ => true).SetResult(true);
     }
 
-    /// <summary>
-    /// Verifies that service dependencies are properly configured
-    /// </summary>
     [Test]
     public async Task EditComponent_ServiceDependencies_AreConfigured()
     {
@@ -27,9 +24,6 @@ public class EditTests : BaseTest
         await Assert.That(logService).IsNotNull();
     }
 
-    /// <summary>
-    /// Tests Add mode - service layer creates new module
-    /// </summary>
     [Test]
     public async Task ServiceLayer_CreateAsync_AddsNewModule()
     {
@@ -49,9 +43,6 @@ public class EditTests : BaseTest
         await Assert.That(created.Name).IsEqualTo("New Test Module");
     }
 
-    /// <summary>
-    /// Tests Edit mode - service layer updates existing module
-    /// </summary>
     [Test]
     public async Task ServiceLayer_UpdateAsync_ModifiesExistingModule()
     {
@@ -67,9 +58,6 @@ public class EditTests : BaseTest
         await Assert.That(updated.Id).IsEqualTo(1);
     }
 
-    /// <summary>
-    /// Verifies that GetAsync retrieves correct module data
-    /// </summary>
     [Test]
     public async Task ServiceLayer_GetAsync_ReturnsCorrectModule()
     {
@@ -82,9 +70,6 @@ public class EditTests : BaseTest
         await Assert.That(module2.Name).IsEqualTo("Test Module 2");
     }
 
-    /// <summary>
-    /// Tests that PageState is properly configured for Add mode
-    /// </summary>
     [Test]
     public async Task PageState_AddMode_IsConfigured()
     {
@@ -95,9 +80,6 @@ public class EditTests : BaseTest
         await Assert.That(pageState.QueryString.Count).IsEqualTo(0);
     }
 
-    /// <summary>
-    /// Tests that PageState is properly configured for Edit mode
-    /// </summary>
     [Test]
     public async Task PageState_EditMode_IsConfigured()
     {
@@ -114,9 +96,6 @@ public class EditTests : BaseTest
         await Assert.That(pageState.QueryString["id"]).IsEqualTo("1");
     }
 
-    /// <summary>
-    /// Tests navigation manager reset functionality
-    /// </summary>
     [Test]
     public async Task NavigationManager_Reset_ClearsHistory()
     {
@@ -126,9 +105,6 @@ public class EditTests : BaseTest
         await Assert.That(_mockNavigationManager.BaseUri).IsEqualTo("https://localhost:5001/");
     }
 
-    /// <summary>
-    /// Tests that module state includes all required properties for Edit component
-    /// </summary>
     [Test]
     public async Task ModuleState_ForEditComponent_HasRequiredProperties()
     {
@@ -141,9 +117,6 @@ public class EditTests : BaseTest
         await Assert.That(moduleState.PermissionList.Any(p => p.PermissionName == "Edit")).IsTrue();
     }
 
-    /// <summary>
-    /// Tests form validation - valid data
-    /// </summary>
     [Test]
     public async Task FormValidation_ValidData_Passes()
     {
@@ -160,9 +133,6 @@ public class EditTests : BaseTest
         await Assert.That(validationResults.Count).IsEqualTo(0);
     }
 
-    /// <summary>
-    /// Tests form validation - empty name
-    /// </summary>
     [Test]
     public async Task FormValidation_EmptyName_Fails()
     {
@@ -179,15 +149,12 @@ public class EditTests : BaseTest
         await Assert.That(validationResults.Count).IsGreaterThan(0);
     }
 
-    /// <summary>
-    /// Tests form validation - name too long
-    /// </summary>
     [Test]
     public async Task FormValidation_NameTooLong_Fails()
     {
         var dto = new CreateAndUpdateSampleModuleDto
         {
-            Name = new string('A', 101) // 101 characters, exceeds max of 100
+            Name = new string('A', 101)
         };
         
         var validationResults = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
