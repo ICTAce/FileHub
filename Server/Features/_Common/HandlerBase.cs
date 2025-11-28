@@ -223,4 +223,54 @@ public abstract class HandlerBase<TContext>
             TotalCount = totalCount,
         };
     }
+
+    /// <summary>
+    /// Generic handler for updating entities with authorization and logging.
+    /// </summary>
+    /// <typeparam name="TRequest">The request type containing Id, ModuleId and update data (must inherit from EntityRequestBase)</typeparam>
+    /// <typeparam name="TEntity">The entity type to update (must inherit from AuditableModuleBase)</typeparam>
+    /// <param name="request">The request containing the entity Id, ModuleId and update data</param>
+    /// <param name="updateEntity">Action to apply request data to existing entity</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>The updated entity ID on success, -1 on authorization failure or not found</returns>
+    protected async Task<int> HandleUpdateAsync<TRequest, TEntity>(
+        TRequest request,
+        Action<TEntity, TRequest> updateEntity,
+        CancellationToken cancellationToken = default)
+        where TEntity : AuditableModuleBase
+        where TRequest : EntityRequestBase
+    {
+        var alias = GetAlias();
+
+        if (!IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
+        {
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized {EntityName} Update Attempt {Id}", typeof(TEntity).Name, request.Id);
+            return -1;
+        }
+
+        using var db = CreateDbContext();
+
+        var entity = await db.Set<TEntity>()
+            .FindAsync([request.Id], cancellationToken)
+            .ConfigureAwait(false);
+
+        if (entity is null)
+        {
+            Logger.Log(LogLevel.Warning, this, LogFunction.Update, "{EntityName} Not Found {Id}", typeof(TEntity).Name, request.Id);
+            return -1;
+        }
+
+        // Verify entity belongs to the correct module
+        if (entity.ModuleId != request.ModuleId)
+        {
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized {EntityName} Update Attempt - ModuleId Mismatch {Id} {ModuleId}", typeof(TEntity).Name, request.Id, request.ModuleId);
+            return -1;
+        }
+
+        updateEntity(entity, request);
+        await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+        Logger.Log(LogLevel.Information, this, LogFunction.Update, "{EntityName} Updated {Entity}", typeof(TEntity).Name, entity);
+        return request.Id;
+    }
 }
