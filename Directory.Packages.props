@@ -10,6 +10,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.11" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Localization" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Riok.Mapperly" Version="4.3.0" />

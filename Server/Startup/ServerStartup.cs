@@ -22,5 +22,9 @@ public class ServerStartup : IServerStartup
         // Register DbContext factory
         services.AddDbContextFactory<ApplicationCommandContext>(opt => { }, ServiceLifetime.Transient);
         services.AddDbContextFactory<ApplicationQueryContext>(opt => { }, ServiceLifetime.Transient);
+
+        // Register generic Handler Services for cleaner handler constructors
+        services.AddScoped<HandlerServices<ApplicationQueryContext>>();
+        services.AddScoped<HandlerServices<ApplicationCommandContext>>();
     }
 }

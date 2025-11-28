@@ -9,3 +9,4 @@ msbuild.binlog
 *.nupkg
 /Server/Content/Log
 /Server/Data
+/TestResults/
