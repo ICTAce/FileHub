@@ -12,33 +12,20 @@ public record CreateCategoryRequest : RequestBase, IRequest<int>
 public class CreateHandler(HandlerServices<ApplicationCommandContext> services)
     : HandlerBase<ApplicationCommandContext>(services), IRequestHandler<CreateCategoryRequest, int>
 {
-    public async Task<int> Handle(CreateCategoryRequest request, CancellationToken cancellationToken)
+    private static readonly CreateMapper _mapper = new();
+
+    public Task<int> Handle(CreateCategoryRequest request, CancellationToken cancellationToken)
     {
-        var alias = GetAlias();
-
-        if (IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
-        {
-            // Build the entity from command data
-            var category = new Persistence.Entities.Category
-            {
-                ModuleId = request.ModuleId,
-                Name = request.Name,
-                ViewOrder = request.ViewOrder,
-                ParentId = request.ParentId,
-                // CreatedBy, CreatedOn, ModifiedBy, ModifiedOn will be set by IAuditable/database
-            };
-
-            using var db = CreateDbContext();
-            db.Category.Add(category);
-            await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-            Logger.Log(LogLevel.Information, this, LogFunction.Create, "FileHub Category Added {Category}", category);
-            return category.Id;
-        }
-        else
-        {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized FileHub Category Add Attempt {ModuleId} {Name}", request.ModuleId, request.Name);
-            return -1;
-        }
+        return HandleCreateAsync(
+            request: request,
+            mapToEntity: _mapper.ToEntity,
+            cancellationToken: cancellationToken
+        );
     }
+}
+
+[Mapper]
+internal sealed partial class CreateMapper
+{
+    internal partial Persistence.Entities.Category ToEntity(CreateCategoryRequest request);
 }
