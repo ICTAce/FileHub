@@ -1,8 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Features.SampleModule;
-using CategoryHandlers = ICTAce.FileHub.Features.Categories;
 using static ICTAce.FileHub.Server.Tests.Helpers.SampleModuleTestHelpers;
+using CategoryHandlers = ICTAce.FileHub.Features.Categories;
 using CategoryHelpers = ICTAce.FileHub.Server.Tests.Helpers.CategoryTestHelpers;
 
 namespace ICTAce.FileHub.Server.Tests.Features.Security;
@@ -42,7 +41,7 @@ public class AuthorizationTests : HandlerTestBase
         await Assert.That(entity!.Name).IsEqualTo("Original");
         await Assert.That(entity.ModuleId).IsEqualTo(1);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -70,16 +69,16 @@ public class AuthorizationTests : HandlerTestBase
         var entity = await GetFromCommandDbAsync(options, 1);
         await Assert.That(entity).IsNotNull();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
     public async Task Get_WithDifferentModuleId_ReturnsNull()
     {
         // Arrange - Entity in Module 1, try to get from Module 2
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await Helpers.SampleModuleTestHelpers.SeedQueryDataAsync(options,
-            CreateTestEntity(id: 1, moduleId: 1));
+            CreateTestEntity(id: 1, moduleId: 1)).ConfigureAwait(false);
 
         var handler = new GetHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
@@ -96,19 +95,19 @@ public class AuthorizationTests : HandlerTestBase
         // Assert - Security check prevented access
         await Assert.That(result).IsNull();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
     public async Task List_OnlyReturnsEntitiesFromRequestedModule()
     {
         // Arrange - Entities in both Module 1 and Module 2
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await Helpers.SampleModuleTestHelpers.SeedQueryDataAsync(options,
             CreateTestEntity(id: 1, moduleId: 1, name: "Module 1 - Item 1"),
             CreateTestEntity(id: 2, moduleId: 1, name: "Module 1 - Item 2"),
             CreateTestEntity(id: 3, moduleId: 2, name: "Module 2 - Item 1"),
-            CreateTestEntity(id: 4, moduleId: 2, name: "Module 2 - Item 2"));
+            CreateTestEntity(id: 4, moduleId: 2, name: "Module 2 - Item 2")).ConfigureAwait(false);
 
         var handler = new ListHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
@@ -128,7 +127,7 @@ public class AuthorizationTests : HandlerTestBase
         await Assert.That(result!.TotalCount).IsEqualTo(2);
         await Assert.That(result.Items.All(x => x.Name.StartsWith("Module 1", StringComparison.Ordinal))).IsTrue();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -137,7 +136,7 @@ public class AuthorizationTests : HandlerTestBase
         // Arrange
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await CategoryHelpers.SeedCommandDataAsync(options,
-            CategoryHelpers.CreateTestEntity(id: 1, moduleId: 1, name: "Original"));
+            CategoryHelpers.CreateTestEntity(id: 1, moduleId: 1, name: "Original")).ConfigureAwait(false);
 
         var handler = new CategoryHandlers.UpdateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -157,10 +156,10 @@ public class AuthorizationTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        var entity = await CategoryHelpers.GetFromCommandDbAsync(options, 1);
+        var entity = await CategoryHelpers.GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(entity!.Name).IsEqualTo("Original");
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     #endregion
@@ -187,10 +186,10 @@ public class AuthorizationTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        var count = await GetCountFromCommandDbAsync(options);
+        var count = await GetCountFromCommandDbAsync(options).ConfigureAwait(false);
         await Assert.That(count).IsEqualTo(0);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -198,7 +197,7 @@ public class AuthorizationTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
-        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1, name: "Original"));
+        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1, name: "Original")).ConfigureAwait(false);
 
         var handler = new UpdateHandler(
             CreateCommandHandlerServices(options, isAuthorized: false));
@@ -216,10 +215,10 @@ public class AuthorizationTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        var entity = await GetFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(entity!.Name).IsEqualTo("Original");
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -227,7 +226,7 @@ public class AuthorizationTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
-        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1));
+        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1)).ConfigureAwait(false);
 
         var handler = new DeleteHandler(
             CreateCommandHandlerServices(options, isAuthorized: false));
@@ -244,19 +243,19 @@ public class AuthorizationTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        var entity = await GetFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(entity).IsNotNull();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
     public async Task Get_WithoutViewPermission_ReturnsNull()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await Helpers.SampleModuleTestHelpers.SeedQueryDataAsync(options,
-            CreateTestEntity(id: 1, moduleId: 1));
+            CreateTestEntity(id: 1, moduleId: 1)).ConfigureAwait(false);
 
         var handler = new GetHandler(
             CreateQueryHandlerServices(options, isAuthorized: false));
@@ -273,16 +272,16 @@ public class AuthorizationTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsNull();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
     public async Task List_WithoutViewPermission_ReturnsNull()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await Helpers.SampleModuleTestHelpers.SeedQueryDataAsync(options,
-            CreateTestEntity(id: 1, moduleId: 1));
+            CreateTestEntity(id: 1, moduleId: 1)).ConfigureAwait(false);
 
         var handler = new ListHandler(
             CreateQueryHandlerServices(options, isAuthorized: false));
@@ -300,7 +299,7 @@ public class AuthorizationTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsNull();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     #endregion
@@ -311,11 +310,11 @@ public class AuthorizationTests : HandlerTestBase
     public async Task MultipleModules_IsolationMaintained()
     {
         // Arrange - Create entities in different modules
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await Helpers.SampleModuleTestHelpers.SeedQueryDataAsync(options,
             CreateTestEntity(id: 1, moduleId: 1, name: "Module 1"),
             CreateTestEntity(id: 2, moduleId: 2, name: "Module 2"),
-            CreateTestEntity(id: 3, moduleId: 3, name: "Module 3"));
+            CreateTestEntity(id: 3, moduleId: 3, name: "Module 3")).ConfigureAwait(false);
 
         var handler = new ListHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
@@ -326,7 +325,7 @@ public class AuthorizationTests : HandlerTestBase
             ModuleId = 2,
             PageNumber = 1,
             PageSize = 10
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert - Only Module 2 entity returned
         var items = result!.Items.ToList();
@@ -334,7 +333,7 @@ public class AuthorizationTests : HandlerTestBase
         await Assert.That(result!.TotalCount).IsEqualTo(1);
         await Assert.That(items[0].Name).IsEqualTo("Module 2");
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     #endregion

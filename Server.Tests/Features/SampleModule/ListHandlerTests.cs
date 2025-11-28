@@ -37,7 +37,7 @@ public class ListHandlerTests : HandlerTestBase
         await Assert.That(result.PageNumber).IsEqualTo(1);
         await Assert.That(result.PageSize).IsEqualTo(10);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -77,7 +77,7 @@ public class ListHandlerTests : HandlerTestBase
         await Assert.That(items[0].Name).IsEqualTo("Charlie");
         await Assert.That(items[1].Name).IsEqualTo("Delta");
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -102,7 +102,7 @@ public class ListHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsNull();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -129,7 +129,7 @@ public class ListHandlerTests : HandlerTestBase
         await Assert.That(result!.TotalCount).IsEqualTo(0);
         await Assert.That(result.Items.Count()).IsEqualTo(0);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -164,7 +164,7 @@ public class ListHandlerTests : HandlerTestBase
         var items = result.Items.ToList();
         await Assert.That(items.All(x => x.Name.StartsWith("Module 1"))).IsTrue();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -197,7 +197,7 @@ public class ListHandlerTests : HandlerTestBase
         await Assert.That(items[1].Name).IsEqualTo("Mango");
         await Assert.That(items[2].Name).IsEqualTo("Zebra");
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 }
 

@@ -10,7 +10,7 @@ public class DeleteHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
-        await SeedCommandDataAsync(options, CreateTestEntity());
+        await SeedCommandDataAsync(options, CreateTestEntity()).ConfigureAwait(false);
 
         var handler = new DeleteHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -27,10 +27,10 @@ public class DeleteHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(1);
 
-        var deletedEntity = await GetFromCommandDbAsync(options, 1);
+        var deletedEntity = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(deletedEntity).IsNull();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -38,7 +38,7 @@ public class DeleteHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
-        await SeedCommandDataAsync(options, CreateTestEntity());
+        await SeedCommandDataAsync(options, CreateTestEntity()).ConfigureAwait(false);
 
         var handler = new DeleteHandler(
             CreateCommandHandlerServices(options, isAuthorized: false));
@@ -55,10 +55,10 @@ public class DeleteHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        var entity = await GetFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(entity).IsNotNull();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -82,7 +82,7 @@ public class DeleteHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -90,7 +90,7 @@ public class DeleteHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
-        await SeedCommandDataAsync(options, CreateTestEntity());
+        await SeedCommandDataAsync(options, CreateTestEntity()).ConfigureAwait(false);
 
         var handler = new DeleteHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -107,10 +107,10 @@ public class DeleteHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        var entity = await GetFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(entity).IsNotNull();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -121,23 +121,23 @@ public class DeleteHandlerTests : HandlerTestBase
         await SeedCommandDataAsync(options,
             CreateTestEntity(id: 1, name: "Module 1"),
             CreateTestEntity(id: 2, name: "Module 2"),
-            CreateTestEntity(id: 3, name: "Module 3"));
+            CreateTestEntity(id: 3, name: "Module 3")).ConfigureAwait(false);
 
         var handler = new DeleteHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
 
         // Act
-        var result1 = await handler.Handle(new DeleteSampleModuleRequest { Id = 1, ModuleId = 1 }, CancellationToken.None);
-        var result2 = await handler.Handle(new DeleteSampleModuleRequest { Id = 2, ModuleId = 1 }, CancellationToken.None);
+        var result1 = await handler.Handle(new DeleteSampleModuleRequest { Id = 1, ModuleId = 1 }, CancellationToken.None).ConfigureAwait(false);
+        var result2 = await handler.Handle(new DeleteSampleModuleRequest { Id = 2, ModuleId = 1 }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result1).IsEqualTo(1);
         await Assert.That(result2).IsEqualTo(2);
 
-        var count = await GetCountFromCommandDbAsync(options);
+        var count = await GetCountFromCommandDbAsync(options).ConfigureAwait(false);
         await Assert.That(count).IsEqualTo(1); // Only ID 3 should remain
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 }
 

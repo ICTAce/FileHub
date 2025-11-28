@@ -41,7 +41,7 @@ public class PaginationTests : HandlerTestBase
         await Assert.That(result.TotalCount).IsEqualTo(5);
         await Assert.That(result.Items.Count()).IsEqualTo(3);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -74,7 +74,7 @@ public class PaginationTests : HandlerTestBase
         await Assert.That(result.TotalCount).IsEqualTo(5);
         await Assert.That(result.Items.Count()).IsEqualTo(2);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -98,7 +98,7 @@ public class PaginationTests : HandlerTestBase
         await Assert.That(result!.TotalCount).IsEqualTo(0);
         await Assert.That(result.Items.Count()).IsEqualTo(0);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -126,7 +126,7 @@ public class PaginationTests : HandlerTestBase
         await Assert.That(result!.TotalCount).IsEqualTo(2);
         await Assert.That(result.Items.Count()).IsEqualTo(2);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -179,7 +179,7 @@ public class PaginationTests : HandlerTestBase
         await Assert.That(page2List[1].Name).IsEqualTo("Orange");
         await Assert.That(page3List[0].Name).IsEqualTo("Zebra");
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -207,7 +207,7 @@ public class PaginationTests : HandlerTestBase
         await Assert.That(result!.TotalCount).IsEqualTo(50);
         await Assert.That(result.Items.Count()).IsEqualTo(10);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -238,6 +238,6 @@ public class PaginationTests : HandlerTestBase
         await Assert.That(items[1].Name).IsEqualTo("Banana");
         await Assert.That(items[2].Name).IsEqualTo("Zebra");
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 }

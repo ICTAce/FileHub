@@ -30,7 +30,7 @@ public class GetHandlerTests : HandlerTestBase
         await Assert.That(result.ViewOrder).IsEqualTo(1);
         await Assert.That(result.ParentId).IsEqualTo(0);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -50,7 +50,7 @@ public class GetHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNull();
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -70,7 +70,7 @@ public class GetHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNull();
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -91,7 +91,7 @@ public class GetHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsNull();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -121,7 +121,7 @@ public class GetHandlerTests : HandlerTestBase
         await Assert.That(result.CreatedOn).IsEqualTo(createdOn);
         await Assert.That(result.ModifiedOn).IsEqualTo(modifiedOn);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -146,6 +146,6 @@ public class GetHandlerTests : HandlerTestBase
         await Assert.That(result!.ParentId).IsEqualTo(1);
         await Assert.That(result.Name).IsEqualTo("Child Category");
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 }

@@ -1,8 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Features.SampleModule;
-using CategoryHandlers = ICTAce.FileHub.Features.Categories;
 using static ICTAce.FileHub.Server.Tests.Helpers.SampleModuleTestHelpers;
+using CategoryHandlers = ICTAce.FileHub.Features.Categories;
 
 namespace ICTAce.FileHub.Server.Tests.Features.Integration;
 
@@ -75,7 +74,7 @@ public class CrudWorkflowTests : HandlerTestBase
         var deletedEntity = await GetFromCommandDbAsync(commandOptions, createdId).ConfigureAwait(false);
         await Assert.That(deletedEntity).IsNull();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -137,7 +136,7 @@ public class CrudWorkflowTests : HandlerTestBase
         await Assert.That(page3Result!.Items.Count()).IsEqualTo(1);
         await Assert.That(page3Result.TotalCount).IsEqualTo(5);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -195,7 +194,7 @@ public class CrudWorkflowTests : HandlerTestBase
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.Name).IsEqualTo("Modified");
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -227,7 +226,7 @@ public class CrudWorkflowTests : HandlerTestBase
         // Assert
         await Assert.That(secondDeleteResult).IsEqualTo(-1);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -264,7 +263,7 @@ public class CrudWorkflowTests : HandlerTestBase
         var count = await GetCountFromCommandDbAsync(options).ConfigureAwait(false);
         await Assert.That(count).IsEqualTo(5);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -344,6 +343,6 @@ public class CrudWorkflowTests : HandlerTestBase
 
         await Assert.That(deleteResult).IsEqualTo(id);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 }

@@ -33,7 +33,7 @@ public class CreateHandlerTests : HandlerTestBase
         await Assert.That(savedEntity!.Name).IsEqualTo("Test Sample Module");
         await Assert.That(savedEntity.ModuleId).IsEqualTo(1);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -60,7 +60,7 @@ public class CreateHandlerTests : HandlerTestBase
         var count = await GetCountFromCommandDbAsync(options);
         await Assert.That(count).IsEqualTo(0);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -91,7 +91,7 @@ public class CreateHandlerTests : HandlerTestBase
         await Assert.That(savedEntity).IsNotNull();
         await Assert.That(savedEntity!.Name).IsEqualTo(name);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -118,6 +118,6 @@ public class CreateHandlerTests : HandlerTestBase
         var count = await GetCountFromCommandDbAsync(options);
         await Assert.That(count).IsEqualTo(3);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 }

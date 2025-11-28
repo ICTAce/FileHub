@@ -1,15 +1,9 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Persistence;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
-using Oqtane.Infrastructure;
 using Oqtane.Repository;
 
 namespace ICTAce.FileHub.Server.Tests.Helpers;

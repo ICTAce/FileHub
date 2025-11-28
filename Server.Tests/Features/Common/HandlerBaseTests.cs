@@ -102,7 +102,7 @@ public class HandlerBaseTests : HandlerTestBase
     public async Task HandleGetAsync_WithExistingEntity_ReturnsDto()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await Helpers.SampleModuleTestHelpers.SeedQueryDataAsync(options,
             CreateTestEntity(id: 1, moduleId: 1, name: "Test")).ConfigureAwait(false);
 
@@ -130,7 +130,7 @@ public class HandlerBaseTests : HandlerTestBase
     public async Task HandleGetAsync_WithNonExistentId_ReturnsNull()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         var handler = new GetHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
 
@@ -153,7 +153,7 @@ public class HandlerBaseTests : HandlerTestBase
     public async Task HandleGetAsync_WithUnauthorizedUser_ReturnsNull()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await Helpers.SampleModuleTestHelpers.SeedQueryDataAsync(options,
             CreateTestEntity(id: 1, moduleId: 1)).ConfigureAwait(false);
 
@@ -267,7 +267,7 @@ public class HandlerBaseTests : HandlerTestBase
     public async Task HandleListAsync_ReturnsPagedResults()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await Helpers.SampleModuleTestHelpers.SeedQueryDataAsync(options,
             CreateTestEntity(id: 1, moduleId: 1, name: "First"),
             CreateTestEntity(id: 2, moduleId: 1, name: "Second"),
@@ -288,7 +288,7 @@ public class HandlerBaseTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items.Count).IsEqualTo(2);
+        await Assert.That(result!.Items.Count()).IsEqualTo(2);
         await Assert.That(result.TotalCount).IsEqualTo(3);
         await Assert.That(result.PageNumber).IsEqualTo(1);
         await Assert.That(result.PageSize).IsEqualTo(2);
@@ -300,7 +300,7 @@ public class HandlerBaseTests : HandlerTestBase
     public async Task HandleListAsync_WithCustomOrdering_SortsCorrectly()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await Helpers.SampleModuleTestHelpers.SeedQueryDataAsync(options,
             CreateTestEntity(id: 1, moduleId: 1, name: "Zebra"),
             CreateTestEntity(id: 2, moduleId: 1, name: "Apple"),
@@ -333,7 +333,7 @@ public class HandlerBaseTests : HandlerTestBase
     public async Task HandleListAsync_WithUnauthorizedUser_ReturnsNull()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await Helpers.SampleModuleTestHelpers.SeedQueryDataAsync(options,
             CreateTestEntity(id: 1, moduleId: 1)).ConfigureAwait(false);
 
@@ -383,7 +383,7 @@ public class HandlerBaseTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(1);
 
-        var entity = await GetFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(entity!.Name).IsEqualTo("Updated");
 
         await connection.CloseAsync().ConfigureAwait(false);
@@ -418,7 +418,7 @@ public class HandlerBaseTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
-        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1, name: "Original"));
+        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1, name: "Original")).ConfigureAwait(false);
 
         var handler = new UpdateHandler(
             CreateCommandHandlerServices(options, isAuthorized: false));
@@ -436,7 +436,7 @@ public class HandlerBaseTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        var entity = await GetFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(entity!.Name).IsEqualTo("Original");
 
         await connection.CloseAsync().ConfigureAwait(false);

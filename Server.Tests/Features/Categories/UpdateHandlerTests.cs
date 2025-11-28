@@ -37,7 +37,7 @@ public class UpdateHandlerTests : HandlerTestBase
         await Assert.That(entity!.Name).IsEqualTo("Updated Name");
         await Assert.That(entity.ViewOrder).IsEqualTo(5);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -64,7 +64,7 @@ public class UpdateHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -95,7 +95,7 @@ public class UpdateHandlerTests : HandlerTestBase
         var entity = await GetFromCommandDbAsync(options, 1);
         await Assert.That(entity!.Name).IsEqualTo("Original Name");
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -105,7 +105,7 @@ public class UpdateHandlerTests : HandlerTestBase
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, 
             CreateTestEntity(id: 1, name: "Parent Category", parentId: 0),
-            CreateTestEntity(id: 2, name: "Child Category", parentId: 0));
+            CreateTestEntity(id: 2, name: "Child Category", parentId: 0)).ConfigureAwait(false);
 
         var handler = new CategoryHandlers.UpdateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -125,11 +125,11 @@ public class UpdateHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(2);
 
-        var entity = await GetFromCommandDbAsync(options, 2);
+        var entity = await GetFromCommandDbAsync(options, 2).ConfigureAwait(false);
         await Assert.That(entity).IsNotNull();
         await Assert.That(entity!.ParentId).IsEqualTo(1);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -137,7 +137,7 @@ public class UpdateHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
-        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, viewOrder: 1));
+        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, viewOrder: 1)).ConfigureAwait(false);
 
         var handler = new CategoryHandlers.UpdateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -157,10 +157,10 @@ public class UpdateHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(1);
 
-        var entity = await GetFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(entity!.ViewOrder).IsEqualTo(99);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -169,7 +169,7 @@ public class UpdateHandlerTests : HandlerTestBase
         // Arrange
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, 
-            CreateTestEntity(id: 1, name: "Original", viewOrder: 5, parentId: 0));
+            CreateTestEntity(id: 1, name: "Original", viewOrder: 5, parentId: 0)).ConfigureAwait(false);
 
         var handler = new CategoryHandlers.UpdateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -189,12 +189,12 @@ public class UpdateHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(1);
 
-        var entity = await GetFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(entity!.Name).IsEqualTo("New Name Only");
         await Assert.That(entity.ViewOrder).IsEqualTo(5);
         await Assert.That(entity.ParentId).IsEqualTo(0);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
@@ -204,7 +204,7 @@ public class UpdateHandlerTests : HandlerTestBase
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options,
             CreateTestEntity(id: 1, name: "Category 1"),
-            CreateTestEntity(id: 2, name: "Category 2"));
+            CreateTestEntity(id: 2, name: "Category 2")).ConfigureAwait(false);
 
         var handler = new CategoryHandlers.UpdateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -217,7 +217,7 @@ public class UpdateHandlerTests : HandlerTestBase
             Name = "Updated 1",
             ViewOrder = 1,
             ParentId = 0
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         var result2 = await handler.Handle(new CategoryHandlers.UpdateCategoryRequest
         {
@@ -226,18 +226,18 @@ public class UpdateHandlerTests : HandlerTestBase
             Name = "Updated 2",
             ViewOrder = 2,
             ParentId = 0
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result1).IsEqualTo(1);
         await Assert.That(result2).IsEqualTo(2);
 
-        var entity1 = await GetFromCommandDbAsync(options, 1);
-        var entity2 = await GetFromCommandDbAsync(options, 2);
+        var entity1 = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
+        var entity2 = await GetFromCommandDbAsync(options, 2).ConfigureAwait(false);
 
         await Assert.That(entity1!.Name).IsEqualTo("Updated 1");
         await Assert.That(entity2!.Name).IsEqualTo("Updated 2");
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 }

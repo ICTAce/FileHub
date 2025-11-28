@@ -1,9 +1,5 @@
 // Licensed to ICTAce under the MIT license.
 
-using Microsoft.AspNetCore.Http;
-using NSubstitute;
-using System.Security.Claims;
-
 namespace ICTAce.FileHub.Server.Tests.Helpers;
 
 public static class TestHelpers

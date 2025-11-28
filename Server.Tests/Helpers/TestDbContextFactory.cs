@@ -1,7 +1,5 @@
 // Licensed to ICTAce under the MIT license.
 
-using Microsoft.EntityFrameworkCore;
-
 namespace ICTAce.FileHub.Server.Tests.Helpers;
 
 /// <summary>
