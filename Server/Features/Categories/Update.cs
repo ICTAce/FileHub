@@ -12,20 +12,15 @@ public record UpdateCategoryRequest : EntityRequestBase, IRequest<int>
 public class UpdateHandler(HandlerServices<ApplicationCommandContext> services)
     : HandlerBase<ApplicationCommandContext>(services), IRequestHandler<UpdateCategoryRequest, int>
 {
-    private static readonly UpdateMapper _mapper = new();
-
     public Task<int> Handle(UpdateCategoryRequest request, CancellationToken cancellationToken)
     {
         return HandleUpdateAsync<UpdateCategoryRequest, Persistence.Entities.Category>(
             request: request,
-            updateEntity: _mapper.ApplyUpdate,
+            setPropertyCalls: setter => setter
+                .SetProperty(e => e.Name, request.Name)
+                .SetProperty(e => e.ViewOrder, request.ViewOrder)
+                .SetProperty(e => e.ParentId, request.ParentId),
             cancellationToken: cancellationToken
         );
     }
-}
-
-[Mapper]
-internal sealed partial class UpdateMapper
-{
-    internal partial void ApplyUpdate(Persistence.Entities.Category entity, UpdateCategoryRequest request);
 }

@@ -61,8 +61,8 @@ public abstract class HandlerBase<TContext>
         TRequest request,
         Func<TRequest, TEntity> mapToEntity,
         CancellationToken cancellationToken = default)
-        where TEntity : AuditableBase
         where TRequest : notnull
+        where TEntity : AuditableBase
     {
         // Extract ModuleId from request - must be RequestBase or have ModuleId property
         if (request is not RequestBase requestBase)
@@ -99,8 +99,8 @@ public abstract class HandlerBase<TContext>
     protected async Task<int> HandleDeleteAsync<TRequest, TEntity>(
         TRequest request,
         CancellationToken cancellationToken = default)
-        where TEntity : AuditableModuleBase
         where TRequest : EntityRequestBase
+        where TEntity : AuditableModuleBase
     {
         var alias = GetAlias();
 
@@ -140,8 +140,8 @@ public abstract class HandlerBase<TContext>
         TRequest request,
         Func<TEntity, TResponse> mapToResponse,
         CancellationToken cancellationToken = default)
-        where TEntity : AuditableModuleBase
         where TRequest : EntityRequestBase
+        where TEntity : AuditableModuleBase
         where TResponse : class
     {
         var alias = GetAlias();
@@ -182,8 +182,8 @@ public abstract class HandlerBase<TContext>
         Func<TEntity, TResponse> mapToResponse,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         CancellationToken cancellationToken = default)
-        where TEntity : AuditableModuleBase
         where TRequest : PagedRequestBase
+        where TEntity : AuditableModuleBase
     {
         var alias = GetAlias();
 
@@ -230,15 +230,15 @@ public abstract class HandlerBase<TContext>
     /// <typeparam name="TRequest">The request type containing Id, ModuleId and update data (must inherit from EntityRequestBase)</typeparam>
     /// <typeparam name="TEntity">The entity type to update (must inherit from AuditableModuleBase)</typeparam>
     /// <param name="request">The request containing the entity Id, ModuleId and update data</param>
-    /// <param name="updateEntity">Action to apply request data to existing entity</param>
+    /// <param name="setPropertyCalls">Expression to define property updates using SetProperty calls</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The updated entity ID on success, -1 on authorization failure or not found</returns>
     protected async Task<int> HandleUpdateAsync<TRequest, TEntity>(
         TRequest request,
-        Action<TEntity, TRequest> updateEntity,
+        Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> setPropertyCalls,
         CancellationToken cancellationToken = default)
-        where TEntity : AuditableModuleBase
         where TRequest : EntityRequestBase
+        where TEntity : AuditableModuleBase
     {
         var alias = GetAlias();
 
@@ -250,27 +250,18 @@ public abstract class HandlerBase<TContext>
 
         using var db = CreateDbContext();
 
-        var entity = await db.Set<TEntity>()
-            .FindAsync([request.Id], cancellationToken)
+        var rowsAffected = await db.Set<TEntity>()
+            .Where(e => e.Id == request.Id && e.ModuleId == request.ModuleId)
+            .ExecuteUpdateAsync(setPropertyCalls, cancellationToken)
             .ConfigureAwait(false);
 
-        if (entity is null)
+        if (rowsAffected > 0)
         {
-            Logger.Log(LogLevel.Warning, this, LogFunction.Update, "{EntityName} Not Found {Id}", typeof(TEntity).Name, request.Id);
-            return -1;
+            Logger.Log(LogLevel.Information, this, LogFunction.Update, "{EntityName} Updated {Id}", typeof(TEntity).Name, request.Id);
+            return request.Id;
         }
 
-        // Verify entity belongs to the correct module
-        if (entity.ModuleId != request.ModuleId)
-        {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized {EntityName} Update Attempt - ModuleId Mismatch {Id} {ModuleId}", typeof(TEntity).Name, request.Id, request.ModuleId);
-            return -1;
-        }
-
-        updateEntity(entity, request);
-        await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        Logger.Log(LogLevel.Information, this, LogFunction.Update, "{EntityName} Updated {Entity}", typeof(TEntity).Name, entity);
-        return request.Id;
+        Logger.Log(LogLevel.Warning, this, LogFunction.Update, "{EntityName} Not Found {Id}", typeof(TEntity).Name, request.Id);
+        return -1;
     }
 }

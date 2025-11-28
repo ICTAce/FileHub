@@ -1,13 +1,14 @@
 // Licensed to ICTAce under the MIT license.
 
 global using System.ComponentModel.DataAnnotations;
+global using System.Linq.Expressions;
 global using System.Security.Claims;
 global using System.Text.Json;
 global using ICTAce.FileHub.Features.Common;
-global using ICTAce.FileHub.Features.SampleModule;
 global using ICTAce.FileHub.Persistence;
 global using ICTAce.FileHub.Persistence.Common;
 global using ICTAce.FileHub.Persistence.Migrations.EntityBuilders;
+global using ICTAce.FileHub.Services;
 global using ICTAce.FileHub.Services.Common;
 global using MediatR;
 global using Microsoft.AspNetCore;
@@ -19,6 +20,7 @@ global using Microsoft.EntityFrameworkCore.Infrastructure;
 global using Microsoft.EntityFrameworkCore.Migrations;
 global using Microsoft.EntityFrameworkCore.Migrations.Operations;
 global using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
+global using Microsoft.EntityFrameworkCore.Query;
 global using Oqtane.Controllers;
 global using Oqtane.Databases.Interfaces;
 global using Oqtane.Enums;
@@ -35,4 +37,3 @@ global using Oqtane.Security;
 global using Oqtane.Shared;
 global using Riok.Mapperly.Abstractions;
 global using LogLevel = Oqtane.Shared.LogLevel;
-global using ICTAce.FileHub.Services;

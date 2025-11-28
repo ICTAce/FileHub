@@ -10,20 +10,12 @@ public record UpdateSampleModuleRequest : EntityRequestBase, IRequest<int>
 public class UpdateHandler(HandlerServices<ApplicationCommandContext> services)
     : HandlerBase<ApplicationCommandContext>(services), IRequestHandler<UpdateSampleModuleRequest, int>
 {
-    private static readonly UpdateMapper _mapper = new();
-
     public Task<int> Handle(UpdateSampleModuleRequest request, CancellationToken cancellationToken)
     {
         return HandleUpdateAsync<UpdateSampleModuleRequest, Persistence.Entities.SampleModule>(
             request: request,
-            updateEntity: _mapper.ApplyUpdate,
+            setPropertyCalls: setter => setter.SetProperty(e => e.Name, request.Name),
             cancellationToken: cancellationToken
         );
     }
-}
-
-[Mapper]
-internal sealed partial class UpdateMapper
-{
-    internal partial void ApplyUpdate(Persistence.Entities.SampleModule entity, UpdateSampleModuleRequest request);
 }
