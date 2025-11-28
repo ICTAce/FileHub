@@ -19,7 +19,7 @@ public static class CategoryTestHelpers
     {
         using var context = new TestApplicationCommandContext(options);
         context.Category.AddRange(entities);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -31,7 +31,7 @@ public static class CategoryTestHelpers
     {
         using var context = new TestApplicationQueryContext(options);
         context.Category.AddRange(entities);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync().ConfigureAwait(false);
     }
 
     #endregion
@@ -62,7 +62,7 @@ public static class CategoryTestHelpers
             CreatedBy = createdBy,
             CreatedOn = createdOn ?? DateTime.UtcNow,
             ModifiedBy = modifiedBy,
-            ModifiedOn = modifiedOn ?? DateTime.UtcNow
+            ModifiedOn = modifiedOn ?? DateTime.UtcNow,
         };
     }
 
@@ -78,7 +78,7 @@ public static class CategoryTestHelpers
         int id)
     {
         using var context = new TestApplicationCommandContext(options);
-        return await context.Category.FindAsync(id);
+        return await context.Category.FindAsync(id).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public static class CategoryTestHelpers
         int id)
     {
         using var context = new TestApplicationQueryContext(options);
-        return await context.Category.FindAsync(id);
+        return await context.Category.FindAsync(id).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ public static class CategoryTestHelpers
         DbContextOptions<TestApplicationCommandContext> options)
     {
         using var context = new TestApplicationCommandContext(options);
-        return await context.Category.CountAsync();
+        return await context.Category.CountAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -109,7 +109,7 @@ public static class CategoryTestHelpers
         DbContextOptions<TestApplicationQueryContext> options)
     {
         using var context = new TestApplicationQueryContext(options);
-        return await context.Category.CountAsync();
+        return await context.Category.CountAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -127,7 +127,7 @@ public static class CategoryTestHelpers
             query = query.Where(c => c.ModuleId == moduleId.Value);
         }
         
-        return await query.OrderBy(c => c.ViewOrder).ThenBy(c => c.Name).ToListAsync();
+        return await query.OrderBy(c => c.ViewOrder).ThenBy(c => c.Name).ToListAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -145,7 +145,7 @@ public static class CategoryTestHelpers
             query = query.Where(c => c.ModuleId == moduleId.Value);
         }
         
-        return await query.OrderBy(c => c.ViewOrder).ThenBy(c => c.Name).ToListAsync();
+        return await query.OrderBy(c => c.ViewOrder).ThenBy(c => c.Name).ToListAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -160,7 +160,8 @@ public static class CategoryTestHelpers
             .Where(c => c.ParentId == parentId)
             .OrderBy(c => c.ViewOrder)
             .ThenBy(c => c.Name)
-            .ToListAsync();
+            .ToListAsync()
+            .ConfigureAwait(false);
     }
 
     #endregion

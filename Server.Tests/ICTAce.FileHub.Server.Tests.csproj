@@ -9,8 +9,4 @@
     <ProjectReference Include="..\Server\ICTAce.FileHub.Server.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Integration\SampleModule\" />
-  </ItemGroup>
-
 </Project>

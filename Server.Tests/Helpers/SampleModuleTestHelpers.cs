@@ -19,7 +19,7 @@ public static class SampleModuleTestHelpers
     {
         using var context = new TestApplicationCommandContext(options);
         context.SampleModule.AddRange(entities);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -31,7 +31,7 @@ public static class SampleModuleTestHelpers
     {
         using var context = new TestApplicationQueryContext(options);
         context.SampleModule.AddRange(entities);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync().ConfigureAwait(false);
     }
 
     #endregion
@@ -74,7 +74,7 @@ public static class SampleModuleTestHelpers
         int id)
     {
         using var context = new TestApplicationCommandContext(options);
-        return await context.SampleModule.FindAsync(id);
+        return await context.SampleModule.FindAsync(id).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ public static class SampleModuleTestHelpers
         int id)
     {
         using var context = new TestApplicationQueryContext(options);
-        return await context.SampleModule.FindAsync(id);
+        return await context.SampleModule.FindAsync(id).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -95,7 +95,7 @@ public static class SampleModuleTestHelpers
         DbContextOptions<TestApplicationCommandContext> options)
     {
         using var context = new TestApplicationCommandContext(options);
-        return await context.SampleModule.CountAsync();
+        return await context.SampleModule.CountAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ public static class SampleModuleTestHelpers
         DbContextOptions<TestApplicationQueryContext> options)
     {
         using var context = new TestApplicationQueryContext(options);
-        return await context.SampleModule.CountAsync();
+        return await context.SampleModule.CountAsync().ConfigureAwait(false);
     }
 
     #endregion

@@ -33,7 +33,7 @@ public abstract class HandlerTestBase : IDisposable
 
         // Ensure database schema is created
         using var context = new TestApplicationCommandContext(_commandOptions);
-        await context.Database.EnsureCreatedAsync();
+        await context.Database.EnsureCreatedAsync().ConfigureAwait(false);
 
         return (_connection, _commandOptions);
     }
@@ -53,7 +53,7 @@ public abstract class HandlerTestBase : IDisposable
 
         // Ensure database schema is created
         using var context = new TestApplicationQueryContext(_queryOptions);
-        await context.Database.EnsureCreatedAsync();
+        await context.Database.EnsureCreatedAsync().ConfigureAwait(false);
 
         return (_connection, _queryOptions);
     }
