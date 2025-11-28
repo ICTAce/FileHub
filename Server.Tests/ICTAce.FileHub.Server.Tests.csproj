@@ -1,3 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="NSubstitute" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Server\ICTAce.FileHub.Server.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Integration\SampleModule\" />
+  </ItemGroup>
+
 </Project>

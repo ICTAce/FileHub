@@ -1,0 +1,136 @@
+// Licensed to ICTAce under the MIT license.
+
+namespace ICTAce.FileHub.Server.Tests.Features.SampleModule;
+
+public class CreateHandlerTests : HandlerTestBase
+{
+    [Test]
+    public async Task Handle_WithValidRequest_CreatesSampleModule()
+    {
+        // Arrange
+        var (connection, options) = await CreateCommandDatabaseAsync();
+
+        var handler = new CreateHandler(
+            CreateMockCommandContextFactory(options),
+            CreateMockUserPermissions(isAuthorized: true),
+            CreateMockTenantManager(),
+            CreateMockHttpContextAccessor(),
+            CreateMockLogger());
+
+        var request = new CreateSampleModuleRequest
+        {
+            ModuleId = 1,
+            Name = "Test Sample Module"
+        };
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        await Assert.That(result).IsGreaterThan(0);
+
+        var savedEntity = await GetEntityFromCommandDbAsync(options, result);
+        await Assert.That(savedEntity).IsNotNull();
+        await Assert.That(savedEntity!.Name).IsEqualTo("Test Sample Module");
+        await Assert.That(savedEntity.ModuleId).IsEqualTo(1);
+
+        connection.Close();
+    }
+
+    [Test]
+    public async Task Handle_WithUnauthorizedUser_ReturnsMinusOne()
+    {
+        // Arrange
+        var (connection, options) = await CreateCommandDatabaseAsync();
+
+        var handler = new CreateHandler(
+            CreateMockCommandContextFactory(options),
+            CreateMockUserPermissions(isAuthorized: false),
+            CreateMockTenantManager(),
+            CreateMockHttpContextAccessor(),
+            CreateMockLogger());
+
+        var request = new CreateSampleModuleRequest
+        {
+            ModuleId = 1,
+            Name = "Unauthorized Module"
+        };
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        await Assert.That(result).IsEqualTo(-1);
+
+        var count = await GetCommandEntityCountAsync(options);
+        await Assert.That(count).IsEqualTo(0);
+
+        connection.Close();
+    }
+
+    [Test]
+    [Arguments("")]
+    [Arguments("Valid Name")]
+    [Arguments("123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")]
+    public async Task Handle_WithDifferentNames_CreatesSuccessfully(string name)
+    {
+        // Arrange
+        var (connection, options) = await CreateCommandDatabaseAsync();
+
+        var handler = new CreateHandler(
+            CreateMockCommandContextFactory(options),
+            CreateMockUserPermissions(isAuthorized: true),
+            CreateMockTenantManager(),
+            CreateMockHttpContextAccessor(),
+            CreateMockLogger());
+
+        var request = new CreateSampleModuleRequest
+        {
+            ModuleId = 1,
+            Name = name
+        };
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        await Assert.That(result).IsGreaterThan(0);
+
+        var savedEntity = await GetEntityFromCommandDbAsync(options, result);
+        await Assert.That(savedEntity).IsNotNull();
+        await Assert.That(savedEntity!.Name).IsEqualTo(name);
+
+        connection.Close();
+    }
+
+    [Test]
+    public async Task Handle_WithMultipleModules_CreatesAllSuccessfully()
+    {
+        // Arrange
+        var (connection, options) = await CreateCommandDatabaseAsync();
+
+        var handler = new CreateHandler(
+            CreateMockCommandContextFactory(options),
+            CreateMockUserPermissions(isAuthorized: true),
+            CreateMockTenantManager(),
+            CreateMockHttpContextAccessor(),
+            CreateMockLogger());
+
+        // Act
+        var id1 = await handler.Handle(new CreateSampleModuleRequest { ModuleId = 1, Name = "Module 1" }, CancellationToken.None);
+        var id2 = await handler.Handle(new CreateSampleModuleRequest { ModuleId = 1, Name = "Module 2" }, CancellationToken.None);
+        var id3 = await handler.Handle(new CreateSampleModuleRequest { ModuleId = 2, Name = "Module 3" }, CancellationToken.None);
+
+        // Assert
+        await Assert.That(id1).IsGreaterThan(0);
+        await Assert.That(id2).IsGreaterThan(0);
+        await Assert.That(id3).IsGreaterThan(0);
+        await Assert.That(id1).IsNotEqualTo(id2);
+        await Assert.That(id2).IsNotEqualTo(id3);
+
+        var count = await GetCommandEntityCountAsync(options);
+        await Assert.That(count).IsEqualTo(3);
+
+        connection.Close();
+    }
+}
