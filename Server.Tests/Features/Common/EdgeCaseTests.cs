@@ -1,8 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
-using ICTAce.FileHub.Features.SampleModule;
-using CategoryHandlers = ICTAce.FileHub.Features.Categories;
 using static ICTAce.FileHub.Server.Tests.Helpers.SampleModuleTestHelpers;
+using CategoryHandlers = ICTAce.FileHub.Features.Categories;
 
 namespace ICTAce.FileHub.Server.Tests.Features.Common;
 
@@ -17,7 +16,7 @@ public class EdgeCaseTests : HandlerTestBase
     public async Task Create_WithEmptyName_CreatesSuccessfully()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         var handler = new CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
 
@@ -26,23 +25,23 @@ public class EdgeCaseTests : HandlerTestBase
         {
             ModuleId = 1,
             Name = string.Empty
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsGreaterThan(0);
 
-        var entity = await GetFromCommandDbAsync(options, result);
+        var entity = await GetFromCommandDbAsync(options, result).ConfigureAwait(false);
         await Assert.That(entity!.Name).IsEqualTo(string.Empty);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
     public async Task Update_WithEmptyName_UpdatesSuccessfully()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
-        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1, name: "Original"));
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
+        await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1, name: "Original")).ConfigureAwait(false);
 
         var handler = new UpdateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -53,22 +52,22 @@ public class EdgeCaseTests : HandlerTestBase
             Id = 1,
             ModuleId = 1,
             Name = string.Empty
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(1);
 
-        var entity = await GetFromCommandDbAsync(options, 1);
+        var entity = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(entity!.Name).IsEqualTo(string.Empty);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
     public async Task Create_WithVeryLongName_CreatesSuccessfully()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         var handler = new CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
 
@@ -79,22 +78,22 @@ public class EdgeCaseTests : HandlerTestBase
         {
             ModuleId = 1,
             Name = longName
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsGreaterThan(0);
 
-        var entity = await GetFromCommandDbAsync(options, result);
+        var entity = await GetFromCommandDbAsync(options, result).ConfigureAwait(false);
         await Assert.That(entity!.Name).IsEqualTo(longName);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
     public async Task Create_WithSpecialCharacters_CreatesSuccessfully()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         var handler = new CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
 
@@ -105,22 +104,22 @@ public class EdgeCaseTests : HandlerTestBase
         {
             ModuleId = 1,
             Name = specialName
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsGreaterThan(0);
 
-        var entity = await GetFromCommandDbAsync(options, result);
+        var entity = await GetFromCommandDbAsync(options, result).ConfigureAwait(false);
         await Assert.That(entity!.Name).IsEqualTo(specialName);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
     public async Task Create_WithUnicodeCharacters_CreatesSuccessfully()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         var handler = new CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
 
@@ -131,15 +130,15 @@ public class EdgeCaseTests : HandlerTestBase
         {
             ModuleId = 1,
             Name = unicodeName
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsGreaterThan(0);
 
-        var entity = await GetFromCommandDbAsync(options, result);
+        var entity = await GetFromCommandDbAsync(options, result).ConfigureAwait(false);
         await Assert.That(entity!.Name).IsEqualTo(unicodeName);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     #endregion
@@ -150,7 +149,7 @@ public class EdgeCaseTests : HandlerTestBase
     public async Task Get_WithZeroId_ReturnsNull()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         var handler = new GetHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
 
@@ -159,19 +158,19 @@ public class EdgeCaseTests : HandlerTestBase
         {
             Id = 0,
             ModuleId = 1
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsNull();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
     public async Task Get_WithNegativeId_ReturnsNull()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         var handler = new GetHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
 
@@ -180,19 +179,19 @@ public class EdgeCaseTests : HandlerTestBase
         {
             Id = -1,
             ModuleId = 1
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsNull();
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
     public async Task Delete_WithZeroId_ReturnsMinusOne()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         var handler = new DeleteHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
 
@@ -201,19 +200,19 @@ public class EdgeCaseTests : HandlerTestBase
         {
             Id = 0,
             ModuleId = 1
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
     public async Task Update_WithZeroId_ReturnsMinusOne()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         var handler = new UpdateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
 
@@ -223,12 +222,12 @@ public class EdgeCaseTests : HandlerTestBase
             Id = 0,
             ModuleId = 1,
             Name = "Test"
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     #endregion
@@ -239,7 +238,7 @@ public class EdgeCaseTests : HandlerTestBase
     public async Task Create_WithZeroModuleId_CreatesSuccessfully()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         var handler = new CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
 
@@ -248,21 +247,21 @@ public class EdgeCaseTests : HandlerTestBase
         {
             ModuleId = 0,
             Name = "Test"
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsGreaterThan(0);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
     public async Task List_WithZeroModuleId_ReturnsEmptyList()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await Helpers.SampleModuleTestHelpers.SeedQueryDataAsync(options,
-            CreateTestEntity(id: 1, moduleId: 1, name: "Module 1"));
+            CreateTestEntity(id: 1, moduleId: 1, name: "Module 1")).ConfigureAwait(false);
 
         var handler = new ListHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
@@ -273,13 +272,13 @@ public class EdgeCaseTests : HandlerTestBase
             ModuleId = 0,
             PageNumber = 1,
             PageSize = 10
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.TotalCount).IsEqualTo(0);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     #endregion
@@ -290,7 +289,7 @@ public class EdgeCaseTests : HandlerTestBase
     public async Task MultipleCreates_Concurrent_AllSucceed()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         var handler = new CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
 
@@ -303,16 +302,16 @@ public class EdgeCaseTests : HandlerTestBase
             }, CancellationToken.None)
         );
 
-        var results = await Task.WhenAll(tasks);
+        var results = await Task.WhenAll(tasks).ConfigureAwait(false);
 
         // Assert - All creates succeeded with unique IDs
         await Assert.That(results.All(r => r > 0)).IsTrue();
         await Assert.That(results.Distinct().Count()).IsEqualTo(10);
 
-        var count = await GetCountFromCommandDbAsync(options);
+        var count = await GetCountFromCommandDbAsync(options).ConfigureAwait(false);
         await Assert.That(count).IsEqualTo(10);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     #endregion
@@ -323,7 +322,7 @@ public class EdgeCaseTests : HandlerTestBase
     public async Task Create_WithSqlInjectionAttempt_TreatsAsLiteralString()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         var handler = new CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
 
@@ -334,19 +333,19 @@ public class EdgeCaseTests : HandlerTestBase
         {
             ModuleId = 1,
             Name = sqlInjection
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert - Entity created with SQL injection as literal text
         await Assert.That(result).IsGreaterThan(0);
 
-        var entity = await GetFromCommandDbAsync(options, result);
+        var entity = await GetFromCommandDbAsync(options, result).ConfigureAwait(false);
         await Assert.That(entity!.Name).IsEqualTo(sqlInjection);
 
         // Verify table still exists
-        var count = await GetCountFromCommandDbAsync(options);
+        var count = await GetCountFromCommandDbAsync(options).ConfigureAwait(false);
         await Assert.That(count).IsEqualTo(1);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     #endregion
@@ -357,7 +356,7 @@ public class EdgeCaseTests : HandlerTestBase
     public async Task Category_WithNegativeViewOrder_CreatesSuccessfully()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         var handler = new CategoryHandlers.CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
 
@@ -368,19 +367,19 @@ public class EdgeCaseTests : HandlerTestBase
             Name = "Test",
             ViewOrder = -1,
             ParentId = 0
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsGreaterThan(0);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     [Test]
     public async Task Category_WithNonExistentParentId_CreatesSuccessfully()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         var handler = new CategoryHandlers.CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
 
@@ -391,12 +390,12 @@ public class EdgeCaseTests : HandlerTestBase
             Name = "Orphan Category",
             ViewOrder = 1,
             ParentId = 999
-        }, CancellationToken.None);
+        }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert - Creates successfully (orphan category)
         await Assert.That(result).IsGreaterThan(0);
 
-        connection.Close();
+        await connection.CloseAsync().ConfigureAwait(false);
     }
 
     #endregion

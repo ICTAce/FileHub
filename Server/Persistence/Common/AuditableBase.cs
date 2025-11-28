@@ -2,6 +2,11 @@
 
 namespace ICTAce.FileHub.Persistence.Common;
 
+/// <summary>
+/// Provides a base class for entities that require audit information, including creation and modification metadata.
+/// </summary>
+/// <remarks>This abstract class defines common audit properties such as the user and timestamp for creation and
+/// last modification. Inherit from this class to enable consistent auditing across entity types.</remarks>
 public abstract class AuditableBase : IAuditable
 {
     [Key]

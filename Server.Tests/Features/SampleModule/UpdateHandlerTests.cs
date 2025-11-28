@@ -9,7 +9,7 @@ public class UpdateHandlerTests : HandlerTestBase
     public async Task Handle_WithValidRequest_UpdatesSampleModule()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity(name: "Original Name"));
 
         var handler = new UpdateHandler(
@@ -23,7 +23,7 @@ public class UpdateHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(1);
@@ -39,7 +39,7 @@ public class UpdateHandlerTests : HandlerTestBase
     public async Task Handle_WithUnauthorizedUser_ReturnsMinusOne()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity(name: "Original Name"));
 
         var handler = new UpdateHandler(
@@ -53,7 +53,7 @@ public class UpdateHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
@@ -68,7 +68,7 @@ public class UpdateHandlerTests : HandlerTestBase
     public async Task Handle_WithNonExistentId_ReturnsMinusOne()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
 
         var handler = new UpdateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -81,7 +81,7 @@ public class UpdateHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
@@ -96,7 +96,7 @@ public class UpdateHandlerTests : HandlerTestBase
     public async Task Handle_WithDifferentNames_UpdatesSuccessfully(string newName)
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity(name: "Original Name"));
 
         var handler = new UpdateHandler(
@@ -110,7 +110,7 @@ public class UpdateHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(1);
@@ -125,7 +125,7 @@ public class UpdateHandlerTests : HandlerTestBase
     public async Task Handle_UpdateMultipleTimes_ReflectsLatestChanges()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity(name: "Original Name"));
 
         var handler = new UpdateHandler(

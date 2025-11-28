@@ -9,7 +9,7 @@ public class DeleteHandlerTests : HandlerTestBase
     public async Task Handle_WithValidId_DeletesSampleModule()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity());
 
         var handler = new DeleteHandler(
@@ -22,7 +22,7 @@ public class DeleteHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(1);
@@ -37,7 +37,7 @@ public class DeleteHandlerTests : HandlerTestBase
     public async Task Handle_WithUnauthorizedUser_ReturnsMinusOne()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity());
 
         var handler = new DeleteHandler(
@@ -50,7 +50,7 @@ public class DeleteHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
@@ -65,7 +65,7 @@ public class DeleteHandlerTests : HandlerTestBase
     public async Task Handle_WithNonExistentId_ReturnsMinusOne()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
 
         var handler = new DeleteHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -77,7 +77,7 @@ public class DeleteHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
@@ -89,7 +89,7 @@ public class DeleteHandlerTests : HandlerTestBase
     public async Task Handle_WithWrongModuleId_ReturnsMinusOne()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity());
 
         var handler = new DeleteHandler(
@@ -102,7 +102,7 @@ public class DeleteHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
@@ -117,7 +117,7 @@ public class DeleteHandlerTests : HandlerTestBase
     public async Task Handle_DeleteMultipleModules_DeletesAllSuccessfully()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options,
             CreateTestEntity(id: 1, name: "Module 1"),
             CreateTestEntity(id: 2, name: "Module 2"),

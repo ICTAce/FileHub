@@ -8,6 +8,7 @@ public class ApplicationQueryContext(
 {
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        // FIXME: ApplicationQueryContext supposed to be read-only by using query connection string
         var tenant = DBContextDependencies.TenantManager.GetTenant();
 
         if (tenant != null)

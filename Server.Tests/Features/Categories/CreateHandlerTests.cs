@@ -11,7 +11,7 @@ public class CreateHandlerTests : HandlerTestBase
     public async Task Handle_WithValidRequest_CreatesCategory()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
 
         var handler = new CategoryHandlers.CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -25,12 +25,12 @@ public class CreateHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsGreaterThan(0);
 
-        var entity = await GetFromCommandDbAsync(options, result);
+        var entity = await GetFromCommandDbAsync(options, result).ConfigureAwait(false);
         await Assert.That(entity).IsNotNull();
         await Assert.That(entity!.Name).IsEqualTo("New Category");
         await Assert.That(entity.ModuleId).IsEqualTo(1);
@@ -44,7 +44,7 @@ public class CreateHandlerTests : HandlerTestBase
     public async Task Handle_WithUnauthorizedUser_ReturnsMinusOne()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
 
         var handler = new CategoryHandlers.CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: false));
@@ -58,7 +58,7 @@ public class CreateHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
@@ -73,7 +73,7 @@ public class CreateHandlerTests : HandlerTestBase
     public async Task Handle_WithChildCategory_SetsCorrectParentId()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1, name: "Parent Category", parentId: 0));
 
         var handler = new CategoryHandlers.CreateHandler(
@@ -88,12 +88,12 @@ public class CreateHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsGreaterThan(0);
 
-        var entity = await GetFromCommandDbAsync(options, result);
+        var entity = await GetFromCommandDbAsync(options, result).ConfigureAwait(false);
         await Assert.That(entity).IsNotNull();
         await Assert.That(entity!.ParentId).IsEqualTo(1);
         await Assert.That(entity.Name).IsEqualTo("Child Category");
@@ -105,7 +105,7 @@ public class CreateHandlerTests : HandlerTestBase
     public async Task Handle_WithMultipleCategories_CreatesAll()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
 
         var handler = new CategoryHandlers.CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -142,7 +142,7 @@ public class CreateHandlerTests : HandlerTestBase
     public async Task Handle_WithViewOrderZero_CreatesSuccessfully()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
 
         var handler = new CategoryHandlers.CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));
@@ -156,12 +156,12 @@ public class CreateHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsGreaterThan(0);
 
-        var entity = await GetFromCommandDbAsync(options, result);
+        var entity = await GetFromCommandDbAsync(options, result).ConfigureAwait(false);
         await Assert.That(entity).IsNotNull();
         await Assert.That(entity!.ViewOrder).IsEqualTo(0);
 
@@ -172,7 +172,7 @@ public class CreateHandlerTests : HandlerTestBase
     public async Task Handle_WithDifferentModuleIds_CreatesInSeparateModules()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
 
         var handler = new CategoryHandlers.CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: true));

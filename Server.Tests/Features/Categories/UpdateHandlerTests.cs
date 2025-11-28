@@ -11,7 +11,7 @@ public class UpdateHandlerTests : HandlerTestBase
     public async Task Handle_WithValidRequest_UpdatesCategory()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1, name: "Original Name"));
 
         var handler = new CategoryHandlers.UpdateHandler(
@@ -27,7 +27,7 @@ public class UpdateHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(1);
@@ -44,7 +44,7 @@ public class UpdateHandlerTests : HandlerTestBase
     public async Task Handle_WithInvalidId_ReturnsMinusOne()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1));
 
         var handler = new CategoryHandlers.UpdateHandler(
@@ -60,7 +60,7 @@ public class UpdateHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
@@ -71,7 +71,7 @@ public class UpdateHandlerTests : HandlerTestBase
     public async Task Handle_WithUnauthorizedUser_ReturnsMinusOne()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1, name: "Original Name"));
 
         var handler = new CategoryHandlers.UpdateHandler(
@@ -87,7 +87,7 @@ public class UpdateHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
@@ -102,7 +102,7 @@ public class UpdateHandlerTests : HandlerTestBase
     public async Task Handle_UpdatesParentId_Successfully()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, 
             CreateTestEntity(id: 1, name: "Parent Category", parentId: 0),
             CreateTestEntity(id: 2, name: "Child Category", parentId: 0));
@@ -120,7 +120,7 @@ public class UpdateHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(2);
@@ -136,7 +136,7 @@ public class UpdateHandlerTests : HandlerTestBase
     public async Task Handle_UpdatesViewOrder_Successfully()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1, viewOrder: 1));
 
         var handler = new CategoryHandlers.UpdateHandler(
@@ -152,7 +152,7 @@ public class UpdateHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(1);
@@ -167,7 +167,7 @@ public class UpdateHandlerTests : HandlerTestBase
     public async Task Handle_UpdatesOnlyName_KeepsOtherFieldsIntact()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, 
             CreateTestEntity(id: 1, name: "Original", viewOrder: 5, parentId: 0));
 
@@ -184,7 +184,7 @@ public class UpdateHandlerTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(1);
@@ -201,7 +201,7 @@ public class UpdateHandlerTests : HandlerTestBase
     public async Task Handle_WithMultipleUpdates_AllSucceed()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options,
             CreateTestEntity(id: 1, name: "Category 1"),
             CreateTestEntity(id: 2, name: "Category 2"));

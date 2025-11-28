@@ -23,7 +23,7 @@ public class ListHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.ListCategoryRequest { ModuleId = 1, PageNumber = 1, PageSize = 10 };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsNotNull();
@@ -48,7 +48,7 @@ public class ListHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.ListCategoryRequest { ModuleId = 1, PageNumber = 1, PageSize = 10 };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsNull();
@@ -72,7 +72,7 @@ public class ListHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.ListCategoryRequest { ModuleId = 1, PageNumber = 2, PageSize = 10 };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsNotNull();
@@ -97,7 +97,7 @@ public class ListHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.ListCategoryRequest { ModuleId = 1, PageNumber = 1, PageSize = 10 };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsNotNull();
@@ -123,7 +123,7 @@ public class ListHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.ListCategoryRequest { ModuleId = 1, PageNumber = 1, PageSize = 10 };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsNotNull();
@@ -154,7 +154,7 @@ public class ListHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.ListCategoryRequest { ModuleId = 1, PageNumber = 1, PageSize = 10 };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsNotNull();
@@ -182,7 +182,7 @@ public class ListHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.ListCategoryRequest { ModuleId = 1, PageNumber = 2, PageSize = 10 };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsNotNull();
@@ -207,7 +207,7 @@ public class ListHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.ListCategoryRequest { ModuleId = 1, PageNumber = 1, PageSize = 10 };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsNotNull();
@@ -237,7 +237,7 @@ public class ListHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.ListCategoryRequest { ModuleId = 1, PageNumber = 1, PageSize = 1 };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsNotNull();

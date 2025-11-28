@@ -19,7 +19,7 @@ public class AuthorizationTests : HandlerTestBase
     public async Task Update_WithDifferentModuleId_ReturnsMinusOne()
     {
         // Arrange - Entity in Module 1, try to update from Module 2
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1, name: "Original"));
 
         var handler = new UpdateHandler(
@@ -33,7 +33,7 @@ public class AuthorizationTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert - Security check prevented update
         await Assert.That(result).IsEqualTo(-1);
@@ -49,7 +49,7 @@ public class AuthorizationTests : HandlerTestBase
     public async Task Delete_WithDifferentModuleId_ReturnsMinusOne()
     {
         // Arrange - Entity in Module 1, try to delete from Module 2
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1));
 
         var handler = new DeleteHandler(
@@ -62,7 +62,7 @@ public class AuthorizationTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert - Security check prevented delete
         await Assert.That(result).IsEqualTo(-1);
@@ -91,7 +91,7 @@ public class AuthorizationTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert - Security check prevented access
         await Assert.That(result).IsNull();
@@ -121,7 +121,7 @@ public class AuthorizationTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert - Only Module 1 items returned
         await Assert.That(result).IsNotNull();
@@ -135,7 +135,7 @@ public class AuthorizationTests : HandlerTestBase
     public async Task CategoryUpdate_WithDifferentModuleId_ReturnsMinusOne()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await CategoryHelpers.SeedCommandDataAsync(options,
             CategoryHelpers.CreateTestEntity(id: 1, moduleId: 1, name: "Original"));
 
@@ -152,7 +152,7 @@ public class AuthorizationTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
@@ -171,7 +171,7 @@ public class AuthorizationTests : HandlerTestBase
     public async Task Create_WithViewPermissionOnly_ReturnsMinusOne()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         var handler = new CreateHandler(
             CreateCommandHandlerServices(options, isAuthorized: false));
 
@@ -182,7 +182,7 @@ public class AuthorizationTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
@@ -197,7 +197,7 @@ public class AuthorizationTests : HandlerTestBase
     public async Task Update_WithoutEditPermission_ReturnsMinusOne()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1, name: "Original"));
 
         var handler = new UpdateHandler(
@@ -211,7 +211,7 @@ public class AuthorizationTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
@@ -226,7 +226,7 @@ public class AuthorizationTests : HandlerTestBase
     public async Task Delete_WithoutEditPermission_ReturnsMinusOne()
     {
         // Arrange
-        var (connection, options) = await CreateCommandDatabaseAsync();
+        var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1));
 
         var handler = new DeleteHandler(
@@ -239,7 +239,7 @@ public class AuthorizationTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsEqualTo(-1);
@@ -268,7 +268,7 @@ public class AuthorizationTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsNull();
@@ -295,7 +295,7 @@ public class AuthorizationTests : HandlerTestBase
         };
 
         // Act
-        var result = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
         await Assert.That(result).IsNull();
