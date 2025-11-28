@@ -14,11 +14,7 @@ public class CreateHandlerTests : HandlerTestBase
         var (connection, options) = await CreateCommandDatabaseAsync();
 
         var handler = new CreateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CreateSampleModuleRequest
         {
@@ -47,11 +43,7 @@ public class CreateHandlerTests : HandlerTestBase
         var (connection, options) = await CreateCommandDatabaseAsync();
 
         var handler = new CreateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: false),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: false));
 
         var request = new CreateSampleModuleRequest
         {
@@ -81,11 +73,7 @@ public class CreateHandlerTests : HandlerTestBase
         var (connection, options) = await CreateCommandDatabaseAsync();
 
         var handler = new CreateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CreateSampleModuleRequest
         {
@@ -113,11 +101,7 @@ public class CreateHandlerTests : HandlerTestBase
         var (connection, options) = await CreateCommandDatabaseAsync();
 
         var handler = new CreateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         // Act
         var id1 = await handler.Handle(new CreateSampleModuleRequest { ModuleId = 1, Name = "Module 1" }, CancellationToken.None);

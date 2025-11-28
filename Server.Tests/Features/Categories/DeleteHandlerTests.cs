@@ -15,11 +15,7 @@ public class DeleteHandlerTests : HandlerTestBase
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1));
 
         var handler = new CategoryHandlers.DeleteHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.DeleteCategoryRequest { Id = 1, ModuleId = 1 };
 
@@ -46,11 +42,7 @@ public class DeleteHandlerTests : HandlerTestBase
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1));
 
         var handler = new CategoryHandlers.DeleteHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.DeleteCategoryRequest { Id = 999, ModuleId = 1 };
 
@@ -74,11 +66,7 @@ public class DeleteHandlerTests : HandlerTestBase
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1));
 
         var handler = new CategoryHandlers.DeleteHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: false),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: false));
 
         var request = new CategoryHandlers.DeleteCategoryRequest { Id = 1, ModuleId = 1 };
 
@@ -102,11 +90,7 @@ public class DeleteHandlerTests : HandlerTestBase
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1, moduleId: 1));
 
         var handler = new CategoryHandlers.DeleteHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.DeleteCategoryRequest { Id = 1, ModuleId = 2 };
 
@@ -133,11 +117,7 @@ public class DeleteHandlerTests : HandlerTestBase
             CreateTestEntity(id: 3, name: "Category 3"));
 
         var handler = new CategoryHandlers.DeleteHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.DeleteCategoryRequest { Id = 2, ModuleId = 1 };
 
@@ -171,11 +151,7 @@ public class DeleteHandlerTests : HandlerTestBase
             CreateTestEntity(id: 2, name: "Child Category", parentId: 1));
 
         var handler = new CategoryHandlers.DeleteHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.DeleteCategoryRequest { Id = 1, ModuleId = 1 };
 
@@ -205,11 +181,7 @@ public class DeleteHandlerTests : HandlerTestBase
             CreateTestEntity(id: 3, name: "Category 3"));
 
         var handler = new CategoryHandlers.DeleteHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         // Act
         var result1 = await handler.Handle(new CategoryHandlers.DeleteCategoryRequest { Id = 1, ModuleId = 1 }, CancellationToken.None);
@@ -239,11 +211,7 @@ public class DeleteHandlerTests : HandlerTestBase
             CreateTestEntity(id: 2, moduleId: 2, name: "Module 2 Category"));
 
         var handler = new CategoryHandlers.DeleteHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.DeleteCategoryRequest { Id = 1, ModuleId = 1 };
 

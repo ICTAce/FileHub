@@ -7,13 +7,8 @@ public record DeleteCategoryRequest : RequestBase, IRequest<int>
     public int Id { get; set; }
 }
 
-public class DeleteHandler(
-    IDbContextFactory<ApplicationCommandContext> contextFactory,
-    IUserPermissions userPermissions,
-    ITenantManager tenantManager,
-    IHttpContextAccessor httpContextAccessor,
-    ILogManager logger)
-    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<DeleteCategoryRequest, int>
+public class DeleteHandler(HandlerServices<ApplicationCommandContext> services)
+    : HandlerBase<ApplicationCommandContext>(services), IRequestHandler<DeleteCategoryRequest, int>
 {
     public async Task<int> Handle(DeleteCategoryRequest request, CancellationToken cancellationToken)
     {

@@ -14,11 +14,7 @@ public class GetHandlerTests : HandlerTestBase
         await SeedQueryDataAsync(options, CreateTestEntity());
 
         var handler = new GetHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: true));
 
         var request = new GetSampleModuleRequest { ModuleId = 1, Id = 1 };
 
@@ -42,11 +38,7 @@ public class GetHandlerTests : HandlerTestBase
         await SeedQueryDataAsync(options, CreateTestEntity());
 
         var handler = new GetHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: true));
 
         var request = new GetSampleModuleRequest { ModuleId = 1, Id = 999 };
 
@@ -67,11 +59,7 @@ public class GetHandlerTests : HandlerTestBase
         await SeedQueryDataAsync(options, CreateTestEntity());
 
         var handler = new GetHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: false),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: false));
 
         var request = new GetSampleModuleRequest { ModuleId = 1, Id = 1 };
 
@@ -92,11 +80,7 @@ public class GetHandlerTests : HandlerTestBase
         await SeedQueryDataAsync(options, CreateTestEntity());
 
         var handler = new GetHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: true));
 
         var request = new GetSampleModuleRequest { ModuleId = 2, Id = 1 };
 
@@ -129,11 +113,7 @@ public class GetHandlerTests : HandlerTestBase
                 modifiedOn: modifiedOn));
 
         var handler = new GetHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: true));
 
         var request = new GetSampleModuleRequest { ModuleId = 1, Id = 1 };
 

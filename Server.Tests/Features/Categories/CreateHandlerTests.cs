@@ -14,11 +14,7 @@ public class CreateHandlerTests : HandlerTestBase
         var (connection, options) = await CreateCommandDatabaseAsync();
 
         var handler = new CategoryHandlers.CreateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.CreateCategoryRequest
         {
@@ -51,11 +47,7 @@ public class CreateHandlerTests : HandlerTestBase
         var (connection, options) = await CreateCommandDatabaseAsync();
 
         var handler = new CategoryHandlers.CreateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: false),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: false));
 
         var request = new CategoryHandlers.CreateCategoryRequest
         {
@@ -85,11 +77,7 @@ public class CreateHandlerTests : HandlerTestBase
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1, name: "Parent Category", parentId: 0));
 
         var handler = new CategoryHandlers.CreateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.CreateCategoryRequest
         {
@@ -120,11 +108,7 @@ public class CreateHandlerTests : HandlerTestBase
         var (connection, options) = await CreateCommandDatabaseAsync();
 
         var handler = new CategoryHandlers.CreateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         // Act
         var id1 = await handler.Handle(new CategoryHandlers.CreateCategoryRequest
@@ -161,11 +145,7 @@ public class CreateHandlerTests : HandlerTestBase
         var (connection, options) = await CreateCommandDatabaseAsync();
 
         var handler = new CategoryHandlers.CreateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.CreateCategoryRequest
         {
@@ -195,11 +175,7 @@ public class CreateHandlerTests : HandlerTestBase
         var (connection, options) = await CreateCommandDatabaseAsync();
 
         var handler = new CategoryHandlers.CreateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         // Act
         var id1 = await handler.Handle(new CategoryHandlers.CreateCategoryRequest

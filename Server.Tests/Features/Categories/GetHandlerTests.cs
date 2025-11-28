@@ -15,11 +15,7 @@ public class GetHandlerTests : HandlerTestBase
         await SeedQueryDataAsync(options, CreateTestEntity());
 
         var handler = new CategoryHandlers.GetHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.GetCategoryRequest { ModuleId = 1, Id = 1 };
 
@@ -45,11 +41,7 @@ public class GetHandlerTests : HandlerTestBase
         await SeedQueryDataAsync(options, CreateTestEntity());
 
         var handler = new CategoryHandlers.GetHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.GetCategoryRequest { ModuleId = 1, Id = 999 };
 
@@ -69,11 +61,7 @@ public class GetHandlerTests : HandlerTestBase
         await SeedQueryDataAsync(options, CreateTestEntity());
 
         var handler = new CategoryHandlers.GetHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: false),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: false));
 
         var request = new CategoryHandlers.GetCategoryRequest { ModuleId = 1, Id = 1 };
 
@@ -93,11 +81,7 @@ public class GetHandlerTests : HandlerTestBase
         await SeedQueryDataAsync(options, CreateTestEntity(moduleId: 1));
 
         var handler = new CategoryHandlers.GetHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.GetCategoryRequest { ModuleId = 2, Id = 1 };
 
@@ -123,11 +107,7 @@ public class GetHandlerTests : HandlerTestBase
                 createdBy: "creator", createdOn: createdOn, modifiedBy: "modifier", modifiedOn: modifiedOn));
 
         var handler = new CategoryHandlers.GetHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.GetCategoryRequest { ModuleId = 1, Id = 1 };
 
@@ -154,11 +134,7 @@ public class GetHandlerTests : HandlerTestBase
             CreateTestEntity(id: 2, name: "Child Category", parentId: 1));
 
         var handler = new CategoryHandlers.GetHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.GetCategoryRequest { ModuleId = 1, Id = 2 };
 

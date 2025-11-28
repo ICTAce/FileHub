@@ -7,13 +7,8 @@ public record GetCategoryRequest : RequestBase, IRequest<GetCategoryDto>
     public int Id { get; set; }
 }
 
-public class GetHandler(
-    IDbContextFactory<ApplicationQueryContext> contextFactory,
-    IUserPermissions userPermissions,
-    ITenantManager tenantManager,
-    IHttpContextAccessor httpContextAccessor,
-    ILogManager logger)
-    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<GetCategoryRequest, GetCategoryDto?>
+public class GetHandler(HandlerServices<ApplicationQueryContext> services)
+    : HandlerBase<ApplicationQueryContext>(services), IRequestHandler<GetCategoryRequest, GetCategoryDto?>
 {
     private static readonly GetMapper _mapper = new();
 

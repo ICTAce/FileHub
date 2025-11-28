@@ -13,11 +13,7 @@ public class UpdateHandlerTests : HandlerTestBase
         await SeedCommandDataAsync(options, CreateTestEntity(name: "Original Name"));
 
         var handler = new UpdateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new UpdateSampleModuleRequest
         {
@@ -47,11 +43,7 @@ public class UpdateHandlerTests : HandlerTestBase
         await SeedCommandDataAsync(options, CreateTestEntity(name: "Original Name"));
 
         var handler = new UpdateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: false),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: false));
 
         var request = new UpdateSampleModuleRequest
         {
@@ -79,11 +71,7 @@ public class UpdateHandlerTests : HandlerTestBase
         var (connection, options) = await CreateCommandDatabaseAsync();
 
         var handler = new UpdateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new UpdateSampleModuleRequest
         {
@@ -112,11 +100,7 @@ public class UpdateHandlerTests : HandlerTestBase
         await SeedCommandDataAsync(options, CreateTestEntity(name: "Original Name"));
 
         var handler = new UpdateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new UpdateSampleModuleRequest
         {
@@ -145,11 +129,7 @@ public class UpdateHandlerTests : HandlerTestBase
         await SeedCommandDataAsync(options, CreateTestEntity(name: "Original Name"));
 
         var handler = new UpdateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         // Act - Update multiple times
         await handler.Handle(new UpdateSampleModuleRequest { Id = 1, ModuleId = 1, Name = "First Update" }, CancellationToken.None);

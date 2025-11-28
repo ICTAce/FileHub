@@ -18,11 +18,7 @@ public class ListHandlerTests : HandlerTestBase
             CreateTestEntity(id: 5, name: "Module 5"));
 
         var handler = new ListHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: true));
 
         var request = new ListSampleModuleRequest
         {
@@ -57,11 +53,7 @@ public class ListHandlerTests : HandlerTestBase
             CreateTestEntity(id: 5, name: "Echo"));
 
         var handler = new ListHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: true));
 
         var request = new ListSampleModuleRequest
         {
@@ -95,11 +87,7 @@ public class ListHandlerTests : HandlerTestBase
         var (connection, options) = await CreateQueryDatabaseAsync();
 
         var handler = new ListHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: false),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: false));
 
         var request = new ListSampleModuleRequest
         {
@@ -124,11 +112,7 @@ public class ListHandlerTests : HandlerTestBase
         var (connection, options) = await CreateQueryDatabaseAsync();
 
         var handler = new ListHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: true));
 
         var request = new ListSampleModuleRequest
         {
@@ -160,11 +144,7 @@ public class ListHandlerTests : HandlerTestBase
             CreateTestEntity(id: 4, moduleId: 2, name: "Module 2-2"));
 
         var handler = new ListHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: true));
 
         var request = new ListSampleModuleRequest
         {
@@ -198,11 +178,7 @@ public class ListHandlerTests : HandlerTestBase
             CreateTestEntity(id: 3, name: "Mango"));
 
         var handler = new ListHandler(
-            CreateMockQueryContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateQueryHandlerServices(options, isAuthorized: true));
 
         var request = new ListSampleModuleRequest
         {

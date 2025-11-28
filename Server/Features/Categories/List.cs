@@ -8,13 +8,8 @@ public record ListCategoryRequest : RequestBase, IRequest<PagedResult<ListCatego
     public int PageSize { get; set; } = 10;
 }
 
-public class ListHandler(
-    IDbContextFactory<ApplicationQueryContext> contextFactory,
-    IUserPermissions userPermissions,
-    ITenantManager tenantManager,
-    IHttpContextAccessor httpContextAccessor,
-    ILogManager logger)
-    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListCategoryRequest, PagedResult<ListCategoryDto>?>
+public class ListHandler(HandlerServices<ApplicationQueryContext> services)
+    : HandlerBase<ApplicationQueryContext>(services), IRequestHandler<ListCategoryRequest, PagedResult<ListCategoryDto>?>
 {
     private static readonly ListMapper _mapper = new();
 

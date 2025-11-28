@@ -15,11 +15,7 @@ public class UpdateHandlerTests : HandlerTestBase
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1, name: "Original Name"));
 
         var handler = new CategoryHandlers.UpdateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.UpdateCategoryRequest
         {
@@ -52,11 +48,7 @@ public class UpdateHandlerTests : HandlerTestBase
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1));
 
         var handler = new CategoryHandlers.UpdateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.UpdateCategoryRequest
         {
@@ -83,11 +75,7 @@ public class UpdateHandlerTests : HandlerTestBase
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1, name: "Original Name"));
 
         var handler = new CategoryHandlers.UpdateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: false),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: false));
 
         var request = new CategoryHandlers.UpdateCategoryRequest
         {
@@ -120,11 +108,7 @@ public class UpdateHandlerTests : HandlerTestBase
             CreateTestEntity(id: 2, name: "Child Category", parentId: 0));
 
         var handler = new CategoryHandlers.UpdateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.UpdateCategoryRequest
         {
@@ -156,11 +140,7 @@ public class UpdateHandlerTests : HandlerTestBase
         await SeedCommandDataAsync(options, CreateTestEntity(id: 1, viewOrder: 1));
 
         var handler = new CategoryHandlers.UpdateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.UpdateCategoryRequest
         {
@@ -192,11 +172,7 @@ public class UpdateHandlerTests : HandlerTestBase
             CreateTestEntity(id: 1, name: "Original", viewOrder: 5, parentId: 0));
 
         var handler = new CategoryHandlers.UpdateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         var request = new CategoryHandlers.UpdateCategoryRequest
         {
@@ -231,11 +207,7 @@ public class UpdateHandlerTests : HandlerTestBase
             CreateTestEntity(id: 2, name: "Category 2"));
 
         var handler = new CategoryHandlers.UpdateHandler(
-            CreateMockCommandContextFactory(options),
-            CreateMockUserPermissions(isAuthorized: true),
-            CreateMockTenantManager(),
-            CreateMockHttpContextAccessor(),
-            CreateMockLogger());
+            CreateCommandHandlerServices(options, isAuthorized: true));
 
         // Act
         var result1 = await handler.Handle(new CategoryHandlers.UpdateCategoryRequest

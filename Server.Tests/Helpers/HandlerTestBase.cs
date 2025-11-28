@@ -1,5 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
+using ICTAce.FileHub.Features.Common;
+
 namespace ICTAce.FileHub.Server.Tests.Helpers;
 
 /// <summary>
@@ -128,6 +130,54 @@ public abstract class HandlerTestBase : IDisposable
     protected ILogManager CreateMockLogger()
     {
         return Substitute.For<ILogManager>();
+    }
+
+    #endregion
+
+    #region Handler Services Creation
+
+    /// <summary>
+    /// Creates HandlerServices<ApplicationQueryContext> for testing query handlers.
+    /// This is the recommended way to create query handlers in tests.
+    /// </summary>
+    /// <param name="options">Database options for the query context</param>
+    /// <param name="isAuthorized">Whether the user should be authorized (default: true)</param>
+    /// <param name="siteId">The site ID for the test alias (default: 1)</param>
+    /// <param name="aliasName">The alias name (default: "Test")</param>
+    protected HandlerServices<ApplicationQueryContext> CreateQueryHandlerServices(
+        DbContextOptions<TestApplicationQueryContext> options,
+        bool isAuthorized = true,
+        int siteId = 1,
+        string aliasName = "Test")
+    {
+        return new HandlerServices<ApplicationQueryContext>(
+            CreateMockQueryContextFactory(options),
+            CreateMockUserPermissions(isAuthorized),
+            CreateMockTenantManager(siteId, aliasName),
+            CreateMockHttpContextAccessor(),
+            CreateMockLogger());
+    }
+
+    /// <summary>
+    /// Creates HandlerServices<ApplicationCommandContext> for testing command handlers.
+    /// This is the recommended way to create command handlers in tests.
+    /// </summary>
+    /// <param name="options">Database options for the command context</param>
+    /// <param name="isAuthorized">Whether the user should be authorized (default: true)</param>
+    /// <param name="siteId">The site ID for the test alias (default: 1)</param>
+    /// <param name="aliasName">The alias name (default: "Test")</param>
+    protected HandlerServices<ApplicationCommandContext> CreateCommandHandlerServices(
+        DbContextOptions<TestApplicationCommandContext> options,
+        bool isAuthorized = true,
+        int siteId = 1,
+        string aliasName = "Test")
+    {
+        return new HandlerServices<ApplicationCommandContext>(
+            CreateMockCommandContextFactory(options),
+            CreateMockUserPermissions(isAuthorized),
+            CreateMockTenantManager(siteId, aliasName),
+            CreateMockHttpContextAccessor(),
+            CreateMockLogger());
     }
 
     #endregion

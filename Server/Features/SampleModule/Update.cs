@@ -8,13 +8,8 @@ public record UpdateSampleModuleRequest : RequestBase, IRequest<int>
     public required string Name { get; set; }
 }
 
-public class UpdateHandler(
-    IDbContextFactory<ApplicationCommandContext> contextFactory,
-    IUserPermissions userPermissions,
-    ITenantManager tenantManager,
-    IHttpContextAccessor httpContextAccessor,
-    ILogManager logger)
-    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<UpdateSampleModuleRequest, int>
+public class UpdateHandler(HandlerServices<ApplicationCommandContext> services)
+    : HandlerBase<ApplicationCommandContext>(services), IRequestHandler<UpdateSampleModuleRequest, int>
 {
     public async Task<int> Handle(UpdateSampleModuleRequest request, CancellationToken cancellationToken)
     {

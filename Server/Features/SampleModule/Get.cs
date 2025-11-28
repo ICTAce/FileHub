@@ -7,13 +7,8 @@ public record GetSampleModuleRequest : RequestBase, IRequest<GetSampleModuleDto>
     public int Id { get; set; }
 }
 
-public class GetHandler(
-    IDbContextFactory<ApplicationQueryContext> contextFactory,
-    IUserPermissions userPermissions,
-    ITenantManager tenantManager,
-    IHttpContextAccessor httpContextAccessor,
-    ILogManager logger)
-    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<GetSampleModuleRequest, GetSampleModuleDto?>
+public class GetHandler(HandlerServices<ApplicationQueryContext> services)
+    : HandlerBase<ApplicationQueryContext>(services), IRequestHandler<GetSampleModuleRequest, GetSampleModuleDto?>
 {
     private static readonly GetMapper _mapper = new();
 

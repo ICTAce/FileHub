@@ -9,13 +9,8 @@ public record CreateCategoryRequest : RequestBase, IRequest<int>
     public int ParentId { get; set; }
 }
 
-public class CreateHandler(
-    IDbContextFactory<ApplicationCommandContext> contextFactory,
-    IUserPermissions userPermissions,
-    ITenantManager tenantManager,
-    IHttpContextAccessor httpContextAccessor,
-    ILogManager logger)
-    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<CreateCategoryRequest, int>
+public class CreateHandler(HandlerServices<ApplicationCommandContext> services)
+    : HandlerBase<ApplicationCommandContext>(services), IRequestHandler<CreateCategoryRequest, int>
 {
     public async Task<int> Handle(CreateCategoryRequest request, CancellationToken cancellationToken)
     {

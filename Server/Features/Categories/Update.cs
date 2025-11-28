@@ -10,13 +10,8 @@ public record UpdateCategoryRequest : RequestBase, IRequest<int>
     public int ParentId { get; set; }
 }
 
-public class UpdateHandler(
-    IDbContextFactory<ApplicationCommandContext> contextFactory,
-    IUserPermissions userPermissions,
-    ITenantManager tenantManager,
-    IHttpContextAccessor httpContextAccessor,
-    ILogManager logger)
-    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<UpdateCategoryRequest, int>
+public class UpdateHandler(HandlerServices<ApplicationCommandContext> services)
+    : HandlerBase<ApplicationCommandContext>(services), IRequestHandler<UpdateCategoryRequest, int>
 {
     public async Task<int> Handle(UpdateCategoryRequest request, CancellationToken cancellationToken)
     {

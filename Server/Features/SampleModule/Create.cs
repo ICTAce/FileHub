@@ -8,13 +8,8 @@ public record CreateSampleModuleRequest : IRequest<int>
     public string Name { get; set; } = string.Empty;
 }
 
-public class CreateHandler(
-    IDbContextFactory<ApplicationCommandContext> contextFactory,
-    IUserPermissions userPermissions,
-    ITenantManager tenantManager,
-    IHttpContextAccessor httpContextAccessor,
-    ILogManager logger)
-    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<CreateSampleModuleRequest, int>
+public class CreateHandler(HandlerServices<ApplicationCommandContext> services)
+    : HandlerBase<ApplicationCommandContext>(services), IRequestHandler<CreateSampleModuleRequest, int>
 {
     public async Task<int> Handle(CreateSampleModuleRequest request, CancellationToken cancellationToken)
     {

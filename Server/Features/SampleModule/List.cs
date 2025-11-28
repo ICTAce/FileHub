@@ -8,13 +8,8 @@ public record ListSampleModuleRequest : RequestBase, IRequest<PagedResult<ListSa
     public int PageSize { get; set; } = 10;
 }
 
-public class ListHandler(
-    IDbContextFactory<ApplicationQueryContext> contextFactory,
-    IUserPermissions userPermissions,
-    ITenantManager tenantManager,
-    IHttpContextAccessor httpContextAccessor,
-    ILogManager logger)
-    : QueryHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<ListSampleModuleRequest, PagedResult<ListSampleModuleDto>?>
+public class ListHandler(HandlerServices<ApplicationQueryContext> services)
+    : HandlerBase<ApplicationQueryContext>(services), IRequestHandler<ListSampleModuleRequest, PagedResult<ListSampleModuleDto>?>
 {
     private static readonly ListMapper _mapper = new();
 

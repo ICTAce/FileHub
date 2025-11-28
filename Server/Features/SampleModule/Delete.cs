@@ -7,13 +7,8 @@ public record DeleteSampleModuleRequest : RequestBase, IRequest<int>
     public int Id { get; set; }
 }
 
-public class DeleteHandler(
-    IDbContextFactory<ApplicationCommandContext> contextFactory,
-    IUserPermissions userPermissions,
-    ITenantManager tenantManager,
-    IHttpContextAccessor httpContextAccessor,
-    ILogManager logger)
-    : CommandHandlerBase(contextFactory, userPermissions, tenantManager, httpContextAccessor, logger), IRequestHandler<DeleteSampleModuleRequest, int>
+public class DeleteHandler(HandlerServices<ApplicationCommandContext> services)
+    : HandlerBase<ApplicationCommandContext>(services), IRequestHandler<DeleteSampleModuleRequest, int>
 {
     public async Task<int> Handle(DeleteSampleModuleRequest request, CancellationToken cancellationToken)
     {
