@@ -2,10 +2,6 @@
 
 namespace ICTAce.FileHub.Persistence;
 
-public class ApplicationCommandContext : ApplicationContext
-{
-    public ApplicationCommandContext(IDBContextDependencies DBContextDependencies) : base(DBContextDependencies)
-    {
-        // ContextBase handles multi-tenant database connections
-    }
-}
+public class ApplicationCommandContext(
+    IDBContextDependencies DBContextDependencies)
+    : ApplicationContext(DBContextDependencies);
