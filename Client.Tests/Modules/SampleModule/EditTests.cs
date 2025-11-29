@@ -19,7 +19,7 @@ public class EditTests : BaseTest
     {
         await Assert.That(_mockSampleModuleService).IsNotNull();
         await Assert.That(_mockNavigationManager).IsNotNull();
-        
+
         var logService = TestContext.Services.GetService<ILogService>();
         await Assert.That(logService).IsNotNull();
     }
@@ -28,17 +28,17 @@ public class EditTests : BaseTest
     public async Task ServiceLayer_CreateAsync_AddsNewModule()
     {
         var initialCount = _mockSampleModuleService!.GetModuleCount();
-        
+
         var dto = new CreateAndUpdateSampleModuleDto
         {
             Name = "New Test Module"
         };
-        
+
         var newId = await _mockSampleModuleService.CreateAsync(1, dto);
-        
+
         await Assert.That(newId).IsGreaterThan(0);
         await Assert.That(_mockSampleModuleService.GetModuleCount()).IsEqualTo(initialCount + 1);
-        
+
         var created = await _mockSampleModuleService.GetAsync(newId, 1);
         await Assert.That(created.Name).IsEqualTo("New Test Module");
     }
@@ -50,9 +50,9 @@ public class EditTests : BaseTest
         {
             Name = "Updated Module Name"
         };
-        
+
         await _mockSampleModuleService!.UpdateAsync(1, 1, dto);
-        
+
         var updated = await _mockSampleModuleService.GetAsync(1, 1);
         await Assert.That(updated.Name).IsEqualTo("Updated Module Name");
         await Assert.That(updated.Id).IsEqualTo(1);
@@ -63,7 +63,7 @@ public class EditTests : BaseTest
     {
         var module1 = await _mockSampleModuleService!.GetAsync(1, 1);
         var module2 = await _mockSampleModuleService.GetAsync(2, 1);
-        
+
         await Assert.That(module1.Id).IsEqualTo(1);
         await Assert.That(module1.Name).IsEqualTo("Test Module 1");
         await Assert.That(module2.Id).IsEqualTo(2);
@@ -74,7 +74,7 @@ public class EditTests : BaseTest
     public async Task PageState_AddMode_IsConfigured()
     {
         var pageState = CreatePageState("Add");
-        
+
         await Assert.That(pageState.Action).IsEqualTo("Add");
         await Assert.That(pageState.QueryString).IsNotNull();
         await Assert.That(pageState.QueryString.Count).IsEqualTo(0);
@@ -87,9 +87,9 @@ public class EditTests : BaseTest
         {
             { "id", "1" }
         };
-        
+
         var pageState = CreatePageState("Edit", queryString);
-        
+
         await Assert.That(pageState.Action).IsEqualTo("Edit");
         await Assert.That(pageState.QueryString).IsNotNull();
         await Assert.That(pageState.QueryString.ContainsKey("id")).IsTrue();
@@ -100,7 +100,7 @@ public class EditTests : BaseTest
     public async Task NavigationManager_Reset_ClearsHistory()
     {
         _mockNavigationManager!.Reset();
-        
+
         await Assert.That(_mockNavigationManager.Uri).IsEqualTo("https://localhost:5001/");
         await Assert.That(_mockNavigationManager.BaseUri).IsEqualTo("https://localhost:5001/");
     }
@@ -109,7 +109,7 @@ public class EditTests : BaseTest
     public async Task ModuleState_ForEditComponent_HasRequiredProperties()
     {
         var moduleState = CreateModuleState(1, 1, "Test Module");
-        
+
         await Assert.That(moduleState.ModuleId).IsEqualTo(1);
         await Assert.That(moduleState.PageId).IsEqualTo(1);
         await Assert.That(moduleState.ModuleDefinition).IsNotNull();
@@ -124,11 +124,11 @@ public class EditTests : BaseTest
         {
             Name = "Valid Name"
         };
-        
+
         var validationResults = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
         var context = new System.ComponentModel.DataAnnotations.ValidationContext(dto);
         var isValid = System.ComponentModel.DataAnnotations.Validator.TryValidateObject(dto, context, validationResults, true);
-        
+
         await Assert.That(isValid).IsTrue();
         await Assert.That(validationResults.Count).IsEqualTo(0);
     }
@@ -140,11 +140,11 @@ public class EditTests : BaseTest
         {
             Name = string.Empty
         };
-        
+
         var validationResults = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
         var context = new System.ComponentModel.DataAnnotations.ValidationContext(dto);
         var isValid = System.ComponentModel.DataAnnotations.Validator.TryValidateObject(dto, context, validationResults, true);
-        
+
         await Assert.That(isValid).IsFalse();
         await Assert.That(validationResults.Count).IsGreaterThan(0);
     }
@@ -156,11 +156,11 @@ public class EditTests : BaseTest
         {
             Name = new string('A', 101)
         };
-        
+
         var validationResults = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
         var context = new System.ComponentModel.DataAnnotations.ValidationContext(dto);
         var isValid = System.ComponentModel.DataAnnotations.Validator.TryValidateObject(dto, context, validationResults, true);
-        
+
         await Assert.That(isValid).IsFalse();
         await Assert.That(validationResults.Any(v => v.ErrorMessage?.Contains("100") == true)).IsTrue();
     }
