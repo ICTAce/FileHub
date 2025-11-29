@@ -13,6 +13,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.11" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Localization" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Radzen.Blazor" Version="8.3.4" />
     <PackageVersion Include="Riok.Mapperly" Version="4.3.0" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="10.0.0" />
@@ -26,7 +27,7 @@
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.16.0.128591" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.256" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.257" />
     <PackageVersion Include="AsyncFixer" Version="1.6.0" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.14.1" />
     <PackageVersion Include="TUnit.Analyzers" Version="0.1.984" />
