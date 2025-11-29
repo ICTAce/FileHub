@@ -1,0 +1,213 @@
+// Licensed to ICTAce under the MIT license.
+
+using ICTAce.FileHub.Features.Common;
+
+namespace ICTAce.FileHub.Server.Tests.Helpers;
+
+/// <summary>
+/// Base class for handler tests providing common test infrastructure.
+/// Entity-agnostic - handles only databases, mocks, and disposal.
+/// Use entity-specific helper classes (SampleModuleTestHelpers, CategoryTestHelpers) for entity operations.
+/// </summary>
+public abstract class HandlerTestBase : IDisposable
+{
+    private SqliteConnection? _connection;
+    private DbContextOptions<TestApplicationCommandContext>? _commandOptions;
+    private DbContextOptions<TestApplicationQueryContext>? _queryOptions;
+    private bool _disposed;
+
+    #region Database Creation
+
+    /// <summary>
+    /// Creates and configures a SQLite in-memory database for command operations.
+    /// The database schema is automatically created.
+    /// </summary>
+    protected async Task<(SqliteConnection connection, DbContextOptions<TestApplicationCommandContext> options)> CreateCommandDatabaseAsync()
+    {
+        _connection = new SqliteConnection("DataSource=:memory:");
+        _connection.Open();
+
+        _commandOptions = new DbContextOptionsBuilder<TestApplicationCommandContext>()
+            .UseSqlite(_connection)
+            .Options;
+
+        // Ensure database schema is created
+        using var context = new TestApplicationCommandContext(_commandOptions);
+        await context.Database.EnsureCreatedAsync().ConfigureAwait(false);
+
+        return (_connection, _commandOptions);
+    }
+
+    /// <summary>
+    /// Creates and configures a SQLite in-memory database for query operations.
+    /// The database schema is automatically created.
+    /// </summary>
+    protected async Task<(SqliteConnection connection, DbContextOptions<TestApplicationQueryContext> options)> CreateQueryDatabaseAsync()
+    {
+        _connection = new SqliteConnection("DataSource=:memory:");
+        _connection.Open();
+
+        _queryOptions = new DbContextOptionsBuilder<TestApplicationQueryContext>()
+            .UseSqlite(_connection)
+            .Options;
+
+        // Ensure database schema is created
+        using var context = new TestApplicationQueryContext(_queryOptions);
+        await context.Database.EnsureCreatedAsync().ConfigureAwait(false);
+
+        return (_connection, _queryOptions);
+    }
+
+    #endregion
+
+    #region Context Factory Creation
+
+    /// <summary>
+    /// Creates a mock IDbContextFactory that returns TestApplicationCommandContext instances.
+    /// </summary>
+    protected IDbContextFactory<ApplicationCommandContext> CreateMockCommandContextFactory(
+        DbContextOptions<TestApplicationCommandContext> options)
+    {
+        var mockFactory = Substitute.For<IDbContextFactory<ApplicationCommandContext>>();
+        mockFactory.CreateDbContext().Returns(_ => new TestApplicationCommandContext(options));
+        return mockFactory;
+    }
+
+    /// <summary>
+    /// Creates a mock IDbContextFactory that returns TestApplicationQueryContext instances.
+    /// </summary>
+    protected IDbContextFactory<ApplicationQueryContext> CreateMockQueryContextFactory(
+        DbContextOptions<TestApplicationQueryContext> options)
+    {
+        var mockFactory = Substitute.For<IDbContextFactory<ApplicationQueryContext>>();
+        mockFactory.CreateDbContext().Returns(_ => new TestApplicationQueryContext(options));
+        return mockFactory;
+    }
+
+    #endregion
+
+    #region Mock Creation
+
+    /// <summary>
+    /// Creates a mock IUserPermissions with configurable authorization.
+    /// </summary>
+    /// <param name="isAuthorized">Whether the user should be authorized (default: true)</param>
+    protected IUserPermissions CreateMockUserPermissions(bool isAuthorized = true)
+    {
+        var mockUserPermissions = Substitute.For<IUserPermissions>();
+        mockUserPermissions.IsAuthorized(
+            Arg.Any<ClaimsPrincipal>(),
+            Arg.Any<int>(),
+            Arg.Any<string>(),
+            Arg.Any<int>(),
+            Arg.Any<string>()).Returns(isAuthorized);
+        return mockUserPermissions;
+    }
+
+    /// <summary>
+    /// Creates a mock ITenantManager with a test alias.
+    /// </summary>
+    /// <param name="siteId">The site ID for the test alias (default: 1)</param>
+    /// <param name="aliasName">The alias name (default: "Test")</param>
+    protected ITenantManager CreateMockTenantManager(int siteId = 1, string aliasName = "Test")
+    {
+        var mockTenantManager = Substitute.For<ITenantManager>();
+        mockTenantManager.GetAlias().Returns(new Alias { SiteId = siteId, Name = aliasName });
+        return mockTenantManager;
+    }
+
+    /// <summary>
+    /// Creates a mock IHttpContextAccessor with a test claims principal.
+    /// </summary>
+    protected IHttpContextAccessor CreateMockHttpContextAccessor()
+    {
+        return TestHelpers.CreateMockHttpContextAccessor(new ClaimsPrincipal());
+    }
+
+    /// <summary>
+    /// Creates a mock ILogManager for test logging.
+    /// </summary>
+    protected ILogManager CreateMockLogger()
+    {
+        return Substitute.For<ILogManager>();
+    }
+
+    #endregion
+
+    #region Handler Services Creation
+
+    /// <summary>
+    /// Creates HandlerServices{ApplicationQueryContext} for testing query handlers.
+    /// This is the recommended way to create query handlers in tests.
+    /// </summary>
+    /// <param name="options">Database options for the query context</param>
+    /// <param name="isAuthorized">Whether the user should be authorized (default: true)</param>
+    /// <param name="siteId">The site ID for the test alias (default: 1)</param>
+    /// <param name="aliasName">The alias name (default: "Test")</param>
+    protected HandlerServices<ApplicationQueryContext> CreateQueryHandlerServices(
+        DbContextOptions<TestApplicationQueryContext> options,
+        bool isAuthorized = true,
+        int siteId = 1,
+        string aliasName = "Test")
+    {
+        return new HandlerServices<ApplicationQueryContext>(
+            CreateMockQueryContextFactory(options),
+            CreateMockUserPermissions(isAuthorized),
+            CreateMockTenantManager(siteId, aliasName),
+            CreateMockHttpContextAccessor(),
+            CreateMockLogger());
+    }
+
+    /// <summary>
+    /// Creates HandlerServices{ApplicationCommandContext} for testing command handlers.
+    /// This is the recommended way to create command handlers in tests.
+    /// </summary>
+    /// <param name="options">Database options for the command context</param>
+    /// <param name="isAuthorized">Whether the user should be authorized (default: true)</param>
+    /// <param name="siteId">The site ID for the test alias (default: 1)</param>
+    /// <param name="aliasName">The alias name (default: "Test")</param>
+    protected HandlerServices<ApplicationCommandContext> CreateCommandHandlerServices(
+        DbContextOptions<TestApplicationCommandContext> options,
+        bool isAuthorized = true,
+        int siteId = 1,
+        string aliasName = "Test")
+    {
+        return new HandlerServices<ApplicationCommandContext>(
+            CreateMockCommandContextFactory(options),
+            CreateMockUserPermissions(isAuthorized),
+            CreateMockTenantManager(siteId, aliasName),
+            CreateMockHttpContextAccessor(),
+            CreateMockLogger());
+    }
+
+    #endregion
+
+    #region Disposal
+
+    /// <summary>
+    /// Disposes of test resources including database connections.
+    /// </summary>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                _connection?.Close();
+                _connection?.Dispose();
+            }
+            _disposed = true;
+        }
+    }
+
+    /// <summary>
+    /// Disposes of test resources.
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    #endregion
+}

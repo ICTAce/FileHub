@@ -2,15 +2,12 @@
 
 namespace ICTAce.FileHub.Persistence;
 
-public class ApplicationContext : DBContextBase, ITransientService, IMultiDatabase
+public class ApplicationContext(
+    IDBContextDependencies DBContextDependencies)
+    : DBContextBase(DBContextDependencies), ITransientService, IMultiDatabase
 {
     public virtual DbSet<Entities.SampleModule> SampleModule { get; set; }
     public virtual DbSet<Entities.Category> Category { get; set; }
-
-    public ApplicationContext(IDBContextDependencies DBContextDependencies) : base(DBContextDependencies)
-    {
-        // ContextBase handles multi-tenant database connections
-    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
