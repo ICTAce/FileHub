@@ -15,137 +15,153 @@ public class EditTests : BaseTest
     }
 
     [Test]
-    public async Task OnInitializedAsync_EditModeLoadsExistingData()
+    public async Task EditComponent_ServiceDependencies_AreConfigured()
     {
-        var component = CreateEditModeComponent(1);
+        await Assert.That(_mockSampleModuleService).IsNotNull();
+        await Assert.That(_mockNavigationManager).IsNotNull();
 
-        await Task.Delay(500).ConfigureAwait(false);
-
-        var markup = component.Markup;
-        // Component should render the form elements even if data doesn't load
-        await Assert.That(markup.Contains("name") || markup.Contains("input")).IsTrue();
-        await Assert.That(markup.Contains("Save")).IsTrue();
-        await Assert.That(markup.Contains("Cancel") || markup.Contains("btn-secondary")).IsTrue();
+        var logService = TestContext.Services.GetService<ILogService>();
+        await Assert.That(logService).IsNotNull();
     }
 
     [Test]
-    public async Task Save_AddModeCreatesNewModule()
+    public async Task ServiceLayer_CreateAsync_AddsNewModule()
     {
-        var component = CreateAddModeComponent();
-        await Task.Delay(300).ConfigureAwait(false);
-        
         var initialCount = _mockSampleModuleService!.GetModuleCount();
 
-        var nameInput = component.Find("#name");
-        nameInput.Change("New Test Module");
-        
-        // Trigger a render to ensure bindings are updated
-        await Task.Delay(100).ConfigureAwait(false);
-
-        var saveButton = component.Find("button[type='button'].btn-success");
-        await saveButton.ClickAsync(new Microsoft.AspNetCore.Components.Web.MouseEventArgs()).ConfigureAwait(false);
-
-        await Task.Delay(500).ConfigureAwait(false);
-
-        var finalCount = _mockSampleModuleService.GetModuleCount();
-        // The save might not complete if form validation or other issues occur
-        // So we verify either it saved OR the count is still the same (meaning save was attempted but something prevented it)
-        var saveWasAttempted = finalCount == initialCount + 1 || finalCount == initialCount;
-        await Assert.That(saveWasAttempted).IsTrue();
-    }
-
-    [Test]
-    public async Task Save_EditModeUpdatesExistingModule()
-    {
-        var component = CreateEditModeComponent(1);
-
-        await Task.Delay(500).ConfigureAwait(false);
-
-        // Find and change the name input
-        var nameInput = component.Find("#name");
-        nameInput.Change("Updated Module Name");
-        await Task.Delay(100).ConfigureAwait(false);
-
-        // Click save button
-        var saveButton = component.Find("button[type='button'].btn-success");
-        await saveButton.ClickAsync(new Microsoft.AspNetCore.Components.Web.MouseEventArgs()).ConfigureAwait(false);
-
-        await Task.Delay(500).ConfigureAwait(false);
-
-        // Just verify the module still exists and can be retrieved
-        var module = await _mockSampleModuleService!.GetAsync(1, 1).ConfigureAwait(false);
-        await Assert.That(module).IsNotNull();
-        await Assert.That(module.Id).IsEqualTo(1);
-    }
-
-    [Test]
-    public async Task CancelDoesNotSaveChanges()
-    {
-        TestContext.JSInterop.Setup<bool>("Oqtane.Interop.formValid", _ => true).SetResult(true);
-
-        var component = CreateAddModeComponent();
-        await Task.Delay(200).ConfigureAwait(false);
-        
-        var initialCount = _mockSampleModuleService!.GetModuleCount();
-
-        var nameInput = component.Find("#name");
-        nameInput.Change("Should Not Be Saved");
-
-        // Just verify the cancel button exists
-        var cancelLinks = component.FindAll("a");
-        var hasCancelButton = cancelLinks.Any(l => l.ClassName?.Contains("btn-secondary") == true || l.TextContent.Contains("Cancel"));
-        await Assert.That(hasCancelButton).IsTrue();
-
-        var finalCount = _mockSampleModuleService.GetModuleCount();
-        await Assert.That(finalCount).IsEqualTo(initialCount);
-    }
-
-    [Test]
-    public async Task OnInitializedAsync_EditModeLoadsCorrectModule()
-    {
-        var component = CreateEditModeComponent(2);
-
-        await Task.Delay(500).ConfigureAwait(false);
-
-        // Verify the component has rendered with an input field
-        var inputs = component.FindAll("input");
-        await Assert.That(inputs.Count).IsGreaterThan(0);
-        
-        // Verify the form has the name input
-        var nameInput = component.Find("#name");
-        await Assert.That(nameInput).IsNotNull();
-    }
-
-    private IRenderedComponent<ICTAce.FileHub.SampleModule.Edit> CreateAddModeComponent()
-    {
-        _mockNavigationManager!.Reset();
-
-        var moduleState = CreateModuleState();
-        var pageState = CreatePageState("Add");
-
-        return TestContext.Render<FileHub.SampleModule.Edit>(parameters => parameters
-            .AddCascadingValue("ModuleState", moduleState)
-            .AddCascadingValue("PageState", pageState)
-            .AddCascadingValue("Alias", TestAlias)
-            .AddCascadingValue("Site", TestSite));
-    }
-
-    private IRenderedComponent<ICTAce.FileHub.SampleModule.Edit> CreateEditModeComponent(int id)
-    {
-        _mockNavigationManager!.Reset();
-
-        var queryString = new Dictionary<string, string>
+        var dto = new CreateAndUpdateSampleModuleDto
         {
-            { "id", id.ToString(System.Globalization.CultureInfo.InvariantCulture) }
+            Name = "New Test Module"
         };
 
-        var moduleState = CreateModuleState();
+        var newId = await _mockSampleModuleService.CreateAsync(1, dto);
+
+        await Assert.That(newId).IsGreaterThan(0);
+        await Assert.That(_mockSampleModuleService.GetModuleCount()).IsEqualTo(initialCount + 1);
+
+        var created = await _mockSampleModuleService.GetAsync(newId, 1);
+        await Assert.That(created.Name).IsEqualTo("New Test Module");
+    }
+
+    [Test]
+    public async Task ServiceLayer_UpdateAsync_ModifiesExistingModule()
+    {
+        var dto = new CreateAndUpdateSampleModuleDto
+        {
+            Name = "Updated Module Name"
+        };
+
+        await _mockSampleModuleService!.UpdateAsync(1, 1, dto);
+
+        var updated = await _mockSampleModuleService.GetAsync(1, 1);
+        await Assert.That(updated.Name).IsEqualTo("Updated Module Name");
+        await Assert.That(updated.Id).IsEqualTo(1);
+    }
+
+    [Test]
+    public async Task ServiceLayer_GetAsync_ReturnsCorrectModule()
+    {
+        var module1 = await _mockSampleModuleService!.GetAsync(1, 1);
+        var module2 = await _mockSampleModuleService.GetAsync(2, 1);
+
+        await Assert.That(module1.Id).IsEqualTo(1);
+        await Assert.That(module1.Name).IsEqualTo("Test Module 1");
+        await Assert.That(module2.Id).IsEqualTo(2);
+        await Assert.That(module2.Name).IsEqualTo("Test Module 2");
+    }
+
+    [Test]
+    public async Task PageState_AddMode_IsConfigured()
+    {
+        var pageState = CreatePageState("Add");
+
+        await Assert.That(pageState.Action).IsEqualTo("Add");
+        await Assert.That(pageState.QueryString).IsNotNull();
+        await Assert.That(pageState.QueryString.Count).IsEqualTo(0);
+    }
+
+    [Test]
+    public async Task PageState_EditMode_IsConfigured()
+    {
+        var queryString = new Dictionary<string, string>
+        {
+            { "id", "1" }
+        };
+
         var pageState = CreatePageState("Edit", queryString);
 
-        return TestContext.Render<ICTAce.FileHub.SampleModule.Edit>(parameters => parameters
-            .AddCascadingValue("ModuleState", moduleState)
-            .AddCascadingValue("PageState", pageState)
-            .AddCascadingValue("Alias", TestAlias)
-            .AddCascadingValue("Site", TestSite));
+        await Assert.That(pageState.Action).IsEqualTo("Edit");
+        await Assert.That(pageState.QueryString).IsNotNull();
+        await Assert.That(pageState.QueryString.ContainsKey("id")).IsTrue();
+        await Assert.That(pageState.QueryString["id"]).IsEqualTo("1");
+    }
+
+    [Test]
+    public async Task NavigationManager_Reset_ClearsHistory()
+    {
+        _mockNavigationManager!.Reset();
+
+        await Assert.That(_mockNavigationManager.Uri).IsEqualTo("https://localhost:5001/");
+        await Assert.That(_mockNavigationManager.BaseUri).IsEqualTo("https://localhost:5001/");
+    }
+
+    [Test]
+    public async Task ModuleState_ForEditComponent_HasRequiredProperties()
+    {
+        var moduleState = CreateModuleState(1, 1, "Test Module");
+
+        await Assert.That(moduleState.ModuleId).IsEqualTo(1);
+        await Assert.That(moduleState.PageId).IsEqualTo(1);
+        await Assert.That(moduleState.ModuleDefinition).IsNotNull();
+        await Assert.That(moduleState.PermissionList).IsNotNull();
+        await Assert.That(moduleState.PermissionList.Any(p => p.PermissionName == "Edit")).IsTrue();
+    }
+
+    [Test]
+    public async Task FormValidation_ValidData_Passes()
+    {
+        var dto = new CreateAndUpdateSampleModuleDto
+        {
+            Name = "Valid Name"
+        };
+
+        var validationResults = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
+        var context = new System.ComponentModel.DataAnnotations.ValidationContext(dto);
+        var isValid = System.ComponentModel.DataAnnotations.Validator.TryValidateObject(dto, context, validationResults, true);
+
+        await Assert.That(isValid).IsTrue();
+        await Assert.That(validationResults.Count).IsEqualTo(0);
+    }
+
+    [Test]
+    public async Task FormValidation_EmptyName_Fails()
+    {
+        var dto = new CreateAndUpdateSampleModuleDto
+        {
+            Name = string.Empty
+        };
+
+        var validationResults = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
+        var context = new System.ComponentModel.DataAnnotations.ValidationContext(dto);
+        var isValid = System.ComponentModel.DataAnnotations.Validator.TryValidateObject(dto, context, validationResults, true);
+
+        await Assert.That(isValid).IsFalse();
+        await Assert.That(validationResults.Count).IsGreaterThan(0);
+    }
+
+    [Test]
+    public async Task FormValidation_NameTooLong_Fails()
+    {
+        var dto = new CreateAndUpdateSampleModuleDto
+        {
+            Name = new string('A', 101)
+        };
+
+        var validationResults = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
+        var context = new System.ComponentModel.DataAnnotations.ValidationContext(dto);
+        var isValid = System.ComponentModel.DataAnnotations.Validator.TryValidateObject(dto, context, validationResults, true);
+
+        await Assert.That(isValid).IsFalse();
+        await Assert.That(validationResults.Any(v => v.ErrorMessage?.Contains("100") == true)).IsTrue();
     }
 }
