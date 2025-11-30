@@ -37,56 +37,17 @@ public record CreateAndUpdateCategoryDto
     public int ParentId { get; set; }
 }
 
-/// <summary>
-/// Service interface for Category operations
-/// </summary>
 public interface ICategoryService
 {
     Task<GetCategoryDto> GetAsync(int id, int moduleId);
-
     Task<PagedResult<ListCategoryDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10);
-
     Task<int> CreateAsync(int moduleId, CreateAndUpdateCategoryDto dto);
-
     Task<int> UpdateAsync(int id, int moduleId, CreateAndUpdateCategoryDto dto);
-
     Task DeleteAsync(int id, int moduleId);
 }
 
-/// <summary>
-/// Service implementation for Category operations
-/// </summary>
-public class CategoryService(HttpClient http, SiteState siteState) : ServiceBase(http, siteState), ICategoryService
+public class CategoryService(HttpClient http, SiteState siteState)
+    : ModuleService<GetCategoryDto, ListCategoryDto, CreateAndUpdateCategoryDto>(http, siteState, "ictace/fileHub/categories"),
+      ICategoryService
 {
-    private string Apiurl => CreateApiUrl("ictace/fileHub/categories");
-
-    public Task<GetCategoryDto> GetAsync(int id, int moduleId)
-    {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return GetJsonAsync<GetCategoryDto>(url);
-    }
-
-    public Task<PagedResult<ListCategoryDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10)
-    {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}&pageNumber={pageNumber}&pageSize={pageSize}", EntityNames.Module, moduleId);
-        return GetJsonAsync<PagedResult<ListCategoryDto>>(url, new PagedResult<ListCategoryDto>());
-    }
-
-    public Task<int> CreateAsync(int moduleId, CreateAndUpdateCategoryDto dto)
-    {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return PostJsonAsync<CreateAndUpdateCategoryDto, int>(url, dto);
-    }
-
-    public Task<int> UpdateAsync(int id, int moduleId, CreateAndUpdateCategoryDto dto)
-    {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return PutJsonAsync<CreateAndUpdateCategoryDto, int>(url, dto);
-    }
-
-    public Task DeleteAsync(int id, int moduleId)
-    {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return DeleteAsync(url);
-    }
 }
