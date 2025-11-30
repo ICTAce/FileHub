@@ -8,6 +8,7 @@ public partial class Category : ModuleBase
     private ICategoryService CategoryService { get; set; } = default!;
 
     protected PagedResult<ListCategoryDto> Categories { get; set; } = new();
+    protected List<ListCategoryDto> TreeData { get; set; } = new();
     protected string? ErrorMessage { get; set; }
     protected bool IsLoading { get; set; }
 
@@ -18,6 +19,7 @@ public partial class Category : ModuleBase
         try
         {
             Categories = await CategoryService.ListAsync(ModuleState.ModuleId);
+            TreeData = Categories.Items?.ToList() ?? new List<ListCategoryDto>();
         }
         catch (Exception ex)
         {
@@ -27,5 +29,20 @@ public partial class Category : ModuleBase
         {
             IsLoading = false;
         }
+    }
+
+    protected void OnAddCategory(ListCategoryDto category)
+    {
+        // Handle add subcategory
+    }
+
+    protected void OnEditCategory(ListCategoryDto category)
+    {
+        // Handle edit category
+    }
+
+    protected void OnDeleteCategory(ListCategoryDto category)
+    {
+        // Handle delete category
     }
 }
