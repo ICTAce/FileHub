@@ -2,6 +2,7 @@
 
     <ItemGroup>
         <PackageReference Include="TUnit.Playwright" />
+        <PackageReference Include="Microsoft.Playwright" />
     </ItemGroup>
 
 </Project>
