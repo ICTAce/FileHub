@@ -14,77 +14,12 @@ else if (!string.IsNullOrEmpty(ErrorMessage))
 else
 {
     <div style="width: 100%; height: 500px; position: relative;">
-        <RadzenTree Data="@RootCategories" 
-                    @bind-Value="@SelectedCategory"
-                    Expand="@LoadChildren">
-            <RadzenTreeLevel TextProperty="Name">
-                <Template>
-                    @{
-                        var category = context.Value as ListCategoryDto;
-                        <div @oncontextmenu="@(args => OnContextMenu(args, category))" @oncontextmenu:preventDefault="true" style="cursor: pointer;">
-                            <span>@category?.Name</span>
-                        </div>
-                    }
-                </Template>
+        <RadzenTree Data="@TreeData">
+            <RadzenTreeLevel TextProperty="@(nameof(ListCategoryDto.Name))"
+                             ChildrenProperty="@(nameof(ListCategoryDto.Children))"
+                             HasChildren=@(e => (e as ListCategoryDto).Children.Any())>
             </RadzenTreeLevel>
         </RadzenTree>
-
-        <RadzenContextMenu @ref="contextMenu" Click="@OnContextMenuClick">
-            <RadzenMenuItem Text="Add Subcategory" Value="@("add")" />
-            <RadzenMenuItem Text="Edit" Value="@("edit")" />
-            <RadzenMenuItem Text="Delete" Value="@("delete")" />
-        </RadzenContextMenu>
     </div>
 }
 
-@code {
-    private RadzenContextMenu? contextMenu;
-    private object? SelectedCategory { get; set; }
-    private ListCategoryDto? currentCategory;
-
-    private IEnumerable<ListCategoryDto> RootCategories => TreeData.Where(c => c.ParentId == 0);
-
-    private void LoadChildren(TreeExpandEventArgs args)
-    {
-        var category = args.Value as ListCategoryDto;
-        if (category != null)
-        {
-            var children = TreeData.Where(c => c.ParentId == category.Id).ToList();
-            args.Children.Data = children;
-            args.Children.TextProperty = "Name";
-            args.Children.HasChildren = (item) => 
-            {
-                var cat = item as ListCategoryDto;
-                return cat != null && TreeData.Any(c => c.ParentId == cat.Id);
-            };
-        }
-    }
-
-    private void OnContextMenu(MouseEventArgs args, ListCategoryDto? category)
-    {
-        if (category == null) return;
-        
-        currentCategory = category;
-        contextMenu?.Open(args, new ContextMenuOptions());
-    }
-
-    private void OnContextMenuClick(MenuItemEventArgs args)
-    {
-        if (currentCategory == null) return;
-        
-        switch (args.Value)
-        {
-            case "add":
-                OnAddCategory(currentCategory);
-                break;
-            case "edit":
-                OnEditCategory(currentCategory);
-                break;
-            case "delete":
-                OnDeleteCategory(currentCategory);
-                break;
-        }
-        
-        contextMenu?.Close();
-    }
-}

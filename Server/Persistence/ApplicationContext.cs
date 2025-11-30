@@ -17,7 +17,7 @@ public class ApplicationContext(
 
         builder.Entity<Entities.Category>(entity =>
         {
-            entity.ToTable(ActiveDatabase.RewriteName("FileHub_Category"));
+            entity.ToTable(ActiveDatabase.RewriteName("ICTAce_FileHub_Category"));
 
             entity.HasOne(c => c.ParentCategory)
                   .WithMany(c => c.Subcategories)
