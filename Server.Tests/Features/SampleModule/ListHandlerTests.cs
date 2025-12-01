@@ -9,13 +9,13 @@ public class ListHandlerTests : HandlerTestBase
     public async Task Handle_WithData_ReturnsPagedResult()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await SeedQueryDataAsync(options,
             CreateTestEntity(id: 1, name: "Module 1"),
             CreateTestEntity(id: 2, name: "Module 2"),
             CreateTestEntity(id: 3, name: "Module 3"),
             CreateTestEntity(id: 4, name: "Module 4"),
-            CreateTestEntity(id: 5, name: "Module 5"));
+            CreateTestEntity(id: 5, name: "Module 5")).ConfigureAwait(false);
 
         var handler = new ListHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
@@ -44,13 +44,13 @@ public class ListHandlerTests : HandlerTestBase
     public async Task Handle_WithPagination_ReturnsCorrectPage()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await SeedQueryDataAsync(options,
             CreateTestEntity(id: 1, name: "Alpha"),
             CreateTestEntity(id: 2, name: "Bravo"),
             CreateTestEntity(id: 3, name: "Charlie"),
             CreateTestEntity(id: 4, name: "Delta"),
-            CreateTestEntity(id: 5, name: "Echo"));
+            CreateTestEntity(id: 5, name: "Echo")).ConfigureAwait(false);
 
         var handler = new ListHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
@@ -84,7 +84,7 @@ public class ListHandlerTests : HandlerTestBase
     public async Task Handle_WithUnauthorizedUser_ReturnsNull()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
 
         var handler = new ListHandler(
             CreateQueryHandlerServices(options, isAuthorized: false));
@@ -109,7 +109,7 @@ public class ListHandlerTests : HandlerTestBase
     public async Task Handle_WithNoData_ReturnsEmptyList()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
 
         var handler = new ListHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
@@ -136,12 +136,12 @@ public class ListHandlerTests : HandlerTestBase
     public async Task Handle_WithMultipleModules_FiltersCorrectly()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await SeedQueryDataAsync(options,
             CreateTestEntity(id: 1, moduleId: 1, name: "Module 1-1"),
             CreateTestEntity(id: 2, moduleId: 1, name: "Module 1-2"),
             CreateTestEntity(id: 3, moduleId: 2, name: "Module 2-1"),
-            CreateTestEntity(id: 4, moduleId: 2, name: "Module 2-2"));
+            CreateTestEntity(id: 4, moduleId: 2, name: "Module 2-2")).ConfigureAwait(false);
 
         var handler = new ListHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
@@ -171,11 +171,11 @@ public class ListHandlerTests : HandlerTestBase
     public async Task Handle_VerifiesAlphabeticalOrdering()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await SeedQueryDataAsync(options,
             CreateTestEntity(id: 1, name: "Zebra"),
             CreateTestEntity(id: 2, name: "Apple"),
-            CreateTestEntity(id: 3, name: "Mango"));
+            CreateTestEntity(id: 3, name: "Mango")).ConfigureAwait(false);
 
         var handler = new ListHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));

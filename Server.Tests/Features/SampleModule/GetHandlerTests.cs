@@ -10,8 +10,8 @@ public class GetHandlerTests : HandlerTestBase
     public async Task Handle_WithValidId_ReturnsSampleModule()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
-        await SeedQueryDataAsync(options, CreateTestEntity());
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
+        await SeedQueryDataAsync(options, CreateTestEntity()).ConfigureAwait(false);
 
         var handler = new GetHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
@@ -34,8 +34,8 @@ public class GetHandlerTests : HandlerTestBase
     public async Task Handle_WithInvalidId_ReturnsNull()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
-        await SeedQueryDataAsync(options, CreateTestEntity());
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
+        await SeedQueryDataAsync(options, CreateTestEntity()).ConfigureAwait(false);
 
         var handler = new GetHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
@@ -55,8 +55,8 @@ public class GetHandlerTests : HandlerTestBase
     public async Task Handle_WithUnauthorizedUser_ReturnsNull()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
-        await SeedQueryDataAsync(options, CreateTestEntity());
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
+        await SeedQueryDataAsync(options, CreateTestEntity()).ConfigureAwait(false);
 
         var handler = new GetHandler(
             CreateQueryHandlerServices(options, isAuthorized: false));
@@ -76,8 +76,8 @@ public class GetHandlerTests : HandlerTestBase
     public async Task Handle_WithWrongModuleId_ReturnsNull()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
-        await SeedQueryDataAsync(options, CreateTestEntity());
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
+        await SeedQueryDataAsync(options, CreateTestEntity()).ConfigureAwait(false);
 
         var handler = new GetHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
@@ -97,20 +97,20 @@ public class GetHandlerTests : HandlerTestBase
     public async Task Handle_VerifiesAuditFields_ArePopulated()
     {
         // Arrange
-        var (connection, options) = await CreateQueryDatabaseAsync();
-        
+        var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
+
         var createdOn = DateTime.UtcNow.AddDays(-5);
         var modifiedOn = DateTime.UtcNow.AddDays(-1);
 
-        await SeedQueryDataAsync(options, 
+        await SeedQueryDataAsync(options,
             CreateTestEntity(
-                id: 1, 
-                moduleId: 1, 
-                name: "Test Module", 
-                createdBy: "creator", 
+                id: 1,
+                moduleId: 1,
+                name: "Test Module",
+                createdBy: "creator",
                 createdOn: createdOn,
-                modifiedBy: "modifier", 
-                modifiedOn: modifiedOn));
+                modifiedBy: "modifier",
+                modifiedOn: modifiedOn)).ConfigureAwait(false);
 
         var handler = new GetHandler(
             CreateQueryHandlerServices(options, isAuthorized: true));
