@@ -31,7 +31,7 @@ public class ApplicationHealthTests : PageTest
         // Setup: Capture console error messages
         Page.Console += (_, msg) =>
         {
-            if (msg.Type == "error")
+            if (string.Equals(msg.Type, "error", StringComparison.Ordinal))
             {
                 consoleErrors.Add(msg.Text);
             }

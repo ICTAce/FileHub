@@ -65,13 +65,11 @@ public class OqtaneApplicationTests : PageTest
         // Setup: Monitor resource loading
         Page.Response += (_, response) =>
         {
-            if (response.Url.Contains("blazor.webassembly.js") ||
-                response.Url.Contains("blazor.web.js"))
+            if ((response.Url.Contains("blazor.webassembly.js") ||
+                response.Url.Contains("blazor.web.js")) &&
+                response.Ok)
             {
-                if (response.Ok)
-                {
-                    blazorScriptLoaded = true;
-                }
+                blazorScriptLoaded = true;
             }
         };
 

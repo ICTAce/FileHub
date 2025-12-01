@@ -1,8 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <ItemGroup>
-        <PackageReference Include="TUnit.Playwright" />
-        <PackageReference Include="Microsoft.Playwright" />
-    </ItemGroup>
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="TUnit.Playwright" />
+    <PackageReference Include="Microsoft.Playwright" />
+  </ItemGroup>
 
 </Project>
