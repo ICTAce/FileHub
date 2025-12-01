@@ -1,5 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace ICTAce.FileHub.Server.Tests.Helpers;
 
 /// <summary>
@@ -41,6 +43,7 @@ public static class CategoryTestHelpers
     /// <summary>
     /// Creates a test Category entity with default values.
     /// </summary>
+    [SuppressMessage("Sonar", "S107:Methods should not have too many parameters", Justification = "Test helper method with many optional parameters")]
     public static Persistence.Entities.Category CreateTestEntity(
         int id = 1,
         int moduleId = 1,
@@ -115,7 +118,7 @@ public static class CategoryTestHelpers
     /// <summary>
     /// Gets all categories from the command database ordered by ViewOrder.
     /// </summary>
-    public static async Task<List<Persistence.Entities.Category>> GetAllFromCommandDbAsync(
+    public static async Task<IReadOnlyList<Persistence.Entities.Category>> GetAllFromCommandDbAsync(
         DbContextOptions<TestApplicationCommandContext> options,
         int? moduleId = null)
     {
@@ -133,7 +136,7 @@ public static class CategoryTestHelpers
     /// <summary>
     /// Gets all categories from the query database ordered by ViewOrder.
     /// </summary>
-    public static async Task<List<Persistence.Entities.Category>> GetAllFromQueryDbAsync(
+    public static async Task<IReadOnlyList<Persistence.Entities.Category>> GetAllFromQueryDbAsync(
         DbContextOptions<TestApplicationQueryContext> options,
         int? moduleId = null)
     {
@@ -151,7 +154,7 @@ public static class CategoryTestHelpers
     /// <summary>
     /// Gets child categories for a specific parent from the query database.
     /// </summary>
-    public static async Task<List<Persistence.Entities.Category>> GetChildrenFromQueryDbAsync(
+    public static async Task<IReadOnlyList<Persistence.Entities.Category>> GetChildrenFromQueryDbAsync(
         DbContextOptions<TestApplicationQueryContext> options,
         int parentId)
     {

@@ -25,7 +25,7 @@ public abstract class HandlerTestBase : IDisposable
     protected async Task<(SqliteConnection connection, DbContextOptions<TestApplicationCommandContext> options)> CreateCommandDatabaseAsync()
     {
         _connection = new SqliteConnection("DataSource=:memory:");
-        _connection.Open();
+        await _connection.OpenAsync().ConfigureAwait(false);
 
         _commandOptions = new DbContextOptionsBuilder<TestApplicationCommandContext>()
             .UseSqlite(_connection)
@@ -45,7 +45,7 @@ public abstract class HandlerTestBase : IDisposable
     protected async Task<(SqliteConnection connection, DbContextOptions<TestApplicationQueryContext> options)> CreateQueryDatabaseAsync()
     {
         _connection = new SqliteConnection("DataSource=:memory:");
-        _connection.Open();
+        await _connection.OpenAsync().ConfigureAwait(false);
 
         _queryOptions = new DbContextOptionsBuilder<TestApplicationQueryContext>()
             .UseSqlite(_connection)
