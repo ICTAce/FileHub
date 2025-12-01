@@ -1,5 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
+using System.Diagnostics.CodeAnalysis;
 using static ICTAce.FileHub.Server.Tests.Helpers.SampleModuleTestHelpers;
 using CategoryHandlers = ICTAce.FileHub.Features.Categories;
 
@@ -11,6 +12,7 @@ namespace ICTAce.FileHub.Server.Tests.Features.Integration;
 public class CrudWorkflowTests : HandlerTestBase
 {
     [Test]
+    [SuppressMessage("Maintainability", "MA0051:MethodTooLong", Justification = "Integration test covering full CRUD workflow")]
     public async Task CompleteWorkflow_CreateGetUpdateDelete_AllOperationsSucceed()
     {
         // Arrange
@@ -30,7 +32,7 @@ public class CrudWorkflowTests : HandlerTestBase
         var createRequest = new CreateSampleModuleRequest
         {
             ModuleId = 1,
-            Name = "New Entity"
+            Name = "New Entity",
         };
         var createdId = await createHandler.Handle(createRequest, CancellationToken.None).ConfigureAwait(false);
         await Assert.That(createdId).IsGreaterThan(0);
@@ -43,7 +45,7 @@ public class CrudWorkflowTests : HandlerTestBase
         var getRequest = new GetSampleModuleRequest
         {
             Id = createdId,
-            ModuleId = 1
+            ModuleId = 1,
         };
         var getResult = await getHandler.Handle(getRequest, CancellationToken.None).ConfigureAwait(false);
         await Assert.That(getResult).IsNotNull();
@@ -54,7 +56,7 @@ public class CrudWorkflowTests : HandlerTestBase
         {
             Id = createdId,
             ModuleId = 1,
-            Name = "Updated Entity"
+            Name = "Updated Entity",
         };
         var updateResult = await updateHandler.Handle(updateRequest, CancellationToken.None).ConfigureAwait(false);
         await Assert.That(updateResult).IsEqualTo(createdId);
@@ -66,7 +68,7 @@ public class CrudWorkflowTests : HandlerTestBase
         var deleteRequest = new DeleteSampleModuleRequest
         {
             Id = createdId,
-            ModuleId = 1
+            ModuleId = 1,
         };
         var deleteResult = await deleteHandler.Handle(deleteRequest, CancellationToken.None).ConfigureAwait(false);
         await Assert.That(deleteResult).IsEqualTo(createdId);
@@ -78,6 +80,7 @@ public class CrudWorkflowTests : HandlerTestBase
     }
 
     [Test]
+    [SuppressMessage("Maintainability", "MA0051:MethodTooLong", Justification = "Integration test covering full CRUD workflow")]
     public async Task CreateMultiple_List_ReturnsPaginatedResults()
     {
         // Arrange
@@ -97,7 +100,7 @@ public class CrudWorkflowTests : HandlerTestBase
         {
             ModuleId = 1,
             PageNumber = 1,
-            PageSize = 2
+            PageSize = 2,
         };
         var page1Result = await listHandler.Handle(page1Request, CancellationToken.None).ConfigureAwait(false);
 
@@ -112,7 +115,7 @@ public class CrudWorkflowTests : HandlerTestBase
         {
             ModuleId = 1,
             PageNumber = 2,
-            PageSize = 2
+            PageSize = 2,
         };
         var page2Result = await listHandler.Handle(page2Request, CancellationToken.None).ConfigureAwait(false);
 
@@ -127,7 +130,7 @@ public class CrudWorkflowTests : HandlerTestBase
         {
             ModuleId = 1,
             PageNumber = 3,
-            PageSize = 2
+            PageSize = 2,
         };
         var page3Result = await listHandler.Handle(page3Request, CancellationToken.None).ConfigureAwait(false);
 
@@ -157,7 +160,7 @@ public class CrudWorkflowTests : HandlerTestBase
         var id = await createHandler.Handle(new CreateSampleModuleRequest
         {
             ModuleId = 1,
-            Name = "Original"
+            Name = "Original",
         }, CancellationToken.None).ConfigureAwait(false);
 
         // Seed query database
@@ -169,7 +172,7 @@ public class CrudWorkflowTests : HandlerTestBase
         {
             Id = id,
             ModuleId = 1,
-            Name = "Modified"
+            Name = "Modified",
         }, CancellationToken.None).ConfigureAwait(false);
 
         // Update query database to match command changes
@@ -187,7 +190,7 @@ public class CrudWorkflowTests : HandlerTestBase
         var result = await getHandler.Handle(new GetSampleModuleRequest
         {
             Id = id,
-            ModuleId = 1
+            ModuleId = 1,
         }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
@@ -211,7 +214,7 @@ public class CrudWorkflowTests : HandlerTestBase
         var firstDeleteResult = await deleteHandler.Handle(new DeleteSampleModuleRequest
         {
             Id = 1,
-            ModuleId = 1
+            ModuleId = 1,
         }, CancellationToken.None).ConfigureAwait(false);
 
         await Assert.That(firstDeleteResult).IsEqualTo(1);
@@ -220,7 +223,7 @@ public class CrudWorkflowTests : HandlerTestBase
         var secondDeleteResult = await deleteHandler.Handle(new DeleteSampleModuleRequest
         {
             Id = 1,
-            ModuleId = 1
+            ModuleId = 1,
         }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
@@ -267,6 +270,7 @@ public class CrudWorkflowTests : HandlerTestBase
     }
 
     [Test]
+    [SuppressMessage("Maintainability", "MA0051:MethodTooLong", Justification = "Integration test covering full CRUD workflow")]
     public async Task CategoryWorkflow_CreateUpdateListDelete_CompleteSuccess()
     {
         // Arrange
@@ -288,7 +292,7 @@ public class CrudWorkflowTests : HandlerTestBase
             ModuleId = 1,
             Name = "Test Category",
             ViewOrder = 1,
-            ParentId = 0
+            ParentId = 0,
         }, CancellationToken.None).ConfigureAwait(false);
 
         await Assert.That(id).IsGreaterThan(0);
@@ -304,7 +308,7 @@ public class CrudWorkflowTests : HandlerTestBase
             ModuleId = 1,
             Name = "Updated Category",
             ViewOrder = 5,
-            ParentId = 0
+            ParentId = 0,
         }, CancellationToken.None).ConfigureAwait(false);
 
         await Assert.That(updateResult).IsEqualTo(id);
@@ -326,7 +330,7 @@ public class CrudWorkflowTests : HandlerTestBase
         {
             ModuleId = 1,
             PageNumber = 1,
-            PageSize = 10
+            PageSize = 10,
         }, CancellationToken.None).ConfigureAwait(false);
 
         await Assert.That(listResult).IsNotNull();
@@ -338,7 +342,7 @@ public class CrudWorkflowTests : HandlerTestBase
         var deleteResult = await deleteHandler.Handle(new CategoryHandlers.DeleteCategoryRequest
         {
             Id = id,
-            ModuleId = 1
+            ModuleId = 1,
         }, CancellationToken.None).ConfigureAwait(false);
 
         await Assert.That(deleteResult).IsEqualTo(id);
