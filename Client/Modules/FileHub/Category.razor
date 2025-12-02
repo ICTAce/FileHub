@@ -3,6 +3,8 @@
 
 <h3>Categories</h3>
 
+<RadzenTheme Theme="material" />
+
 @if (IsLoading)
 {
     <p><em>Loading...</em></p>
@@ -14,7 +16,7 @@ else if (!string.IsNullOrEmpty(ErrorMessage))
 else
 {
     <div style="width: 100%; height: 500px; position: relative;">
-        <RadzenTree Data="@TreeData">
+        <RadzenTree Data="@TreeData" cho>
             <RadzenTreeLevel TextProperty="@(nameof(ListCategoryDto.Name))"
                              ChildrenProperty="@(nameof(ListCategoryDto.Children))"
                              HasChildren=@(e => (e as ListCategoryDto).Children.Any())>

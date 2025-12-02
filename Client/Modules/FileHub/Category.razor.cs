@@ -13,13 +13,19 @@ public partial class Category : ModuleBase
     protected string? ErrorMessage { get; set; }
     protected bool IsLoading { get; set; }
 
+    public override List<Resource> Resources => new()
+    {
+        new Script($"_content/Radzen.Blazor/Radzen.Blazor.js?v={typeof(Radzen.Colors).Assembly.GetName().Version}")
+    };
+
     protected override async Task OnInitializedAsync()
     {
         IsLoading = true;
         ErrorMessage = null;
         try
         {
-            Categories = await CategoryService.ListAsync(ModuleState.ModuleId);
+            // Request all categories (use a large page size to get all items)
+            Categories = await CategoryService.ListAsync(ModuleState.ModuleId, pageNumber: 1, pageSize: int.MaxValue);
             CreateTreeStructure();
         }
         catch (Exception ex)
@@ -40,14 +46,22 @@ public partial class Category : ModuleBase
             return;
         }
 
+        // Clear all children lists before rebuilding the tree
+        foreach (var category in Categories.Items)
+        {
+            category.Children.Clear();
+        }
+
         var categoryDict = Categories.Items.ToDictionary(c => c.Id, c => c);
 
+        // Get root items (ParentId = 0 or parent doesn't exist in the dataset)
         TreeData = Categories.Items
             .Where(c => c.ParentId == 0 || !categoryDict.ContainsKey(c.ParentId))
             .OrderBy(c => c.ViewOrder)
             .ThenBy(c => c.Name)
             .ToList();
 
+        // Build parent-child relationships
         foreach (var category in Categories.Items)
         {
             if (category.ParentId != 0 && categoryDict.TryGetValue(category.ParentId, out var parent))
