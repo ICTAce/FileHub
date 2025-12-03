@@ -1,5 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -67,6 +68,7 @@ public class TestApplicationCommandContext : ApplicationCommandContext
     private readonly SqliteConnection? _connection;
     private static readonly IServiceProvider _serviceProvider;
 
+    [SuppressMessage("Microsoft.Performance", "CA1810:Initialize reference type static fields inline", Justification = "Service provider initialization requires complex setup")]
     static TestApplicationCommandContext()
     {
         // Create a service provider with all necessary EF Core services
@@ -76,6 +78,7 @@ public class TestApplicationCommandContext : ApplicationCommandContext
         _serviceProvider = services.BuildServiceProvider();
     }
 
+    [SuppressMessage("Microsoft.EntityFrameworkCore", "EF1001:Internal EF Core API usage.", Justification = "Required for test database setup")]
     public TestApplicationCommandContext(DbContextOptions options)
         : base(new TestDBContextDependencies(options))
     {
@@ -143,6 +146,7 @@ public class TestApplicationQueryContext : ApplicationQueryContext
     private readonly SqliteConnection? _connection;
     private static readonly IServiceProvider _serviceProvider;
 
+    [SuppressMessage("Microsoft.Performance", "CA1810:Initialize reference type static fields inline", Justification = "Service provider initialization requires complex setup")]
     static TestApplicationQueryContext()
     {
         // Create a service provider with all necessary EF Core services
@@ -152,6 +156,7 @@ public class TestApplicationQueryContext : ApplicationQueryContext
         _serviceProvider = services.BuildServiceProvider();
     }
 
+    [SuppressMessage("Microsoft.EntityFrameworkCore", "EF1001:Internal EF Core API usage.", Justification = "Required for test database setup")]
     public TestApplicationQueryContext(DbContextOptions options)
         : base(new TestDBContextDependencies(options))
     {

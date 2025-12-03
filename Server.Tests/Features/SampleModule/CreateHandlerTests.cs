@@ -57,7 +57,7 @@ public class CreateHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsEqualTo(-1);
 
-        var count = await GetCountFromCommandDbAsync(options);
+        var count = await GetCountFromCommandDbAsync(options).ConfigureAwait(false);
         await Assert.That(count).IsEqualTo(0);
 
         await connection.CloseAsync().ConfigureAwait(false);
@@ -115,7 +115,7 @@ public class CreateHandlerTests : HandlerTestBase
         await Assert.That(id1).IsNotEqualTo(id2);
         await Assert.That(id2).IsNotEqualTo(id3);
 
-        var count = await GetCountFromCommandDbAsync(options);
+        var count = await GetCountFromCommandDbAsync(options).ConfigureAwait(false);
         await Assert.That(count).IsEqualTo(3);
 
         await connection.CloseAsync().ConfigureAwait(false);
