@@ -14,12 +14,15 @@ public class UpdateHandler(HandlerServices<ApplicationCommandContext> services)
 {
     public Task<int> Handle(UpdateCategoryRequest request, CancellationToken cancellationToken)
     {
+        // Convert ParentId of 0 to null for root-level categories
+        int? parentId = request.ParentId == 0 ? null : request.ParentId;
+        
         return HandleUpdateAsync<UpdateCategoryRequest, Persistence.Entities.Category>(
             request: request,
             setPropertyCalls: setter => setter
                 .SetProperty(e => e.Name, request.Name)
                 .SetProperty(e => e.ViewOrder, request.ViewOrder)
-                .SetProperty(e => e.ParentId, request.ParentId),
+                .SetProperty(e => e.ParentId, parentId),
             cancellationToken: cancellationToken
         );
     }

@@ -11,7 +11,8 @@ public partial class Index
     public override List<Resource> Resources => new List<Resource>()
     {
         new Stylesheet(ModulePath() + "Module.css"),
-        new Script(ModulePath() + "Module.js")
+        new Script(ModulePath() + "Module.js"),
+        new Script("_content/Radzen.Blazor/Radzen.Blazor.js")
     };
 
     private List<ListSampleModuleDto>? _filehubs;
