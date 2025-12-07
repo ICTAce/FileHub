@@ -8,12 +8,12 @@ public partial class Index
     [Inject] protected NavigationManager NavigationManager { get; set; } = default!;
     [Inject] protected IStringLocalizer<Index> Localizer { get; set; } = default!;
 
-    public override List<Resource> Resources => new List<Resource>()
-    {
+    public override List<Resource> Resources =>
+    [
         new Stylesheet(ModulePath() + "Module.css"),
         new Script(ModulePath() + "Module.js"),
         new Script("_content/Radzen.Blazor/Radzen.Blazor.js")
-    };
+    ];
 
     private List<ListSampleModuleDto>? _filehubs;
 
@@ -37,7 +37,7 @@ public partial class Index
         {
             await FileHubService.DeleteAsync(filehub.Id, ModuleState.ModuleId).ConfigureAwait(true);
             await logger.LogInformation("FileHub Deleted {Id}", filehub.Id).ConfigureAwait(true);
-            
+
             var pagedResult = await FileHubService.ListAsync(ModuleState.ModuleId).ConfigureAwait(true);
             _filehubs = pagedResult?.Items?.ToList();
             StateHasChanged();

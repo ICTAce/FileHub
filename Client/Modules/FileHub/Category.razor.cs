@@ -4,9 +4,6 @@ namespace ICTAce.FileHub;
 
 public partial class Category : ModuleBase
 {
-    private List<ListCategoryDto> TreeData = new();
-    private ListCategoryDto RootNode = new() { Name = "All Categories" };
-
     [Inject]
     private ICategoryService CategoryService { get; set; } = default!;
 
@@ -15,6 +12,9 @@ public partial class Category : ModuleBase
 
     [Inject]
     private Radzen.ContextMenuService ContextMenuService { get; set; } = default!;
+
+    private List<ListCategoryDto> _treeData = [];
+    private ListCategoryDto _rootNode = new() { Name = "All Categories" };
 
     protected PagedResult<ListCategoryDto> Categories { get; set; } = new();
     protected string? ErrorMessage { get; set; }
@@ -25,8 +25,7 @@ public partial class Category : ModuleBase
     protected bool ShowEditDialog { get; set; }
     protected bool IsAddingNew { get; set; }
     protected string DialogTitle { get; set; } = string.Empty;
-    
-    // Inline editing properties
+
     protected ListCategoryDto? EditingNode { get; set; }
     protected string EditingNodeName { get; set; } = string.Empty;
     protected bool IsInlineEditing { get; set; }
@@ -62,8 +61,7 @@ public partial class Category : ModuleBase
         {
             var rootMenuItems = new List<Radzen.ContextMenuItem>
             {
-                new Radzen.ContextMenuItem
-                {
+                new() {
                     Text = "Add Category",
                     Value = "add",
                     Icon = "add",
@@ -76,27 +74,23 @@ public partial class Category : ModuleBase
 
         var menuItems = new List<Radzen.ContextMenuItem>
         {
-            new Radzen.ContextMenuItem
-            {
+            new() {
                 Text = "Add Child Category",
                 Value = "add",
                 Icon = "add",
             },
-            new Radzen.ContextMenuItem
-            {
+            new() {
                 Text = "Edit Name",
                 Value = "edit",
                 Icon = "edit",
             },
-            new Radzen.ContextMenuItem
-            {
+            new() {
                 Text = "Move Up",
                 Value = "moveup",
                 Icon = "arrow_upward",
                 Disabled = !CanMoveUp(category),
             },
-            new Radzen.ContextMenuItem
-            {
+            new() {
                 Text = "Move Down",
                 Value = "movedown",
                 Icon = "arrow_downward",
@@ -107,8 +101,7 @@ public partial class Category : ModuleBase
         // Only add delete option if category has no children
         if (!category.Children.Any())
         {
-            menuItems.Add(new Radzen.ContextMenuItem
-            {
+            menuItems.Add(new() {
                 Text = "Delete",
                 Value = "delete",
                 Icon = "delete",
@@ -164,11 +157,11 @@ public partial class Category : ModuleBase
         // For root-level categories (ParentId == 0), siblings are in TreeData
         if (category.ParentId == 0)
         {
-            return TreeData;
+            return _treeData;
         }
 
-        var parent = FindCategoryById(new List<ListCategoryDto> { RootNode }, category.ParentId);
-        return parent?.Children ?? new List<ListCategoryDto>();
+        var parent = FindCategoryById([_rootNode], category.ParentId);
+        return parent?.Children ?? [];
     }
 
     private ListCategoryDto? FindCategoryById(List<ListCategoryDto> categories, int id)
@@ -196,7 +189,7 @@ public partial class Category : ModuleBase
             Name = string.Empty,
             ParentId = SelectedCategory.Id == 0 ? 0 : SelectedCategory.Id, // If root node, ParentId is 0
             ViewOrder = SelectedCategory.Children.Count,
-            Children = new List<ListCategoryDto>()
+            Children = []
         };
 
         // Add to parent's children
@@ -311,16 +304,16 @@ public partial class Category : ModuleBase
         {
             // Remove the temporary node from the tree
             ListCategoryDto? parent;
-            
+
             if (EditingNode.ParentId == 0)
             {
-                parent = RootNode;
+                parent = _rootNode;
             }
             else
             {
-                parent = FindCategoryById(new List<ListCategoryDto> { RootNode }, EditingNode.ParentId);
+                parent = FindCategoryById([_rootNode], EditingNode.ParentId);
             }
-            
+
             if (parent != null)
             {
                 parent.Children.Remove(EditingNode);
@@ -397,7 +390,7 @@ public partial class Category : ModuleBase
                 .Where(c => c.ParentId == SelectedCategory.ParentId)
                 .OrderBy(c => c.ViewOrder)
                 .ThenBy(c => c.Name)
-                .ToList() ?? new List<ListCategoryDto>();
+                .ToList() ?? [];
 
             var currentIndex = siblings.FindIndex(c => c.Id == SelectedCategory.Id);
 
@@ -468,7 +461,7 @@ public partial class Category : ModuleBase
                 .Where(c => c.ParentId == SelectedCategory.ParentId)
                 .OrderBy(c => c.ViewOrder)
                 .ThenBy(c => c.Name)
-                .ToList() ?? new List<ListCategoryDto>();
+                .ToList() ?? [];
 
             var currentIndex = siblings.FindIndex(c => c.Id == SelectedCategory.Id);
 
@@ -665,16 +658,16 @@ public partial class Category : ModuleBase
     {
         if (Categories.Items is null || !Categories.Items.Any())
         {
-            TreeData = new();
-            
+            _treeData = [];
+
             // Create root node with empty children
-            RootNode = new ListCategoryDto
+            _rootNode = new ListCategoryDto
             {
                 Id = 0,
                 Name = "All Categories",
                 ParentId = -1,
                 ViewOrder = 0,
-                Children = new List<ListCategoryDto>()
+                Children = []
             };
             return;
         }
@@ -686,7 +679,7 @@ public partial class Category : ModuleBase
 
         var categoryDict = Categories.Items.ToDictionary(c => c.Id, c => c);
 
-        TreeData = Categories.Items
+        _treeData = Categories.Items
             .Where(c => c.ParentId == 0 || !categoryDict.ContainsKey(c.ParentId))
             .OrderBy(c => c.ViewOrder)
             .ThenBy(c => c.Name)
@@ -700,16 +693,16 @@ public partial class Category : ModuleBase
             }
         }
 
-        SortChildren(TreeData);
+        SortChildren(_treeData);
 
         // Create root node with TreeData as children
-        RootNode = new ListCategoryDto
+        _rootNode = new ListCategoryDto
         {
             Id = 0,
             Name = "All Categories",
             ParentId = -1,
             ViewOrder = 0,
-            Children = TreeData
+            Children = _treeData
         };
     }
 

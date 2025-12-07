@@ -17,7 +17,7 @@ else if (!string.IsNullOrEmpty(ErrorMessage))
 else
 {
     <div style="width: 100%; height: 500px; position: relative; margin-bottom: 20px;">
-        <RadzenTree Data="@(new List<ListCategoryDto> { RootNode })" Style="width: 100%; height: 100%;">
+        <RadzenTree Data="@(new List<ListCategoryDto> { _rootNode })" Style="width: 100%; height: 100%;">
             <RadzenTreeLevel TextProperty="@(nameof(ListCategoryDto.Name))"
                              ChildrenProperty="@(nameof(ListCategoryDto.Children))"
                              HasChildren=@(e => ((ListCategoryDto)e).Children?.Any() == true)>
