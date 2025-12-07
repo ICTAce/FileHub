@@ -17,7 +17,7 @@ else if (!string.IsNullOrEmpty(ErrorMessage))
 else
 {
     <div style="width: 100%; height: 500px; position: relative; margin-bottom: 20px;">
-        <RadzenTree Data="@TreeData">
+        <RadzenTree Data="@(new List<ListCategoryDto> { RootNode })" Style="width: 100%; height: 100%;">
             <RadzenTreeLevel TextProperty="@(nameof(ListCategoryDto.Name))"
                              ChildrenProperty="@(nameof(ListCategoryDto.Children))"
                              HasChildren=@(e => ((ListCategoryDto)e).Children?.Any() == true)>
@@ -25,6 +25,7 @@ else
                     @{
                         var category = (context.Value as ListCategoryDto);
                         var isEditing = IsInlineEditing && EditingNode != null && EditingNode.Id == category?.Id;
+                        var isRootNode = category?.Id == 0;
                     }
 
                     @if (isEditing)
@@ -50,7 +51,11 @@ else
                     {
                         <span @oncontextmenu="@(args => ShowContextMenu(args, category))"
                               @oncontextmenu:preventDefault="true"
-                              style="cursor: pointer;">
+                              style="cursor: pointer; font-weight: @(isRootNode ? "bold" : "normal");">
+                            @if (isRootNode)
+                            {
+                                <i class="oi oi-folder" style="margin-right: 4px;"></i>
+                            }
                             @category?.Name
                         </span>
                     }
