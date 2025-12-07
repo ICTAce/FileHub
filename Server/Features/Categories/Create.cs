@@ -29,6 +29,6 @@ internal sealed partial class CreateMapper
 {
     [MapProperty(nameof(CreateCategoryRequest.ParentId), nameof(Persistence.Entities.Category.ParentId), Use = nameof(ConvertParentId))]
     internal partial Persistence.Entities.Category ToEntity(CreateCategoryRequest request);
-    
+
     private int? ConvertParentId(int parentId) => parentId == 0 ? null : parentId;
 }

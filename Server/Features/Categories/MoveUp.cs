@@ -13,7 +13,7 @@ public class MoveUpHandler(HandlerServices<ApplicationCommandContext> services)
 
         if (!IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
         {
-            Logger.Log(LogLevel.Error, this, LogFunction.Security, 
+            Logger.Log(LogLevel.Error, this, LogFunction.Security,
                 "Unauthorized Category MoveUp Attempt {Id} {ModuleId}", request.Id, request.ModuleId);
             return -1;
         }
@@ -28,13 +28,13 @@ public class MoveUpHandler(HandlerServices<ApplicationCommandContext> services)
 
         if (currentCategory is null)
         {
-            Logger.Log(LogLevel.Warning, this, LogFunction.Update, 
+            Logger.Log(LogLevel.Warning, this, LogFunction.Update,
                 "Category Not Found {Id}", request.Id);
             return -1;
         }
 
         var previousCategory = await db.Category
-            .Where(c => c.ModuleId == request.ModuleId 
+            .Where(c => c.ModuleId == request.ModuleId
                      && c.ParentId == currentCategory.ParentId
                      && c.ViewOrder < currentCategory.ViewOrder)
             .OrderByDescending(c => c.ViewOrder)
@@ -44,7 +44,7 @@ public class MoveUpHandler(HandlerServices<ApplicationCommandContext> services)
 
         if (previousCategory is null)
         {
-            Logger.Log(LogLevel.Information, this, LogFunction.Update, 
+            Logger.Log(LogLevel.Information, this, LogFunction.Update,
                 "Category Already at Top {Id}", request.Id);
             return request.Id;
         }
@@ -62,7 +62,7 @@ public class MoveUpHandler(HandlerServices<ApplicationCommandContext> services)
             .ExecuteUpdateAsync(setter => setter.SetProperty(c => c.ViewOrder, currentViewOrder), cancellationToken)
             .ConfigureAwait(false);
 
-        Logger.Log(LogLevel.Information, this, LogFunction.Update, 
+        Logger.Log(LogLevel.Information, this, LogFunction.Update,
             "Category Moved Up {Id}", request.Id);
 
         return request.Id;

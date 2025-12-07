@@ -12,7 +12,7 @@ public partial class Index
     [
         new Stylesheet(ModulePath() + "Module.css"),
         new Script(ModulePath() + "Module.js"),
-        new Script("_content/Radzen.Blazor/Radzen.Blazor.js")
+        new Script("_content/Radzen.Blazor/Radzen.Blazor.js"),
     ];
 
     private List<ListSampleModuleDto>? _filehubs;

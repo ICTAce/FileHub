@@ -14,7 +14,7 @@ public partial class Edit
 
     public override string Title => "Manage FileHub";
 
-    public override List<Resource> Resources => 
+    public override List<Resource> Resources =>
     [
         new Stylesheet(ModulePath() + "Module.css")
     ];

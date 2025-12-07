@@ -16,7 +16,7 @@ public class UpdateHandler(HandlerServices<ApplicationCommandContext> services)
     {
         // Convert ParentId of 0 to null for root-level categories
         int? parentId = request.ParentId == 0 ? null : request.ParentId;
-        
+
         return HandleUpdateAsync<UpdateCategoryRequest, Persistence.Entities.Category>(
             request: request,
             setPropertyCalls: setter => setter

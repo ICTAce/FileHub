@@ -42,9 +42,9 @@ public abstract class BaseTest : IDisposable
         // Initialize SiteState with proper data
         var siteState = new SiteState();
         TestContext.Services.AddSingleton(siteState);
-        
+
         TestContext.Services.AddLogging();
-        
+
         TestContext.Services.AddScoped<ILogService, MockLogService>();
         TestContext.Services.AddScoped<ISampleModuleService, MockSampleModuleService>();
         TestContext.Services.AddScoped<IUserService, MockUserService>();
@@ -56,7 +56,7 @@ public abstract class BaseTest : IDisposable
         TestContext.Services.AddScoped<IThemeService, MockThemeService>();
         TestContext.Services.AddScoped<IModuleDefinitionService, MockModuleDefinitionService>();
         TestContext.Services.AddScoped<Microsoft.AspNetCore.Authorization.IAuthorizationService, MockAuthorizationService>();
-        
+
         // Add authentication state provider
         TestContext.Services.AddScoped<Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider, MockAuthenticationStateProvider>();
 
