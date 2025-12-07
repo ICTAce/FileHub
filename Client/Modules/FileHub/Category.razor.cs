@@ -25,6 +25,12 @@ public partial class Category : ModuleBase
     protected bool IsAddingNew { get; set; }
     protected string DialogTitle { get; set; } = string.Empty;
 
+    // Inline editing properties
+    protected ListCategoryDto? EditingNode { get; set; }
+    protected string EditingNodeName { get; set; } = string.Empty;
+    protected bool IsInlineEditing { get; set; }
+    protected bool IsInlineAdding { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         IsLoading = true;
@@ -52,28 +58,24 @@ public partial class Category : ModuleBase
 
         var menuItems = new List<Radzen.ContextMenuItem>
         {
-            new Radzen.ContextMenuItem 
-            { 
-                Text = "Add Child Category", 
+            new() {
+                Text = "Add Child Category",
                 Value = "add",
                 Icon = "add",
             },
-            new Radzen.ContextMenuItem 
-            { 
-                Text = "Edit Name", 
+            new() {
+                Text = "Edit Name",
                 Value = "edit",
                 Icon = "edit",
             },
-            new Radzen.ContextMenuItem 
-            { 
-                Text = "Move Up", 
+            new() {
+                Text = "Move Up",
                 Value = "moveup",
                 Icon = "arrow_upward",
                 Disabled = !CanMoveUp(category),
             },
-            new Radzen.ContextMenuItem 
-            { 
-                Text = "Move Down", 
+            new() {
+                Text = "Move Down",
                 Value = "movedown",
                 Icon = "arrow_downward",
                 Disabled = !CanMoveDown(category),
@@ -83,9 +85,9 @@ public partial class Category : ModuleBase
         // Only add delete option if category has no children
         if (!category.Children.Any())
         {
-            menuItems.Add(new Radzen.ContextMenuItem 
-            { 
-                Text = "Delete", 
+            menuItems.Add(new Radzen.ContextMenuItem
+            {
+                Text = "Delete",
                 Value = "delete",
                 Icon = "delete",
                 Disabled = false,
@@ -102,10 +104,10 @@ public partial class Category : ModuleBase
         switch (action)
         {
             case "add":
-                AddChildCategory();
+                AddChildCategoryInline();
                 break;
             case "edit":
-                EditCategory();
+                EditCategoryInline();
                 break;
             case "moveup":
                 _ = MoveUp();
@@ -157,40 +159,162 @@ public partial class Category : ModuleBase
         return null;
     }
 
-    private void AddChildCategory()
-    {
-        IsAddingNew = true;
-        ShowEditDialog = true;
-        ShowDeleteConfirmation = false;
-        DialogTitle = $"Add Child Category to '{SelectedCategory?.Name}'";
-        
-        EditModel = new CreateAndUpdateCategoryDto
-        {
-            Name = string.Empty,
-            ViewOrder = 0,
-            ParentId = SelectedCategory?.Id ?? 0,
-        };
-        
-        StateHasChanged();
-    }
-
-    private void EditCategory()
+    private void AddChildCategoryInline()
     {
         if (SelectedCategory == null) return;
 
-        IsAddingNew = false;
-        ShowEditDialog = true;
-        ShowDeleteConfirmation = false;
-        DialogTitle = $"Edit Category '{SelectedCategory.Name}'";
-        
-        EditModel = new CreateAndUpdateCategoryDto
+        // Cancel any existing inline editing
+        CancelInlineEdit();
+
+        // Create a temporary new node
+        var newNode = new ListCategoryDto
         {
-            Name = SelectedCategory.Name,
-            ViewOrder = SelectedCategory.ViewOrder,
-            ParentId = SelectedCategory.ParentId,
+            Id = -1, // Temporary ID
+            Name = string.Empty,
+            ParentId = SelectedCategory.Id,
+            ViewOrder = SelectedCategory.Children.Count,
+            Children = [],
         };
-        
+
+        // Add to parent's children
+        SelectedCategory.Children.Add(newNode);
+
+        // Set editing state
+        EditingNode = newNode;
+        EditingNodeName = string.Empty;
+        IsInlineAdding = true;
+        IsInlineEditing = true;
+
         StateHasChanged();
+    }
+
+    private void EditCategoryInline()
+    {
+        if (SelectedCategory == null)
+        {
+            return;
+        }
+
+        // Cancel any existing inline editing
+        CancelInlineEdit();
+
+        // Set editing state
+        EditingNode = SelectedCategory;
+        EditingNodeName = SelectedCategory.Name;
+        IsInlineAdding = false;
+        IsInlineEditing = true;
+
+        StateHasChanged();
+    }
+
+    private async Task SaveInlineEdit()
+    {
+        if (EditingNode == null || string.IsNullOrWhiteSpace(EditingNodeName))
+        {
+            NotificationService.Notify(new Radzen.NotificationMessage
+            {
+                Severity = Radzen.NotificationSeverity.Warning,
+                Summary = "Validation Error",
+                Detail = "Category name is required",
+                Duration = 4000,
+            });
+            return;
+        }
+
+        try
+        {
+            if (IsInlineAdding)
+            {
+                // Create new category
+                var createDto = new CreateAndUpdateCategoryDto
+                {
+                    Name = EditingNodeName,
+                    ViewOrder = EditingNode.ViewOrder,
+                    ParentId = EditingNode.ParentId,
+                };
+
+                var id = await CategoryService.CreateAsync(ModuleState.ModuleId, createDto);
+                await logger.LogInformation("Category Created {Id}", id);
+
+                NotificationService.Notify(new Radzen.NotificationMessage
+                {
+                    Severity = Radzen.NotificationSeverity.Success,
+                    Summary = "Success",
+                    Detail = "Category created successfully",
+                    Duration = 3000,
+                });
+            }
+            else
+            {
+                // Update existing category
+                var updateDto = new CreateAndUpdateCategoryDto
+                {
+                    Name = EditingNodeName,
+                    ViewOrder = EditingNode.ViewOrder,
+                    ParentId = EditingNode.ParentId,
+                };
+
+                await CategoryService.UpdateAsync(EditingNode.Id, ModuleState.ModuleId, updateDto);
+                await logger.LogInformation("Category Updated {Id}", EditingNode.Id);
+
+                NotificationService.Notify(new Radzen.NotificationMessage
+                {
+                    Severity = Radzen.NotificationSeverity.Success,
+                    Summary = "Success",
+                    Detail = "Category updated successfully",
+                    Duration = 3000,
+                });
+            }
+
+            // Clear editing state
+            CancelInlineEdit();
+
+            // Refresh tree
+            await RefreshCategories();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Saving Category {Error}", ex.Message);
+            NotificationService.Notify(new Radzen.NotificationMessage
+            {
+                Severity = Radzen.NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = "Failed to save category",
+                Duration = 4000,
+            });
+        }
+    }
+
+    private void CancelInlineEdit()
+    {
+        if (IsInlineAdding && EditingNode != null)
+        {
+            // Remove the temporary node from the tree
+            var parent = FindCategoryById(TreeData, EditingNode.ParentId);
+            if (parent != null)
+            {
+                parent.Children.Remove(EditingNode);
+            }
+        }
+
+        EditingNode = null;
+        EditingNodeName = string.Empty;
+        IsInlineEditing = false;
+        IsInlineAdding = false;
+
+        StateHasChanged();
+    }
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SaveInlineEdit();
+        }
+        else if (e.Key == "Escape")
+        {
+            CancelInlineEdit();
+        }
     }
 
     private async Task MoveUp()
@@ -201,7 +325,7 @@ public partial class Category : ModuleBase
         {
             // Get fresh data to find current siblings
             var freshCategories = await CategoryService.ListAsync(ModuleState.ModuleId, pageNumber: 1, pageSize: int.MaxValue);
-            
+
             // Find siblings with same parent
             var siblings = freshCategories.Items?
                 .Where(c => c.ParentId == SelectedCategory.ParentId)
@@ -210,7 +334,7 @@ public partial class Category : ModuleBase
                 .ToList() ?? new List<ListCategoryDto>();
 
             var currentIndex = siblings.FindIndex(c => c.Id == SelectedCategory.Id);
-            
+
             if (currentIndex <= 0) return;
 
             var current = siblings[currentIndex];
@@ -218,9 +342,9 @@ public partial class Category : ModuleBase
 
             // Swap ViewOrder values
             var tempViewOrder = current.ViewOrder;
-            
+
             // Update current category
-            await CategoryService.UpdateAsync(current.Id, ModuleState.ModuleId, 
+            await CategoryService.UpdateAsync(current.Id, ModuleState.ModuleId,
                 new CreateAndUpdateCategoryDto
                 {
                     Name = current.Name,
@@ -238,7 +362,7 @@ public partial class Category : ModuleBase
                 });
 
             await logger.LogInformation("Category Moved Up {Id}", SelectedCategory.Id);
-            
+
             NotificationService.Notify(new Radzen.NotificationMessage
             {
                 Severity = Radzen.NotificationSeverity.Success,
@@ -272,7 +396,7 @@ public partial class Category : ModuleBase
         {
             // Get fresh data to find current siblings
             var freshCategories = await CategoryService.ListAsync(ModuleState.ModuleId, pageNumber: 1, pageSize: int.MaxValue);
-            
+
             // Find siblings with same parent
             var siblings = freshCategories.Items?
                 .Where(c => c.ParentId == SelectedCategory.ParentId)
@@ -281,7 +405,7 @@ public partial class Category : ModuleBase
                 .ToList() ?? new List<ListCategoryDto>();
 
             var currentIndex = siblings.FindIndex(c => c.Id == SelectedCategory.Id);
-            
+
             if (currentIndex < 0 || currentIndex >= siblings.Count - 1) return;
 
             var current = siblings[currentIndex];
@@ -289,7 +413,7 @@ public partial class Category : ModuleBase
 
             // Swap ViewOrder values
             var tempViewOrder = current.ViewOrder;
-            
+
             // Update current category
             await CategoryService.UpdateAsync(current.Id, ModuleState.ModuleId,
                 new CreateAndUpdateCategoryDto
@@ -309,7 +433,7 @@ public partial class Category : ModuleBase
                 });
 
             await logger.LogInformation("Category Moved Down {Id}", SelectedCategory.Id);
-            
+
             NotificationService.Notify(new Radzen.NotificationMessage
             {
                 Severity = Radzen.NotificationSeverity.Success,
@@ -356,7 +480,7 @@ public partial class Category : ModuleBase
                 // Create new category
                 var id = await CategoryService.CreateAsync(ModuleState.ModuleId, EditModel);
                 await logger.LogInformation("Category Created {Id}", id);
-                
+
                 NotificationService.Notify(new Radzen.NotificationMessage
                 {
                     Severity = Radzen.NotificationSeverity.Success,
@@ -370,7 +494,7 @@ public partial class Category : ModuleBase
                 // Update existing category
                 await CategoryService.UpdateAsync(SelectedCategory.Id, ModuleState.ModuleId, EditModel);
                 await logger.LogInformation("Category Updated {Id}", SelectedCategory.Id);
-                
+
                 NotificationService.Notify(new Radzen.NotificationMessage
                 {
                     Severity = Radzen.NotificationSeverity.Success,
@@ -420,7 +544,7 @@ public partial class Category : ModuleBase
         {
             await CategoryService.DeleteAsync(SelectedCategory.Id, ModuleState.ModuleId);
             await logger.LogInformation("Category Deleted {Id}", SelectedCategory.Id);
-            
+
             NotificationService.Notify(new Radzen.NotificationMessage
             {
                 Severity = Radzen.NotificationSeverity.Success,

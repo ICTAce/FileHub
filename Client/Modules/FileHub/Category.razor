@@ -24,12 +24,36 @@ else
                 <Template>
                     @{
                         var category = (context.Value as ListCategoryDto);
+                        var isEditing = IsInlineEditing && EditingNode != null && EditingNode.Id == category?.Id;
                     }
-                    <span @oncontextmenu="@(args => ShowContextMenu(args, category))" 
-                          @oncontextmenu:preventDefault="true"
-                          style="cursor: pointer;">
-                        @category?.Name
-                    </span>
+
+                    @if (isEditing)
+                    {
+                        <div style="display: inline-flex; align-items: center; gap: 4px;">
+                            <RadzenTextBox @bind-Value="@EditingNodeName"
+                                           @onkeydown="HandleKeyPress"
+                                           Style="width: 200px; height: 24px; font-size: 14px;"
+                                           AutoComplete="false" />
+                            <RadzenButton Icon="check"
+                                          ButtonStyle="ButtonStyle.Success"
+                                          Size="ButtonSize.ExtraSmall"
+                                          Click="@SaveInlineEdit"
+                                          title="Save (Enter)" />
+                            <RadzenButton Icon="close"
+                                          ButtonStyle="ButtonStyle.Light"
+                                          Size="ButtonSize.ExtraSmall"
+                                          Click="@CancelInlineEdit"
+                                          title="Cancel (Esc)" />
+                        </div>
+                    }
+                    else
+                    {
+                        <span @oncontextmenu="@(args => ShowContextMenu(args, category))"
+                              @oncontextmenu:preventDefault="true"
+                              style="cursor: pointer;">
+                            @category?.Name
+                        </span>
+                    }
                 </Template>
             </RadzenTreeLevel>
         </RadzenTree>
@@ -43,14 +67,14 @@ else
                 <RadzenFormField Text="Name" Variant="Variant.Outlined">
                     <RadzenTextBox @bind-Value="@EditModel.Name" Style="width: 100%;" />
                 </RadzenFormField>
-                
+
                 @if (!IsAddingNew)
                 {
                     <RadzenFormField Text="View Order" Variant="Variant.Outlined">
                         <RadzenNumeric @bind-Value="@EditModel.ViewOrder" Style="width: 100%;" />
                     </RadzenFormField>
                 }
-                
+
                 <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                     <RadzenButton Text="Save" Click="@SaveCategory" ButtonStyle="ButtonStyle.Primary" />
                     <RadzenButton Text="Cancel" Click="@CancelEdit" ButtonStyle="ButtonStyle.Light" />
@@ -66,7 +90,7 @@ else
                 <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">
                     Are you sure you want to delete the category "@SelectedCategory?.Name"?
                 </RadzenAlert>
-                
+
                 <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                     <RadzenButton Text="Yes, Delete" Click="@ConfirmDeleteCategory" ButtonStyle="ButtonStyle.Danger" />
                     <RadzenButton Text="No, Cancel" Click="@CancelDelete" ButtonStyle="ButtonStyle.Light" />
