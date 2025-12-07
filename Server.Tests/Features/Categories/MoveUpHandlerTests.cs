@@ -22,7 +22,7 @@ public class MoveUpHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveUpCategoryRequest
         {
             Id = 2,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act
@@ -55,7 +55,7 @@ public class MoveUpHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveUpCategoryRequest
         {
             Id = 1,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act
@@ -87,7 +87,7 @@ public class MoveUpHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveUpCategoryRequest
         {
             Id = 999,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act
@@ -113,7 +113,7 @@ public class MoveUpHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveUpCategoryRequest
         {
             Id = 2,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act
@@ -148,7 +148,7 @@ public class MoveUpHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveUpCategoryRequest
         {
             Id = 3,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act
@@ -189,7 +189,7 @@ public class MoveUpHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveUpCategoryRequest
         {
             Id = 3,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act
@@ -227,7 +227,7 @@ public class MoveUpHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveUpCategoryRequest
         {
             Id = 3,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act
@@ -261,7 +261,7 @@ public class MoveUpHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveUpCategoryRequest
         {
             Id = 2,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act

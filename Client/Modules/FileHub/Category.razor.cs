@@ -56,28 +56,28 @@ public partial class Category : ModuleBase
             { 
                 Text = "Add Child Category", 
                 Value = "add",
-                Icon = "add"
+                Icon = "add",
             },
             new Radzen.ContextMenuItem 
             { 
                 Text = "Edit Name", 
                 Value = "edit",
-                Icon = "edit"
+                Icon = "edit",
             },
             new Radzen.ContextMenuItem 
             { 
                 Text = "Move Up", 
                 Value = "moveup",
                 Icon = "arrow_upward",
-                Disabled = !CanMoveUp(category)
+                Disabled = !CanMoveUp(category),
             },
             new Radzen.ContextMenuItem 
             { 
                 Text = "Move Down", 
                 Value = "movedown",
                 Icon = "arrow_downward",
-                Disabled = !CanMoveDown(category)
-            }
+                Disabled = !CanMoveDown(category),
+            },
         };
 
         // Only add delete option if category has no children
@@ -88,7 +88,7 @@ public partial class Category : ModuleBase
                 Text = "Delete", 
                 Value = "delete",
                 Icon = "delete",
-                Disabled = false
+                Disabled = false,
             });
         }
 
@@ -168,7 +168,7 @@ public partial class Category : ModuleBase
         {
             Name = string.Empty,
             ViewOrder = 0,
-            ParentId = SelectedCategory?.Id ?? 0
+            ParentId = SelectedCategory?.Id ?? 0,
         };
         
         StateHasChanged();
@@ -187,7 +187,7 @@ public partial class Category : ModuleBase
         {
             Name = SelectedCategory.Name,
             ViewOrder = SelectedCategory.ViewOrder,
-            ParentId = SelectedCategory.ParentId
+            ParentId = SelectedCategory.ParentId,
         };
         
         StateHasChanged();
@@ -225,7 +225,7 @@ public partial class Category : ModuleBase
                 {
                     Name = current.Name,
                     ViewOrder = previous.ViewOrder,
-                    ParentId = current.ParentId
+                    ParentId = current.ParentId,
                 });
 
             // Update previous sibling
@@ -234,7 +234,7 @@ public partial class Category : ModuleBase
                 {
                     Name = previous.Name,
                     ViewOrder = tempViewOrder,
-                    ParentId = previous.ParentId
+                    ParentId = previous.ParentId,
                 });
 
             await logger.LogInformation("Category Moved Up {Id}", SelectedCategory.Id);
@@ -244,7 +244,7 @@ public partial class Category : ModuleBase
                 Severity = Radzen.NotificationSeverity.Success,
                 Summary = "Success",
                 Detail = "Category moved up",
-                Duration = 3000
+                Duration = 3000,
             });
 
             // Clear selection and refresh
@@ -259,7 +259,7 @@ public partial class Category : ModuleBase
                 Severity = Radzen.NotificationSeverity.Error,
                 Summary = "Error",
                 Detail = "Failed to move category",
-                Duration = 4000
+                Duration = 4000,
             });
         }
     }
@@ -296,7 +296,7 @@ public partial class Category : ModuleBase
                 {
                     Name = current.Name,
                     ViewOrder = next.ViewOrder,
-                    ParentId = current.ParentId
+                    ParentId = current.ParentId,
                 });
 
             // Update next sibling
@@ -305,7 +305,7 @@ public partial class Category : ModuleBase
                 {
                     Name = next.Name,
                     ViewOrder = tempViewOrder,
-                    ParentId = next.ParentId
+                    ParentId = next.ParentId,
                 });
 
             await logger.LogInformation("Category Moved Down {Id}", SelectedCategory.Id);
@@ -315,7 +315,7 @@ public partial class Category : ModuleBase
                 Severity = Radzen.NotificationSeverity.Success,
                 Summary = "Success",
                 Detail = "Category moved down",
-                Duration = 3000
+                Duration = 3000,
             });
 
             // Clear selection and refresh
@@ -330,7 +330,7 @@ public partial class Category : ModuleBase
                 Severity = Radzen.NotificationSeverity.Error,
                 Summary = "Error",
                 Detail = "Failed to move category",
-                Duration = 4000
+                Duration = 4000,
             });
         }
     }
@@ -344,7 +344,7 @@ public partial class Category : ModuleBase
                 Severity = Radzen.NotificationSeverity.Warning,
                 Summary = "Validation Error",
                 Detail = "Category name is required",
-                Duration = 4000
+                Duration = 4000,
             });
             return;
         }
@@ -362,7 +362,7 @@ public partial class Category : ModuleBase
                     Severity = Radzen.NotificationSeverity.Success,
                     Summary = "Success",
                     Detail = "Category created successfully",
-                    Duration = 4000
+                    Duration = 4000,
                 });
             }
             else if (SelectedCategory != null)
@@ -376,7 +376,7 @@ public partial class Category : ModuleBase
                     Severity = Radzen.NotificationSeverity.Success,
                     Summary = "Success",
                     Detail = "Category updated successfully",
-                    Duration = 4000
+                    Duration = 4000,
                 });
             }
 
@@ -393,7 +393,7 @@ public partial class Category : ModuleBase
                 Severity = Radzen.NotificationSeverity.Error,
                 Summary = "Error",
                 Detail = "Failed to save category",
-                Duration = 4000
+                Duration = 4000,
             });
         }
     }
@@ -426,7 +426,7 @@ public partial class Category : ModuleBase
                 Severity = Radzen.NotificationSeverity.Success,
                 Summary = "Success",
                 Detail = "Category deleted successfully",
-                Duration = 4000
+                Duration = 4000,
             });
 
             SelectedCategory = null;
@@ -441,7 +441,7 @@ public partial class Category : ModuleBase
                 Severity = Radzen.NotificationSeverity.Error,
                 Summary = "Error",
                 Detail = "Failed to delete category",
-                Duration = 4000
+                Duration = 4000,
             });
         }
     }

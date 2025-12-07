@@ -22,7 +22,7 @@ public class MoveDownHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveDownCategoryRequest
         {
             Id = 1,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act
@@ -55,7 +55,7 @@ public class MoveDownHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveDownCategoryRequest
         {
             Id = 2,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act
@@ -87,7 +87,7 @@ public class MoveDownHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveDownCategoryRequest
         {
             Id = 999,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act
@@ -113,7 +113,7 @@ public class MoveDownHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveDownCategoryRequest
         {
             Id = 1,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act
@@ -148,7 +148,7 @@ public class MoveDownHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveDownCategoryRequest
         {
             Id = 2,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act
@@ -189,7 +189,7 @@ public class MoveDownHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveDownCategoryRequest
         {
             Id = 2,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act
@@ -227,7 +227,7 @@ public class MoveDownHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveDownCategoryRequest
         {
             Id = 1,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act
@@ -261,7 +261,7 @@ public class MoveDownHandlerTests : HandlerTestBase
         var request = new CategoryHandlers.MoveDownCategoryRequest
         {
             Id = 3,
-            ModuleId = 1
+            ModuleId = 1,
         };
 
         // Act

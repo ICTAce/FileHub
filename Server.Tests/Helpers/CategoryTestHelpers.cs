@@ -124,12 +124,12 @@ public static class CategoryTestHelpers
     {
         using var context = new TestApplicationCommandContext(options);
         var query = context.Category.AsQueryable();
-        
+
         if (moduleId.HasValue)
         {
             query = query.Where(c => c.ModuleId == moduleId.Value);
         }
-        
+
         return await query.OrderBy(c => c.ViewOrder).ThenBy(c => c.Name).ToListAsync().ConfigureAwait(false);
     }
 
@@ -142,12 +142,12 @@ public static class CategoryTestHelpers
     {
         using var context = new TestApplicationQueryContext(options);
         var query = context.Category.AsQueryable();
-        
+
         if (moduleId.HasValue)
         {
             query = query.Where(c => c.ModuleId == moduleId.Value);
         }
-        
+
         return await query.OrderBy(c => c.ViewOrder).ThenBy(c => c.Name).ToListAsync().ConfigureAwait(false);
     }
 
