@@ -8,6 +8,8 @@ public class ApplicationContext(
 {
     public virtual DbSet<Entities.SampleModule> SampleModule { get; set; }
     public virtual DbSet<Entities.Category> Category { get; set; }
+    public virtual DbSet<Entities.File> File { get; set; }
+    public virtual DbSet<Entities.FileCategory> FileCategory { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -24,5 +26,9 @@ public class ApplicationContext(
                   .HasForeignKey(c => c.ParentId)
                   .OnDelete(DeleteBehavior.Restrict);
         });
+
+        builder.Entity<Entities.File>().ToTable(ActiveDatabase.RewriteName("ICTAce_FileHub_File"));
+
+        builder.Entity<Entities.FileCategory>().ToTable(ActiveDatabase.RewriteName("ICTAce_FileHub_FileCategory"));
     }
 }
