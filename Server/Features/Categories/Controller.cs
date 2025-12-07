@@ -201,4 +201,80 @@ public class ICTAceFileHubCategoriesController(
 
         return NoContent();
     }
+
+    [HttpPatch("{id}/move-up")]
+    [Authorize(Policy = PolicyNames.EditModule)]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<int>> MoveUpAsync(
+        int id,
+        [FromQuery] int moduleId,
+        CancellationToken cancellationToken = default)
+    {
+        if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
+        {
+            _logger.Log(LogLevel.Error, this, LogFunction.Security,
+                "Unauthorized Category MoveUp Attempt Id={Id} in ModuleId={ModuleId}", id, moduleId);
+            return Forbid();
+        }
+
+        if (id <= 0)
+        {
+            return BadRequest("Invalid Category ID");
+        }
+
+        var command = new MoveUpCategoryRequest
+        {
+            ModuleId = moduleId,
+            Id = id,
+        };
+
+        var result = await _mediator.Send(command, cancellationToken).ConfigureAwait(false);
+
+        if (result == -1)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
+    [HttpPatch("{id}/move-down")]
+    [Authorize(Policy = PolicyNames.EditModule)]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<int>> MoveDownAsync(
+        int id,
+        [FromQuery] int moduleId,
+        CancellationToken cancellationToken = default)
+    {
+        if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
+        {
+            _logger.Log(LogLevel.Error, this, LogFunction.Security,
+                "Unauthorized Category MoveDown Attempt Id={Id} in ModuleId={ModuleId}", id, moduleId);
+            return Forbid();
+        }
+
+        if (id <= 0)
+        {
+            return BadRequest("Invalid Category ID");
+        }
+
+        var command = new MoveDownCategoryRequest
+        {
+            ModuleId = moduleId,
+            Id = id,
+        };
+
+        var result = await _mediator.Send(command, cancellationToken).ConfigureAwait(false);
+
+        if (result == -1)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
 }

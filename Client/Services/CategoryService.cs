@@ -1,5 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
+using System.Net.Http.Json;
+
 namespace ICTAce.FileHub.Services;
 
 public record GetCategoryDto
@@ -45,10 +47,33 @@ public interface ICategoryService
     Task<int> CreateAsync(int moduleId, CreateAndUpdateCategoryDto dto);
     Task<int> UpdateAsync(int id, int moduleId, CreateAndUpdateCategoryDto dto);
     Task DeleteAsync(int id, int moduleId);
+    Task<int> MoveUpAsync(int id, int moduleId);
+    Task<int> MoveDownAsync(int id, int moduleId);
 }
 
-public class CategoryService(HttpClient http, SiteState siteState)
-    : ModuleService<GetCategoryDto, ListCategoryDto, CreateAndUpdateCategoryDto>(http, siteState, "ictace/fileHub/categories"),
-      ICategoryService
+public class CategoryService : ModuleService<GetCategoryDto, ListCategoryDto, CreateAndUpdateCategoryDto>, ICategoryService
 {
+    private readonly HttpClient _httpClient;
+
+    public CategoryService(HttpClient http, SiteState siteState)
+        : base(http, siteState, "ictace/fileHub/categories")
+    {
+        _httpClient = http;
+    }
+
+    public async Task<int> MoveUpAsync(int id, int moduleId)
+    {
+        var url = $"api/ictace/fileHub/categories/{id}/move-up?moduleId={moduleId}";
+        var response = await _httpClient.PatchAsync(url, null).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<int>().ConfigureAwait(false);
+    }
+
+    public async Task<int> MoveDownAsync(int id, int moduleId)
+    {
+        var url = $"api/ictace/fileHub/categories/{id}/move-down?moduleId={moduleId}";
+        var response = await _httpClient.PatchAsync(url, null).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<int>().ConfigureAwait(false);
+    }
 }
