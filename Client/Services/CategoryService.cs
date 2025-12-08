@@ -24,7 +24,7 @@ public record ListCategoryDto
     public required string Name { get; set; }
     public int ViewOrder { get; set; }
     public int ParentId { get; set; }
-    public List<ListCategoryDto> Children { get; set; } = [];
+    public IList<ListCategoryDto> Children { get; set; } = [];
 }
 
 public record CreateAndUpdateCategoryDto

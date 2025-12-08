@@ -30,7 +30,6 @@ applyTo: '**/*.cs'
 - Use pattern matching and switch expressions wherever possible.
 - Use `nameof` instead of string literals when referring to member names.
 - Ensure that XML doc comments are created for any public APIs. When applicable, include `<example>` and `<code>` documentation in the comments.
-- Add a trailing comma after the last value in multi-line arrays, collection initializers, object initializers, and enum declarations to prevent MA0007 warnings.
 - Use simplified `new()` expressions when the type is evident from the declaration (e.g., `List<string> items = new();` instead of `List<string> items = new List<string>();`) to prevent IDE0090 warnings.
 
 ## Project Setup and Structure

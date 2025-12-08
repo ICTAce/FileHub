@@ -161,7 +161,7 @@ public partial class Category : ModuleBase
         }
 
         var parent = FindCategoryById([_rootNode], category.ParentId);
-        return parent?.Children ?? [];
+        return parent?.Children.ToList() ?? [];
     }
 
     private ListCategoryDto? FindCategoryById(List<ListCategoryDto> categories, int id)
@@ -169,7 +169,7 @@ public partial class Category : ModuleBase
         foreach (var cat in categories)
         {
             if (cat.Id == id) return cat;
-            var found = FindCategoryById(cat.Children, id);
+            var found = FindCategoryById(cat.Children.ToList(), id);
             if (found != null) return found;
         }
         return null;
@@ -330,11 +330,11 @@ public partial class Category : ModuleBase
 
     private async Task HandleKeyPress(KeyboardEventArgs e)
     {
-        if (e.Key == "Enter")
+        if (string.Equals(e.Key, "Enter", StringComparison.Ordinal))
         {
             await SaveInlineEdit();
         }
-        else if (e.Key == "Escape")
+        else if (string.Equals(e.Key, "Escape", StringComparison.Ordinal))
         {
             CancelInlineEdit();
         }
@@ -389,7 +389,7 @@ public partial class Category : ModuleBase
             var siblings = freshCategories.Items?
                 .Where(c => c.ParentId == SelectedCategory.ParentId)
                 .OrderBy(c => c.ViewOrder)
-                .ThenBy(c => c.Name)
+                .ThenBy(c => c.Name, StringComparer.Ordinal)
                 .ToList() ?? [];
 
             var currentIndex = siblings.FindIndex(c => c.Id == SelectedCategory.Id);
@@ -460,7 +460,7 @@ public partial class Category : ModuleBase
             var siblings = freshCategories.Items?
                 .Where(c => c.ParentId == SelectedCategory.ParentId)
                 .OrderBy(c => c.ViewOrder)
-                .ThenBy(c => c.Name)
+                .ThenBy(c => c.Name, StringComparer.Ordinal)
                 .ToList() ?? [];
 
             var currentIndex = siblings.FindIndex(c => c.Id == SelectedCategory.Id);
@@ -682,7 +682,7 @@ public partial class Category : ModuleBase
         _treeData = Categories.Items
             .Where(c => c.ParentId == 0 || !categoryDict.ContainsKey(c.ParentId))
             .OrderBy(c => c.ViewOrder)
-            .ThenBy(c => c.Name)
+            .ThenBy(c => c.Name, StringComparer.Ordinal)
             .ToList();
 
         foreach (var category in Categories.Items)
@@ -714,10 +714,10 @@ public partial class Category : ModuleBase
             {
                 category.Children = category.Children
                     .OrderBy(c => c.ViewOrder)
-                    .ThenBy(c => c.Name)
+                    .ThenBy(c => c.Name, StringComparer.Ordinal)
                     .ToList();
 
-                SortChildren(category.Children);
+                SortChildren(category.Children.ToList());
             }
         }
     }
