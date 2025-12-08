@@ -1,5 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
+using Oqtane.Modules.Controls;
+
 namespace ICTAce.FileHub;
 
 public partial class Category : ModuleBase
@@ -13,6 +15,9 @@ public partial class Category : ModuleBase
     [Inject]
     private Radzen.ContextMenuService ContextMenuService { get; set; } = default!;
 
+    [Inject]
+    private Radzen.DialogService DialogService { get; set; } = default!;
+
     private List<ListCategoryDto> _treeData = [];
     private ListCategoryDto _rootNode = new() { Name = "All Categories" };
 
@@ -21,7 +26,6 @@ public partial class Category : ModuleBase
     protected bool IsLoading { get; set; }
     protected ListCategoryDto? SelectedCategory { get; set; }
     protected CreateAndUpdateCategoryDto EditModel { get; set; } = new();
-    protected bool ShowDeleteConfirmation { get; set; }
     protected bool ShowEditDialog { get; set; }
     protected bool IsAddingNew { get; set; }
     protected string DialogTitle { get; set; } = string.Empty;
@@ -161,6 +165,11 @@ public partial class Category : ModuleBase
         }
 
         var parent = FindCategoryById([_rootNode], category.ParentId);
+        if (parent?.Children is List<ListCategoryDto> childrenList)
+        {
+            return childrenList;
+        }
+        
         return parent?.Children.ToList() ?? [];
     }
 
@@ -349,42 +358,6 @@ public partial class Category : ModuleBase
         }
     }
 
-    private void AddChildCategory()
-    {
-        IsAddingNew = true;
-        ShowEditDialog = true;
-        ShowDeleteConfirmation = false;
-        DialogTitle = $"Add Child Category to '{SelectedCategory?.Name}'";
-
-        EditModel = new CreateAndUpdateCategoryDto
-        {
-            Name = string.Empty,
-            ViewOrder = 0,
-            ParentId = SelectedCategory?.Id ?? 0,
-        };
-
-        StateHasChanged();
-    }
-
-    private void EditCategory()
-    {
-        if (SelectedCategory == null) return;
-
-        IsAddingNew = false;
-        ShowEditDialog = true;
-        ShowDeleteConfirmation = false;
-        DialogTitle = $"Edit Category '{SelectedCategory.Name}'";
-
-        EditModel = new CreateAndUpdateCategoryDto
-        {
-            Name = SelectedCategory.Name,
-            ViewOrder = SelectedCategory.ViewOrder,
-            ParentId = SelectedCategory.ParentId,
-        };
-
-        StateHasChanged();
-    }
-
     private async Task MoveUp()
     {
         if (SelectedCategory == null) return;
@@ -534,7 +507,6 @@ public partial class Category : ModuleBase
                 });
             }
 
-            ShowEditDialog = false;
             IsAddingNew = false;
             SelectedCategory = null;
             await RefreshCategories();
@@ -554,31 +526,58 @@ public partial class Category : ModuleBase
 
     private void CancelEdit()
     {
-        ShowEditDialog = false;
         IsAddingNew = false;
         SelectedCategory = null;
     }
 
-    private void PromptDeleteCategory()
+    private async Task PromptDeleteCategory()
     {
-        ShowDeleteConfirmation = true;
-        ShowEditDialog = false;
-        StateHasChanged();
+        if (SelectedCategory == null) return;
+
+        var confirmed = await DialogService.Confirm(
+            $"Are you sure you want to delete the category \"{SelectedCategory.Name}\"?",
+            "Delete Category",
+            new Radzen.ConfirmOptions
+            {
+                OkButtonText = "Yes, Delete",
+                CancelButtonText = "Cancel",
+                AutoFocusFirstElement = true
+            });
+
+        if (confirmed == true)
+        {
+            await DeleteCategory();
+        }
+        else
+        {
+            SelectedCategory = null;
+        }
     }
 
-    private async Task ConfirmDeleteCategory()
+    private async Task DeleteCategory()
     {
         if (SelectedCategory == null) return;
 
         try
         {
             var categoryToDelete = SelectedCategory;
+            
             await CategoryService.DeleteAsync(categoryToDelete.Id, ModuleState.ModuleId);
             await logger.LogInformation("Category Deleted {Id}", categoryToDelete.Id);
 
-            // Remove from parent's children in-place
-            var siblings = GetSiblings(categoryToDelete);
-            siblings.Remove(categoryToDelete);
+            if (categoryToDelete.ParentId == 0)
+            {
+                _treeData.Remove(categoryToDelete);
+                _rootNode.Children.Remove(categoryToDelete);
+            }
+            else
+            {
+                var parent = FindCategoryById([_rootNode], categoryToDelete.ParentId);
+                if (parent != null)
+                {
+                    parent.Children.Remove(categoryToDelete);
+                }
+            }
 
             NotificationService.Notify(new Radzen.NotificationMessage
             {
@@ -589,7 +588,6 @@ public partial class Category : ModuleBase
             });
 
             SelectedCategory = null;
-            ShowDeleteConfirmation = false;
             StateHasChanged();
         }
         catch (Exception ex)
@@ -603,12 +601,6 @@ public partial class Category : ModuleBase
                 Duration = 4000,
             });
         }
-    }
-
-    private void CancelDelete()
-    {
-        ShowDeleteConfirmation = false;
-        SelectedCategory = null;
     }
 
     private async Task RefreshCategories()

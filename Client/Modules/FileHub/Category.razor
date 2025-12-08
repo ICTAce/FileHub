@@ -5,6 +5,7 @@
 
 <RadzenTheme Theme="material" />
 <RadzenContextMenu />
+<RadzenDialog />
 
 @if (IsLoading)
 {
@@ -63,45 +64,6 @@ else
             </RadzenTreeLevel>
         </RadzenTree>
     </div>
-
-    @if (ShowEditDialog)
-    {
-        <RadzenCard Style="margin-top: 20px; padding: 20px;">
-            <h4>@DialogTitle</h4>
-            <RadzenStack Gap="1rem">
-                <RadzenFormField Text="Name" Variant="Variant.Outlined">
-                    <RadzenTextBox @bind-Value="@EditModel.Name" Style="width: 100%;" />
-                </RadzenFormField>
-
-                @if (!IsAddingNew)
-                {
-                    <RadzenFormField Text="View Order" Variant="Variant.Outlined">
-                        <RadzenNumeric @bind-Value="@EditModel.ViewOrder" Style="width: 100%;" />
-                    </RadzenFormField>
-                }
-
-                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                    <RadzenButton Text="Save" Click="@SaveCategory" ButtonStyle="ButtonStyle.Primary" />
-                    <RadzenButton Text="Cancel" Click="@CancelEdit" ButtonStyle="ButtonStyle.Light" />
-                </RadzenStack>
-            </RadzenStack>
-        </RadzenCard>
-    }
-
-    @if (ShowDeleteConfirmation)
-    {
-        <RadzenCard Style="margin-top: 20px; padding: 20px;">
-            <RadzenStack Gap="1rem">
-                <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">
-                    Are you sure you want to delete the category "@SelectedCategory?.Name"?
-                </RadzenAlert>
-
-                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                    <RadzenButton Text="Yes, Delete" Click="@ConfirmDeleteCategory" ButtonStyle="ButtonStyle.Danger" />
-                    <RadzenButton Text="No, Cancel" Click="@CancelDelete" ButtonStyle="ButtonStyle.Light" />
-                </RadzenStack>
-            </RadzenStack>
-        </RadzenCard>
-    }
+    
 }
 
