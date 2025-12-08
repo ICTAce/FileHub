@@ -61,19 +61,37 @@ public class CategoryService : ModuleService<GetCategoryDto, ListCategoryDto, Cr
         _httpClient = http;
     }
 
+    /// <summary>
+    /// Moves a category up in the sort order with automatic retry on transient failures.
+    /// </summary>
+    /// <param name="id">The category ID to move.</param>
+    /// <param name="moduleId">The module ID.</param>
+    /// <returns>The updated category ID.</returns>
     public async Task<int> MoveUpAsync(int id, int moduleId)
     {
-        var url = $"api/ictace/fileHub/categories/{id}/move-up?moduleId={moduleId}";
-        var response = await _httpClient.PatchAsync(url, null).ConfigureAwait(false);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<int>().ConfigureAwait(false);
+        return await HttpRetryHelper.ExecuteWithRetryAsync(async () =>
+        {
+            var url = $"api/ictace/fileHub/categories/{id}/move-up?moduleId={moduleId}";
+            var response = await _httpClient.PatchAsync(url, null).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<int>().ConfigureAwait(false);
+        }).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Moves a category down in the sort order with automatic retry on transient failures.
+    /// </summary>
+    /// <param name="id">The category ID to move.</param>
+    /// <param name="moduleId">The module ID.</param>
+    /// <returns>The updated category ID.</returns>
     public async Task<int> MoveDownAsync(int id, int moduleId)
     {
-        var url = $"api/ictace/fileHub/categories/{id}/move-down?moduleId={moduleId}";
-        var response = await _httpClient.PatchAsync(url, null).ConfigureAwait(false);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<int>().ConfigureAwait(false);
+        return await HttpRetryHelper.ExecuteWithRetryAsync(async () =>
+        {
+            var url = $"api/ictace/fileHub/categories/{id}/move-down?moduleId={moduleId}";
+            var response = await _httpClient.PatchAsync(url, null).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<int>().ConfigureAwait(false);
+        }).ConfigureAwait(false);
     }
 }

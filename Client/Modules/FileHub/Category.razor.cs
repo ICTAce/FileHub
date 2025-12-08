@@ -249,6 +249,10 @@ public partial class Category : ModuleBase
                 var id = await CategoryService.CreateAsync(ModuleState.ModuleId, createDto);
                 await logger.LogInformation("Category Created {Id}", id);
 
+                // Update the temporary node in-place with the real ID and name
+                EditingNode.Id = id;
+                EditingNode.Name = EditingNodeName;
+
                 NotificationService.Notify(new Radzen.NotificationMessage
                 {
                     Severity = Radzen.NotificationSeverity.Success,
@@ -270,6 +274,9 @@ public partial class Category : ModuleBase
                 await CategoryService.UpdateAsync(EditingNode.Id, ModuleState.ModuleId, updateDto);
                 await logger.LogInformation("Category Updated {Id}", EditingNode.Id);
 
+                // Update the node name in-place
+                EditingNode.Name = EditingNodeName;
+
                 NotificationService.Notify(new Radzen.NotificationMessage
                 {
                     Severity = Radzen.NotificationSeverity.Success,
@@ -279,11 +286,13 @@ public partial class Category : ModuleBase
                 });
             }
 
-            // Clear editing state
-            CancelInlineEdit();
+            // Clear editing state without refreshing the tree
+            EditingNode = null;
+            EditingNodeName = string.Empty;
+            IsInlineEditing = false;
+            IsInlineAdding = false;
 
-            // Refresh tree
-            await RefreshCategories();
+            StateHasChanged();
         }
         catch (Exception ex)
         {
@@ -382,43 +391,24 @@ public partial class Category : ModuleBase
 
         try
         {
-            // Get fresh data to find current siblings
-            var freshCategories = await CategoryService.ListAsync(ModuleState.ModuleId, pageNumber: 1, pageSize: int.MaxValue);
-
-            // Find siblings with same parent
-            var siblings = freshCategories.Items?
-                .Where(c => c.ParentId == SelectedCategory.ParentId)
-                .OrderBy(c => c.ViewOrder)
-                .ThenBy(c => c.Name, StringComparer.Ordinal)
-                .ToList() ?? [];
-
-            var currentIndex = siblings.FindIndex(c => c.Id == SelectedCategory.Id);
+            // Find siblings in the current tree structure
+            var siblings = GetSiblings(SelectedCategory);
+            var currentIndex = siblings.IndexOf(SelectedCategory);
 
             if (currentIndex <= 0) return;
 
-            var current = siblings[currentIndex];
+            var current = SelectedCategory;
             var previous = siblings[currentIndex - 1];
 
-            // Swap ViewOrder values
-            var tempViewOrder = current.ViewOrder;
+            // Update on server using dedicated move endpoint
+            await CategoryService.MoveUpAsync(current.Id, ModuleState.ModuleId);
 
-            // Update current category
-            await CategoryService.UpdateAsync(current.Id, ModuleState.ModuleId,
-                new CreateAndUpdateCategoryDto
-                {
-                    Name = current.Name,
-                    ViewOrder = previous.ViewOrder,
-                    ParentId = current.ParentId,
-                });
+            // Swap ViewOrder values locally
+            (current.ViewOrder, previous.ViewOrder) = (previous.ViewOrder, current.ViewOrder);
 
-            // Update previous sibling
-            await CategoryService.UpdateAsync(previous.Id, ModuleState.ModuleId,
-                new CreateAndUpdateCategoryDto
-                {
-                    Name = previous.Name,
-                    ViewOrder = tempViewOrder,
-                    ParentId = previous.ParentId,
-                });
+            // Swap positions in the list
+            siblings[currentIndex] = previous;
+            siblings[currentIndex - 1] = current;
 
             await logger.LogInformation("Category Moved Up {Id}", SelectedCategory.Id);
 
@@ -430,9 +420,9 @@ public partial class Category : ModuleBase
                 Duration = 3000,
             });
 
-            // Clear selection and refresh
+            // Clear selection
             SelectedCategory = null;
-            await RefreshCategories();
+            StateHasChanged();
         }
         catch (Exception ex)
         {
@@ -453,43 +443,24 @@ public partial class Category : ModuleBase
 
         try
         {
-            // Get fresh data to find current siblings
-            var freshCategories = await CategoryService.ListAsync(ModuleState.ModuleId, pageNumber: 1, pageSize: int.MaxValue);
-
-            // Find siblings with same parent
-            var siblings = freshCategories.Items?
-                .Where(c => c.ParentId == SelectedCategory.ParentId)
-                .OrderBy(c => c.ViewOrder)
-                .ThenBy(c => c.Name, StringComparer.Ordinal)
-                .ToList() ?? [];
-
-            var currentIndex = siblings.FindIndex(c => c.Id == SelectedCategory.Id);
+            // Find siblings in the current tree structure
+            var siblings = GetSiblings(SelectedCategory);
+            var currentIndex = siblings.IndexOf(SelectedCategory);
 
             if (currentIndex < 0 || currentIndex >= siblings.Count - 1) return;
 
-            var current = siblings[currentIndex];
+            var current = SelectedCategory;
             var next = siblings[currentIndex + 1];
 
-            // Swap ViewOrder values
-            var tempViewOrder = current.ViewOrder;
+            // Update on server using dedicated move endpoint
+            await CategoryService.MoveDownAsync(current.Id, ModuleState.ModuleId);
 
-            // Update current category
-            await CategoryService.UpdateAsync(current.Id, ModuleState.ModuleId,
-                new CreateAndUpdateCategoryDto
-                {
-                    Name = current.Name,
-                    ViewOrder = next.ViewOrder,
-                    ParentId = current.ParentId,
-                });
+            // Swap ViewOrder values locally
+            (current.ViewOrder, next.ViewOrder) = (next.ViewOrder, current.ViewOrder);
 
-            // Update next sibling
-            await CategoryService.UpdateAsync(next.Id, ModuleState.ModuleId,
-                new CreateAndUpdateCategoryDto
-                {
-                    Name = next.Name,
-                    ViewOrder = tempViewOrder,
-                    ParentId = next.ParentId,
-                });
+            // Swap positions in the list
+            siblings[currentIndex] = next;
+            siblings[currentIndex + 1] = current;
 
             await logger.LogInformation("Category Moved Down {Id}", SelectedCategory.Id);
 
@@ -501,9 +472,9 @@ public partial class Category : ModuleBase
                 Duration = 3000,
             });
 
-            // Clear selection and refresh
+            // Clear selection
             SelectedCategory = null;
-            await RefreshCategories();
+            StateHasChanged();
         }
         catch (Exception ex)
         {
@@ -601,8 +572,13 @@ public partial class Category : ModuleBase
 
         try
         {
-            await CategoryService.DeleteAsync(SelectedCategory.Id, ModuleState.ModuleId);
-            await logger.LogInformation("Category Deleted {Id}", SelectedCategory.Id);
+            var categoryToDelete = SelectedCategory;
+            await CategoryService.DeleteAsync(categoryToDelete.Id, ModuleState.ModuleId);
+            await logger.LogInformation("Category Deleted {Id}", categoryToDelete.Id);
+
+            // Remove from parent's children in-place
+            var siblings = GetSiblings(categoryToDelete);
+            siblings.Remove(categoryToDelete);
 
             NotificationService.Notify(new Radzen.NotificationMessage
             {
@@ -614,7 +590,7 @@ public partial class Category : ModuleBase
 
             SelectedCategory = null;
             ShowDeleteConfirmation = false;
-            await RefreshCategories();
+            StateHasChanged();
         }
         catch (Exception ex)
         {
