@@ -216,6 +216,22 @@ public partial class Category : ModuleBase
         StateHasChanged();
     }
 
+    private void OnNodeDoubleClick(ListCategoryDto? category)
+    {
+        if (category == null || category.Id == 0) return; // Don't allow editing root node
+
+        // Cancel any existing inline editing
+        CancelInlineEdit();
+
+        // Set editing state
+        EditingNode = category;
+        EditingNodeName = category.Name;
+        IsInlineAdding = false;
+        IsInlineEditing = true;
+
+        StateHasChanged();
+    }
+
     private void EditCategoryInline()
     {
         if (SelectedCategory == null || SelectedCategory.Id == 0) return; // Don't allow editing root node

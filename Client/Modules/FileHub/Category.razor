@@ -56,6 +56,7 @@ else
                     {
                         <span @oncontextmenu="@(args => ShowContextMenu(args, category))"
                               @oncontextmenu:preventDefault="true"
+                              @ondblclick="@(() => OnNodeDoubleClick(category))"
                               style="cursor: pointer; font-weight: @(isRootNode ? "bold" : "normal");">
                             @if (isRootNode)
                             {
