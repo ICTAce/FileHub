@@ -4,7 +4,6 @@ namespace ICTAce.FileHub.Services.Common;
 
 /// <summary>
 /// Generic service implementation for module-scoped CRUD operations.
-/// All operations include automatic retry with exponential backoff for transient failures.
 /// </summary>
 /// <typeparam name="TGetDto">DTO type for get operations</typeparam>
 /// <typeparam name="TListDto">DTO type for list operations</typeparam>
@@ -18,62 +17,47 @@ public abstract class ModuleService<TGetDto, TListDto, TCreateUpdateDto>(
     private string Apiurl => CreateApiUrl(apiPath);
 
     /// <summary>
-    /// Gets a single entity by ID with automatic retry on transient failures.
+    /// Gets a single entity by ID.
     /// </summary>
     public virtual Task<TGetDto> GetAsync(int id, int moduleId)
     {
-        return HttpRetryHelper.ExecuteWithRetryAsync(() =>
-        {
-            var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-            return GetJsonAsync<TGetDto>(url);
-        });
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
+        return GetJsonAsync<TGetDto>(url);
     }
 
     /// <summary>
-    /// Lists entities with pagination and automatic retry on transient failures.
+    /// Lists entities with pagination.
     /// </summary>
     public virtual Task<PagedResult<TListDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10)
     {
-        return HttpRetryHelper.ExecuteWithRetryAsync(() =>
-        {
-            var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}&pageNumber={pageNumber}&pageSize={pageSize}", EntityNames.Module, moduleId);
-            return GetJsonAsync<PagedResult<TListDto>>(url, new PagedResult<TListDto>());
-        });
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}&pageNumber={pageNumber}&pageSize={pageSize}", EntityNames.Module, moduleId);
+        return GetJsonAsync<PagedResult<TListDto>>(url, new PagedResult<TListDto>());
     }
 
     /// <summary>
-    /// Creates a new entity with automatic retry on transient failures.
+    /// Creates a new entity.
     /// </summary>
     public virtual Task<int> CreateAsync(int moduleId, TCreateUpdateDto dto)
     {
-        return HttpRetryHelper.ExecuteWithRetryAsync(() =>
-        {
-            var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}", EntityNames.Module, moduleId);
-            return PostJsonAsync<TCreateUpdateDto, int>(url, dto);
-        });
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}", EntityNames.Module, moduleId);
+        return PostJsonAsync<TCreateUpdateDto, int>(url, dto);
     }
 
     /// <summary>
-    /// Updates an existing entity with automatic retry on transient failures.
+    /// Updates an existing entity.
     /// </summary>
     public virtual Task<int> UpdateAsync(int id, int moduleId, TCreateUpdateDto dto)
     {
-        return HttpRetryHelper.ExecuteWithRetryAsync(() =>
-        {
-            var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-            return PutJsonAsync<TCreateUpdateDto, int>(url, dto);
-        });
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
+        return PutJsonAsync<TCreateUpdateDto, int>(url, dto);
     }
 
     /// <summary>
-    /// Deletes an entity with automatic retry on transient failures.
+    /// Deletes an entity.
     /// </summary>
     public virtual Task DeleteAsync(int id, int moduleId)
     {
-        return HttpRetryHelper.ExecuteWithRetryAsync(() =>
-        {
-            var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-            return DeleteAsync(url);
-        });
+        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
+        return DeleteAsync(url);
     }
 }
