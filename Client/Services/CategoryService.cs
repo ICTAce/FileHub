@@ -24,6 +24,7 @@ public record ListCategoryDto
     public required string Name { get; set; }
     public int ViewOrder { get; set; }
     public int ParentId { get; set; }
+    public bool IsExpanded { get; set; }
     public IList<ListCategoryDto> Children { get; set; } = [];
 }
 

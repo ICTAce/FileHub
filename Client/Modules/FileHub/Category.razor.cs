@@ -204,6 +204,9 @@ public partial class Category : ModuleBase
         // Add to parent's children
         SelectedCategory.Children.Add(newNode);
 
+        // Automatically expand the parent node so the new child is visible
+        SelectedCategory.IsExpanded = true;
+
         // Set editing state
         EditingNode = newNode;
         EditingNodeName = string.Empty;
@@ -635,6 +638,7 @@ public partial class Category : ModuleBase
                 Name = "<root categories>",
                 ParentId = -1,
                 ViewOrder = 0,
+                IsExpanded = true,
                 Children = []
             };
             return;
@@ -670,6 +674,7 @@ public partial class Category : ModuleBase
             Name = "<root categories>",
             ParentId = -1,
             ViewOrder = 0,
+            IsExpanded = true,
             Children = _treeData
         };
     }
@@ -687,6 +692,23 @@ public partial class Category : ModuleBase
 
                 SortChildren(category.Children.ToList());
             }
+        }
+    }
+
+    private Task OnNodeExpand(Radzen.TreeExpandEventArgs args)
+    {
+        if (args.Value is ListCategoryDto category)
+        {
+            category.IsExpanded = true;
+        }
+        return Task.CompletedTask;
+    }
+
+    private void OnNodeCollapse(Radzen.TreeEventArgs args)
+    {
+        if (args.Value is ListCategoryDto category)
+        {
+            category.IsExpanded = false;
         }
     }
 }
