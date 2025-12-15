@@ -19,7 +19,7 @@ public partial class Category : ModuleBase
     private Radzen.DialogService DialogService { get; set; } = default!;
 
     private List<ListCategoryDto> _treeData = [];
-    private ListCategoryDto _rootNode = new() { Name = "All Categories" };
+    private ListCategoryDto _rootNode = new() { Name = "<root categories>" };
 
     protected PagedResult<ListCategoryDto> Categories { get; set; } = new();
     protected string? ErrorMessage { get; set; }
@@ -632,7 +632,7 @@ public partial class Category : ModuleBase
             _rootNode = new ListCategoryDto
             {
                 Id = 0,
-                Name = "All Categories",
+                Name = "<root categories>",
                 ParentId = -1,
                 ViewOrder = 0,
                 Children = []
@@ -667,7 +667,7 @@ public partial class Category : ModuleBase
         _rootNode = new ListCategoryDto
         {
             Id = 0,
-            Name = "All Categories",
+            Name = "<root categories>",
             ParentId = -1,
             ViewOrder = 0,
             Children = _treeData
