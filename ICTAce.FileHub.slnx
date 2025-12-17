@@ -22,6 +22,9 @@
     <File Path=".github/instructions/prompt.instructions.md" />
     <File Path=".github/instructions/security-and-owasp.instructions.md" />
   </Folder>
+  <Folder Name="/Solution Items/workflows/">
+    <File Path=".github/workflows/ci.yml" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="Client/ICTAce.FileHub.Client.csproj" />
     <Project Path="Server/ICTAce.FileHub.Server.csproj" />

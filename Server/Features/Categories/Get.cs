@@ -22,8 +22,5 @@ public class GetHandler(HandlerServices<ApplicationQueryContext> services)
 [Mapper]
 internal sealed partial class GetMapper
 {
-    [MapProperty(nameof(Persistence.Entities.Category.ParentId), nameof(GetCategoryDto.ParentId), Use = nameof(ConvertParentId))]
     public partial GetCategoryDto ToGetResponse(Persistence.Entities.Category category);
-
-    private int ConvertParentId(int? parentId) => parentId ?? 0;
 }

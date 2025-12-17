@@ -10,7 +10,7 @@ public record GetCategoryDto
     public int ModuleId { get; set; }
     public required string Name { get; set; }
     public int ViewOrder { get; set; }
-    public int ParentId { get; set; }
+    public int? ParentId { get; set; }
 
     public required string CreatedBy { get; set; }
     public required DateTime CreatedOn { get; set; }
@@ -23,7 +23,7 @@ public record ListCategoryDto
     public int Id { get; set; }
     public required string Name { get; set; }
     public int ViewOrder { get; set; }
-    public int ParentId { get; set; }
+    public int? ParentId { get; set; }
     public bool IsExpanded { get; set; }
     public IList<ListCategoryDto> Children { get; set; } = [];
 }
@@ -37,8 +37,8 @@ public record CreateAndUpdateCategoryDto
     [Range(0, int.MaxValue, ErrorMessage = "ViewOrder must be greater than or equal to 0")]
     public int ViewOrder { get; set; }
 
-    [Range(0, int.MaxValue, ErrorMessage = "ParentId must be greater than or equal to 0")]
-    public int ParentId { get; set; }
+    [Range(1, int.MaxValue, ErrorMessage = "ParentId must be greater than 0 or null")]
+    public int? ParentId { get; set; }
 }
 
 public interface ICategoryService

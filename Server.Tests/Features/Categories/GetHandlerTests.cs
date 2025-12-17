@@ -28,7 +28,7 @@ public class GetHandlerTests : HandlerTestBase
         await Assert.That(result.Name).IsEqualTo("Test Category");
         await Assert.That(result.ModuleId).IsEqualTo(1);
         await Assert.That(result.ViewOrder).IsEqualTo(1);
-        await Assert.That(result.ParentId).IsEqualTo(0);
+        await Assert.That(result.ParentId).IsNull();
 
         await connection.CloseAsync().ConfigureAwait(false);
     }

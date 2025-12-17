@@ -1,5 +1,7 @@
 # FileHub
 
+[![CI](https://github.com/ICTAce/FileHub/actions/workflows/ci.yml/badge.svg)](https://github.com/ICTAce/FileHub/actions/workflows/ci.yml)
+
 A modular file management system built as an **Oqtane CMS module** using modern .NET architecture patterns and best practices.
 
 ## Project Information
@@ -113,6 +115,7 @@ Default credentials for development:
 - ✅ Compile-time mapping with Mapperly for performance
 - ✅ Comprehensive code quality enforcement with multiple analyzers
 - ✅ Full test coverage with modern testing frameworks (TUnit, bUnit, Playwright)
+- ✅ Automated CI/CD with GitHub Actions
 - ✅ Multi-database support through Oqtane framework
 - ✅ Entity auditing (CreatedBy, CreatedOn, ModifiedBy, ModifiedOn)
 - ✅ Role-based authorization and permissions
@@ -135,6 +138,24 @@ The project is configured with:
 - Analysis level set to latest
 - Code style enforcement during build
 - Multiple analyzers for code quality and security
+
+### Continuous Integration
+The project uses GitHub Actions for automated CI/CD:
+
+**Workflow Features:**
+- ✅ Automated builds on pull requests and commits to main/develop
+- ✅ Comprehensive test execution across all test projects
+- ✅ Code quality enforcement with multiple analyzers
+- ✅ Parallel test execution for faster feedback
+- ✅ Test result artifacts with 30-day retention
+- ✅ Automated test summaries in workflow runs
+
+**Test Coverage:**
+- **Server Tests**: Unit and integration tests using TUnit
+- **Client Tests**: Blazor component tests using bUnit
+- **E2E Tests**: End-to-end browser automation using Playwright
+
+The CI workflow ensures code quality and prevents regressions before merging to main branches.
 
 ## Contributing
 
