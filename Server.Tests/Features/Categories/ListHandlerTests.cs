@@ -216,7 +216,7 @@ public class ListHandlerTests : HandlerTestBase
         var parent = result.Items.First(c => string.Equals(c.Name, "Parent", StringComparison.Ordinal));
         var child = result.Items.First(c => string.Equals(c.Name, "Child", StringComparison.Ordinal));
 
-        await Assert.That(parent.ParentId).IsEqualTo(0);
+        await Assert.That(parent.ParentId).IsNull();
         await Assert.That(child.ParentId).IsEqualTo(1);
 
         await connection.CloseAsync().ConfigureAwait(false);

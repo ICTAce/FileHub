@@ -366,7 +366,7 @@ public class EdgeCaseTests : HandlerTestBase
             ModuleId = 1,
             Name = "Test",
             ViewOrder = -1,
-            ParentId = 0
+            ParentId = null
         }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert

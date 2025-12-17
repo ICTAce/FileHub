@@ -6,7 +6,7 @@ public record CreateCategoryRequest : RequestBase, IRequest<int>
 {
     public string Name { get; set; } = string.Empty;
     public int ViewOrder { get; set; }
-    public int ParentId { get; set; }
+    public int? ParentId { get; set; }
 }
 
 public class CreateHandler(HandlerServices<ApplicationCommandContext> services)
@@ -27,8 +27,5 @@ public class CreateHandler(HandlerServices<ApplicationCommandContext> services)
 [Mapper]
 internal sealed partial class CreateMapper
 {
-    [MapProperty(nameof(CreateCategoryRequest.ParentId), nameof(Persistence.Entities.Category.ParentId), Use = nameof(ConvertParentId))]
     internal partial Persistence.Entities.Category ToEntity(CreateCategoryRequest request);
-
-    private int? ConvertParentId(int parentId) => parentId == 0 ? null : parentId;
 }

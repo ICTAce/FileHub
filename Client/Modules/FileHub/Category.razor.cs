@@ -158,13 +158,13 @@ public partial class Category : ModuleBase
 
     private List<ListCategoryDto> GetSiblings(ListCategoryDto category)
     {
-        // For root-level categories (ParentId == 0), siblings are in TreeData
-        if (category.ParentId == 0)
+        // For root-level categories (ParentId is null), siblings are in TreeData
+        if (category.ParentId is null)
         {
             return _treeData;
         }
 
-        var parent = FindCategoryById([_rootNode], category.ParentId);
+        var parent = FindCategoryById([_rootNode], category.ParentId.Value);
         if (parent?.Children is List<ListCategoryDto> childrenList)
         {
             return childrenList;
@@ -196,7 +196,7 @@ public partial class Category : ModuleBase
         {
             Id = -1, // Temporary ID
             Name = string.Empty,
-            ParentId = SelectedCategory.Id == 0 ? 0 : SelectedCategory.Id, // If root node, ParentId is 0
+            ParentId = SelectedCategory.Id == 0 ? null : SelectedCategory.Id, // If root node, ParentId is null
             ViewOrder = SelectedCategory.Children.Count,
             Children = []
         };
@@ -342,13 +342,13 @@ public partial class Category : ModuleBase
             // Remove the temporary node from the tree
             ListCategoryDto? parent;
 
-            if (EditingNode.ParentId == 0)
+            if (EditingNode.ParentId is null)
             {
                 parent = _rootNode;
             }
             else
             {
-                parent = FindCategoryById([_rootNode], EditingNode.ParentId);
+                parent = FindCategoryById([_rootNode], EditingNode.ParentId.Value);
             }
 
             if (parent != null)
@@ -584,14 +584,14 @@ public partial class Category : ModuleBase
             await CategoryService.DeleteAsync(categoryToDelete.Id, ModuleState.ModuleId);
             await logger.LogInformation("Category Deleted {Id}", categoryToDelete.Id);
 
-            if (categoryToDelete.ParentId == 0)
+            if (categoryToDelete.ParentId is null)
             {
                 _treeData.Remove(categoryToDelete);
                 _rootNode.Children.Remove(categoryToDelete);
             }
             else
             {
-                var parent = FindCategoryById([_rootNode], categoryToDelete.ParentId);
+                var parent = FindCategoryById([_rootNode], categoryToDelete.ParentId.Value);
                 if (parent != null)
                 {
                     parent.Children.Remove(categoryToDelete);
@@ -668,14 +668,15 @@ public partial class Category : ModuleBase
         var categoryDict = Categories.Items.ToDictionary(c => c.Id, c => c);
 
         _treeData = Categories.Items
-            .Where(c => c.ParentId == 0 || !categoryDict.ContainsKey(c.ParentId))
+            .Where(c => c.ParentId is null || !categoryDict.ContainsKey(c.ParentId.Value))
             .OrderBy(c => c.ViewOrder)
             .ThenBy(c => c.Name, StringComparer.Ordinal)
             .ToList();
 
+
         foreach (var category in Categories.Items)
         {
-            if (category.ParentId != 0 && categoryDict.TryGetValue(category.ParentId, out var parent))
+            if (category.ParentId is not null && categoryDict.TryGetValue(category.ParentId.Value, out var parent))
             {
                 parent.Children.Add(category);
             }
@@ -688,7 +689,7 @@ public partial class Category : ModuleBase
         {
             Id = 0,
             Name = "<root categories>",
-            ParentId = -1,
+            ParentId = null,
             ViewOrder = 0,
             IsExpanded = true,
             Children = _treeData

@@ -23,7 +23,7 @@ public class UpdateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "Updated Name",
             ViewOrder = 5,
-            ParentId = 0
+            ParentId = null
         };
 
         // Act
@@ -56,7 +56,7 @@ public class UpdateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "Updated Name",
             ViewOrder = 1,
-            ParentId = 0
+            ParentId = null
         };
 
         // Act
@@ -83,7 +83,7 @@ public class UpdateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "Updated Name",
             ViewOrder = 1,
-            ParentId = 0
+            ParentId = null
         };
 
         // Act
@@ -180,7 +180,7 @@ public class UpdateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "New Name Only",
             ViewOrder = 5,
-            ParentId = 0
+            ParentId = null
         };
 
         // Act
@@ -192,7 +192,7 @@ public class UpdateHandlerTests : HandlerTestBase
         var entity = await GetFromCommandDbAsync(options, 1).ConfigureAwait(false);
         await Assert.That(entity!.Name).IsEqualTo("New Name Only");
         await Assert.That(entity.ViewOrder).IsEqualTo(5);
-        await Assert.That(entity.ParentId).IsEqualTo(0);
+        await Assert.That(entity.ParentId).IsNull();
 
         await connection.CloseAsync().ConfigureAwait(false);
     }
