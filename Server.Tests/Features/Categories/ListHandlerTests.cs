@@ -27,7 +27,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).HasCount().EqualTo(3);
+        await Assert.That(result!.Items).Count().IsEqualTo(3);
         await Assert.That(result.TotalCount).IsEqualTo(3);
         await Assert.That(result.PageNumber).IsEqualTo(1);
         await Assert.That(result.PageSize).IsEqualTo(10);
@@ -76,7 +76,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).HasCount().EqualTo(10);
+        await Assert.That(result!.Items).Count().IsEqualTo(10);
         await Assert.That(result.TotalCount).IsEqualTo(25);
         await Assert.That(result.PageNumber).IsEqualTo(2);
         await Assert.That(result.Items.First().Name).IsEqualTo("Category 11");
@@ -101,7 +101,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).IsEmpty();
+        await Assert.That(result!.Items).Count().IsEqualTo(0);
         await Assert.That(result.TotalCount).IsEqualTo(0);
 
         await connection.CloseAsync().ConfigureAwait(false);
@@ -127,7 +127,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).HasCount().EqualTo(3);
+        await Assert.That(result!.Items).Count().IsEqualTo(3);
 
         // ViewOrder 1 first (Apple, Banana alphabetically), then ViewOrder 2 (Zebra)
         var items = result.Items.ToList();
@@ -158,7 +158,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).HasCount().EqualTo(2);
+        await Assert.That(result!.Items).Count().IsEqualTo(2);
         await Assert.That(result.TotalCount).IsEqualTo(2);
         await Assert.That(result.Items.All(c => c.Name.StartsWith("Module 1", StringComparison.Ordinal))).IsTrue();
 
@@ -241,7 +241,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).HasCount().EqualTo(1);
+        await Assert.That(result!.Items).Count().IsEqualTo(1);
         await Assert.That(result.TotalCount).IsEqualTo(2);
         await Assert.That(result.Items.First().Name).IsEqualTo("Category 1");
 
