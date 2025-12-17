@@ -30,47 +30,14 @@ public record CreateAndUpdateSampleModuleDto
 public interface ISampleModuleService
 {
     Task<GetSampleModuleDto> GetAsync(int id, int moduleId);
-
     Task<PagedResult<ListSampleModuleDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10);
-
     Task<int> CreateAsync(int moduleId, CreateAndUpdateSampleModuleDto dto);
-
     Task<int> UpdateAsync(int id, int moduleId, CreateAndUpdateSampleModuleDto dto);
-
     Task DeleteAsync(int id, int moduleId);
 }
 
-public class SampleModuleService(HttpClient http, SiteState siteState) : ServiceBase(http, siteState), ISampleModuleService
+public class SampleModuleService(HttpClient http, SiteState siteState)
+    : ModuleService<GetSampleModuleDto, ListSampleModuleDto, CreateAndUpdateSampleModuleDto>(http, siteState, "company/sampleModules"),
+      ISampleModuleService
 {
-    private string Apiurl => CreateApiUrl("company/sampleModules");
-
-    public Task<GetSampleModuleDto> GetAsync(int id, int moduleId)
-    {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return GetJsonAsync<GetSampleModuleDto>(url);
-    }
-
-    public Task<PagedResult<ListSampleModuleDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10)
-    {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}&pageNumber={pageNumber}&pageSize={pageSize}", EntityNames.Module, moduleId);
-        return GetJsonAsync<PagedResult<ListSampleModuleDto>>(url, new PagedResult<ListSampleModuleDto>());
-    }
-
-    public Task<int> CreateAsync(int moduleId, CreateAndUpdateSampleModuleDto dto)
-    {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return PostJsonAsync<CreateAndUpdateSampleModuleDto, int>(url, dto);
-    }
-
-    public Task<int> UpdateAsync(int id, int moduleId, CreateAndUpdateSampleModuleDto dto)
-    {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return PutJsonAsync<CreateAndUpdateSampleModuleDto, int>(url, dto);
-    }
-
-    public Task DeleteAsync(int id, int moduleId)
-    {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return DeleteAsync(url);
-    }
 }

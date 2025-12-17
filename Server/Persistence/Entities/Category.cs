@@ -15,5 +15,9 @@ public class Category : AuditableModuleBase
 
     public int ViewOrder { get; set; }
 
-    public int ParentId { get; set; }
+    public int? ParentId { get; set; }
+
+    public Category? ParentCategory { get; set; }
+
+    public ICollection<Category>? Subcategories { get; set; }
 }

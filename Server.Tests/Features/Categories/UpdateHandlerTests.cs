@@ -103,7 +103,7 @@ public class UpdateHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
-        await SeedCommandDataAsync(options, 
+        await SeedCommandDataAsync(options,
             CreateTestEntity(id: 1, name: "Parent Category", parentId: 0),
             CreateTestEntity(id: 2, name: "Child Category", parentId: 0)).ConfigureAwait(false);
 
@@ -168,7 +168,7 @@ public class UpdateHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateCommandDatabaseAsync().ConfigureAwait(false);
-        await SeedCommandDataAsync(options, 
+        await SeedCommandDataAsync(options,
             CreateTestEntity(id: 1, name: "Original", viewOrder: 5, parentId: 0)).ConfigureAwait(false);
 
         var handler = new CategoryHandlers.UpdateHandler(

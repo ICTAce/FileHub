@@ -77,7 +77,7 @@ public class ApplicationHealthTests : PageTest
         // Verification: Body element should exist and have content
         var body = Page.Locator("body");
         await Expect(body).ToBeVisibleAsync().ConfigureAwait(false);
-        
+
         var bodyContent = await body.TextContentAsync().ConfigureAwait(false);
         await Assert.That(bodyContent).IsNotNull();
         await Assert.That(bodyContent).IsNotEmpty();

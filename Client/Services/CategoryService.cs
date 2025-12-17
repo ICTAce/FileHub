@@ -1,5 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
+using System.Net.Http.Json;
+
 namespace ICTAce.FileHub.Services;
 
 public record GetCategoryDto
@@ -22,6 +24,8 @@ public record ListCategoryDto
     public required string Name { get; set; }
     public int ViewOrder { get; set; }
     public int ParentId { get; set; }
+    public bool IsExpanded { get; set; }
+    public IList<ListCategoryDto> Children { get; set; } = [];
 }
 
 public record CreateAndUpdateCategoryDto
@@ -37,56 +41,52 @@ public record CreateAndUpdateCategoryDto
     public int ParentId { get; set; }
 }
 
-/// <summary>
-/// Service interface for Category operations
-/// </summary>
 public interface ICategoryService
 {
     Task<GetCategoryDto> GetAsync(int id, int moduleId);
-
     Task<PagedResult<ListCategoryDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10);
-
     Task<int> CreateAsync(int moduleId, CreateAndUpdateCategoryDto dto);
-
     Task<int> UpdateAsync(int id, int moduleId, CreateAndUpdateCategoryDto dto);
-
     Task DeleteAsync(int id, int moduleId);
+    Task<int> MoveUpAsync(int id, int moduleId);
+    Task<int> MoveDownAsync(int id, int moduleId);
 }
 
-/// <summary>
-/// Service implementation for Category operations
-/// </summary>
-public class CategoryService(HttpClient http, SiteState siteState) : ServiceBase(http, siteState), ICategoryService
+public class CategoryService : ModuleService<GetCategoryDto, ListCategoryDto, CreateAndUpdateCategoryDto>, ICategoryService
 {
-    private string Apiurl => CreateApiUrl("ictace/fileHub/categories");
+    private readonly HttpClient _httpClient;
 
-    public Task<GetCategoryDto> GetAsync(int id, int moduleId)
+    public CategoryService(HttpClient http, SiteState siteState)
+        : base(http, siteState, "ictace/fileHub/categories")
     {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return GetJsonAsync<GetCategoryDto>(url);
+        _httpClient = http;
     }
 
-    public Task<PagedResult<ListCategoryDto>> ListAsync(int moduleId, int pageNumber = 1, int pageSize = 10)
+    /// <summary>
+    /// Moves a category up in the sort order.
+    /// </summary>
+    /// <param name="id">The category ID to move.</param>
+    /// <param name="moduleId">The module ID.</param>
+    /// <returns>The updated category ID.</returns>
+    public async Task<int> MoveUpAsync(int id, int moduleId)
     {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}&pageNumber={pageNumber}&pageSize={pageSize}", EntityNames.Module, moduleId);
-        return GetJsonAsync<PagedResult<ListCategoryDto>>(url, new PagedResult<ListCategoryDto>());
+        var url = $"api/ictace/fileHub/categories/{id}/move-up?moduleId={moduleId}";
+        var response = await _httpClient.PatchAsync(url, null).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<int>().ConfigureAwait(false);
     }
 
-    public Task<int> CreateAsync(int moduleId, CreateAndUpdateCategoryDto dto)
+    /// <summary>
+    /// Moves a category down in the sort order.
+    /// </summary>
+    /// <param name="id">The category ID to move.</param>
+    /// <param name="moduleId">The module ID.</param>
+    /// <returns>The updated category ID.</returns>
+    public async Task<int> MoveDownAsync(int id, int moduleId)
     {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return PostJsonAsync<CreateAndUpdateCategoryDto, int>(url, dto);
-    }
-
-    public Task<int> UpdateAsync(int id, int moduleId, CreateAndUpdateCategoryDto dto)
-    {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return PutJsonAsync<CreateAndUpdateCategoryDto, int>(url, dto);
-    }
-
-    public Task DeleteAsync(int id, int moduleId)
-    {
-        var url = CreateAuthorizationPolicyUrl($"{Apiurl}/{id}?moduleId={moduleId}", EntityNames.Module, moduleId);
-        return DeleteAsync(url);
+        var url = $"api/ictace/fileHub/categories/{id}/move-down?moduleId={moduleId}";
+        var response = await _httpClient.PatchAsync(url, null).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<int>().ConfigureAwait(false);
     }
 }

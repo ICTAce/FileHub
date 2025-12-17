@@ -60,7 +60,7 @@ public class ListHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
-        
+
         for (int i = 1; i <= 25; i++)
         {
             await SeedQueryDataAsync(options, CreateTestEntity(id: i, name: $"Category {i}", viewOrder: i)).ConfigureAwait(false);
@@ -170,7 +170,7 @@ public class ListHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
-        
+
         for (int i = 1; i <= 15; i++)
         {
             await SeedQueryDataAsync(options, CreateTestEntity(id: i, name: $"Category {i}", viewOrder: i)).ConfigureAwait(false);
@@ -212,7 +212,7 @@ public class ListHandlerTests : HandlerTestBase
         // Assert
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.Items).HasCount().EqualTo(2);
-        
+
         var parent = result.Items.First(c => string.Equals(c.Name, "Parent", StringComparison.Ordinal));
         var child = result.Items.First(c => string.Equals(c.Name, "Child", StringComparison.Ordinal));
 

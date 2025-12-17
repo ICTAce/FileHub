@@ -71,7 +71,7 @@ public class ListHandlerTests : HandlerTestBase
         await Assert.That(result.Items.Count()).IsEqualTo(2);
         await Assert.That(result.PageNumber).IsEqualTo(2);
         await Assert.That(result.PageSize).IsEqualTo(2);
-        
+
         // Items should be "Charlie" and "Delta" (sorted alphabetically, page 2)
         var items = result.Items.ToList();
         await Assert.That(items[0].Name).IsEqualTo("Charlie");
@@ -160,7 +160,7 @@ public class ListHandlerTests : HandlerTestBase
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.TotalCount).IsEqualTo(2);
         await Assert.That(result.Items.Count()).IsEqualTo(2);
-        
+
         var items = result.Items.ToList();
         await Assert.That(items.All(x => x.Name.StartsWith("Module 1", StringComparison.Ordinal))).IsTrue();
 

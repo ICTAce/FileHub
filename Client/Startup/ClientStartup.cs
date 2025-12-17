@@ -1,5 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
+using Radzen;
+
 namespace ICTAce.FileHub.Client.Startup;
 
 public class ClientStartup : IClientStartup
@@ -15,5 +17,7 @@ public class ClientStartup : IClientStartup
         {
             services.AddScoped<ICategoryService, CategoryService>();
         }
+
+        services.AddRadzenComponents();
     }
 }

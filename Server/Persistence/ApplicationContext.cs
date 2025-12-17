@@ -14,6 +14,15 @@ public class ApplicationContext(
         base.OnModelCreating(builder);
 
         builder.Entity<Entities.SampleModule>().ToTable(ActiveDatabase.RewriteName("Company_SampleModule"));
-        builder.Entity<Entities.Category>().ToTable(ActiveDatabase.RewriteName("FileHub_Category"));
+
+        builder.Entity<Entities.Category>(entity =>
+        {
+            entity.ToTable(ActiveDatabase.RewriteName("ICTAce_FileHub_Category"));
+
+            entity.HasOne(c => c.ParentCategory)
+                  .WithMany(c => c.Subcategories)
+                  .HasForeignKey(c => c.ParentId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
     }
 }

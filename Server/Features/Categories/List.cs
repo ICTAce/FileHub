@@ -23,5 +23,8 @@ public class ListHandler(HandlerServices<ApplicationQueryContext> services)
 [Mapper]
 internal sealed partial class ListMapper
 {
+    [MapProperty(nameof(Persistence.Entities.Category.ParentId), nameof(ListCategoryDto.ParentId), Use = nameof(ConvertParentId))]
     public partial ListCategoryDto ToListResponse(Persistence.Entities.Category category);
+
+    private int ConvertParentId(int? parentId) => parentId ?? 0;
 }
