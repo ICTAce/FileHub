@@ -4,17 +4,30 @@ namespace ICTAce.FileHub.Client.Tests;
 
 public abstract class BaseTest : IDisposable
 {
+    private const string TestBaseUrl = "https://localhost:5001/";
     private bool _disposed;
 
-    protected BunitContext TestContext { get; private set; }
-    protected Alias TestAlias { get; private set; }
-    protected Site TestSite { get; private set; }
-    protected Page TestPage { get; private set; }
+    protected BunitContext TestContext { get; private set; } = null!;
+    protected Alias TestAlias { get; private set; } = null!;
+    protected Site TestSite { get; private set; } = null!;
+    protected Page TestPage { get; private set; } = null!;
 
     protected BaseTest()
     {
+        InitializeTestContext();
+        RegisterServices();
+        InitializeCommonTestData();
+    }
+
+    private void InitializeTestContext()
+    {
         TestContext = new();
         TestContext.JSInterop.Mode = JSRuntimeMode.Loose;
+        SetupJsInterop();
+    }
+
+    private void SetupJsInterop()
+    {
         TestContext.JSInterop.Setup<bool>("Oqtane.Interop.formValid", _ => true).SetResult(true);
         TestContext.JSInterop.Setup<bool>("formValid", _ => true).SetResult(true);
         TestContext.JSInterop.SetupVoid("Oqtane.Interop.setElementAttribute", _ => true);
@@ -31,7 +44,10 @@ public abstract class BaseTest : IDisposable
         TestContext.JSInterop.SetupVoid("Oqtane.Interop.includeMeta", _ => true);
         TestContext.JSInterop.Setup<int>("Oqtane.Interop.getScrollPosition", _ => true).SetResult(0);
         TestContext.JSInterop.SetupVoid("Oqtane.Interop.scrollTo", _ => true);
+    }
 
+    private void RegisterServices()
+    {
         TestContext.Services.AddLocalization();
         TestContext.Services.AddSingleton<Microsoft.Extensions.Localization.IStringLocalizerFactory, MockStringLocalizerFactory>();
 
@@ -65,7 +81,7 @@ public abstract class BaseTest : IDisposable
         TestContext.Services.AddScoped<IServiceScopeFactory>(sp => sp.GetRequiredService<IServiceScopeFactory>());
 
         // Add HttpClient for Blazor components
-        TestContext.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5001/") });
+        TestContext.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(TestBaseUrl) });
 
         // Add PageState mock for cascading parameter
         TestContext.Services.AddScoped(_ => new Mocks.PageState
@@ -73,9 +89,6 @@ public abstract class BaseTest : IDisposable
             Action = "Index",
             QueryString = []
         });
-
-        // Initialize common test data
-        InitializeCommonTestData();
     }
 
     private void InitializeCommonTestData()
@@ -97,7 +110,9 @@ public abstract class BaseTest : IDisposable
             LogoFileId = null,
             FaviconFileId = null,
             DefaultThemeType = "Test.Theme",
+#pragma warning disable CS0618 // Type or member is obsolete - Required for Oqtane compatibility
             DefaultLayoutType = "Test.Layout",
+#pragma warning restore CS0618
             DefaultContainerType = "Test.Container",
         };
 
@@ -119,11 +134,11 @@ public abstract class BaseTest : IDisposable
         };
     }
 
-    protected Mocks.PageState CreatePageState(string action, Dictionary<string, string>? queryString = null)
+    protected Mocks.PageState CreatePageState(string action, IDictionary<string, string>? queryString = null)
     => new Mocks.PageState
     {
         Action = action,
-        QueryString = queryString ?? [],
+        QueryString = queryString ?? new Dictionary<string, string>(StringComparer.Ordinal),
         Page = TestPage,
         Alias = TestAlias,
         Site = TestSite,
@@ -159,8 +174,8 @@ public abstract class BaseTest : IDisposable
             PackageName = "ICTAce.FileHub",
             SiteId = 1
         },
-        PermissionList = new List<Permission>
-        {
+        PermissionList =
+        [
             new Permission
             {
                 PermissionName = "View",
@@ -181,8 +196,8 @@ public abstract class BaseTest : IDisposable
                 UserId = null,
                 IsAuthorized = true
             }
-        },
-        Settings = new()
+        ],
+        Settings = new Dictionary<string, string>(StringComparer.Ordinal)
     };
 
     protected virtual void Dispose(bool disposing)
