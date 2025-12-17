@@ -134,7 +134,7 @@ public abstract class BaseTest : IDisposable
         };
     }
 
-    protected Mocks.PageState CreatePageState(string action, IDictionary<string, string>? queryString = null)
+    protected Mocks.PageState CreatePageState(string action, Dictionary<string, string>? queryString = null)
     => new Mocks.PageState
     {
         Action = action,
