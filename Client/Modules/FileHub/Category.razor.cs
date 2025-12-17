@@ -1,7 +1,5 @@
 // Licensed to ICTAce under the MIT license.
 
-using Oqtane.Modules.Controls;
-
 namespace ICTAce.FileHub;
 
 public partial class Category : ModuleBase
@@ -18,6 +16,8 @@ public partial class Category : ModuleBase
     [Inject]
     private Radzen.DialogService DialogService { get; set; } = default!;
 
+    private const string SuccessNotificationMessage = "Success";
+    private const string ErrorNotificationMessage = "Error";
     private List<ListCategoryDto> _treeData = [];
     private ListCategoryDto _rootNode = new() { Name = "<root categories>" };
 
@@ -105,7 +105,8 @@ public partial class Category : ModuleBase
         // Only add delete option if category has no children
         if (!category.Children.Any())
         {
-            menuItems.Add(new() {
+            menuItems.Add(new()
+            {
                 Text = "Delete",
                 Value = "delete",
                 Icon = "delete",
@@ -169,7 +170,7 @@ public partial class Category : ModuleBase
         {
             return childrenList;
         }
-        
+
         return parent?.Children.ToList() ?? [];
     }
 
@@ -177,9 +178,17 @@ public partial class Category : ModuleBase
     {
         foreach (var cat in categories)
         {
-            if (cat.Id == id) return cat;
+            if (cat.Id == id)
+            {
+                return cat;
+            }
+
             var found = FindCategoryById(cat.Children.ToList(), id);
-            if (found != null) return found;
+
+            if (found != null)
+            {
+                return found;
+            }
         }
         return null;
     }
@@ -284,7 +293,7 @@ public partial class Category : ModuleBase
                 NotificationService.Notify(new Radzen.NotificationMessage
                 {
                     Severity = Radzen.NotificationSeverity.Success,
-                    Summary = "Success",
+                    Summary = SuccessNotificationMessage,
                     Detail = "Category created successfully",
                     Duration = 3000,
                 });
@@ -308,7 +317,7 @@ public partial class Category : ModuleBase
                 NotificationService.Notify(new Radzen.NotificationMessage
                 {
                     Severity = Radzen.NotificationSeverity.Success,
-                    Summary = "Success",
+                    Summary = SuccessNotificationMessage,
                     Detail = "Category updated successfully",
                     Duration = 3000,
                 });
@@ -328,7 +337,7 @@ public partial class Category : ModuleBase
             NotificationService.Notify(new Radzen.NotificationMessage
             {
                 Severity = Radzen.NotificationSeverity.Error,
-                Summary = "Error",
+                Summary = ErrorNotificationMessage,
                 Detail = "Failed to save category",
                 Duration = 4000,
             });
@@ -379,7 +388,10 @@ public partial class Category : ModuleBase
 
     private async Task MoveUp()
     {
-        if (SelectedCategory == null) return;
+        if (SelectedCategory == null)
+        {
+            return;
+        }
 
         try
         {
@@ -407,7 +419,7 @@ public partial class Category : ModuleBase
             NotificationService.Notify(new Radzen.NotificationMessage
             {
                 Severity = Radzen.NotificationSeverity.Success,
-                Summary = "Success",
+                Summary = SuccessNotificationMessage,
                 Detail = "Category moved up",
                 Duration = 3000,
             });
@@ -422,7 +434,7 @@ public partial class Category : ModuleBase
             NotificationService.Notify(new Radzen.NotificationMessage
             {
                 Severity = Radzen.NotificationSeverity.Error,
-                Summary = "Error",
+                Summary = ErrorNotificationMessage,
                 Detail = "Failed to move category",
                 Duration = 4000,
             });
@@ -431,7 +443,10 @@ public partial class Category : ModuleBase
 
     private async Task MoveDown()
     {
-        if (SelectedCategory == null) return;
+        if (SelectedCategory == null)
+        {
+            return;
+        }
 
         try
         {
@@ -459,7 +474,7 @@ public partial class Category : ModuleBase
             NotificationService.Notify(new Radzen.NotificationMessage
             {
                 Severity = Radzen.NotificationSeverity.Success,
-                Summary = "Success",
+                Summary = SuccessNotificationMessage,
                 Detail = "Category moved down",
                 Duration = 3000,
             });
@@ -474,84 +489,19 @@ public partial class Category : ModuleBase
             NotificationService.Notify(new Radzen.NotificationMessage
             {
                 Severity = Radzen.NotificationSeverity.Error,
-                Summary = "Error",
+                Summary = ErrorNotificationMessage,
                 Detail = "Failed to move category",
                 Duration = 4000,
             });
         }
     }
 
-    private async Task SaveCategory()
-    {
-        if (string.IsNullOrWhiteSpace(EditModel.Name))
-        {
-            NotificationService.Notify(new Radzen.NotificationMessage
-            {
-                Severity = Radzen.NotificationSeverity.Warning,
-                Summary = "Validation Error",
-                Detail = "Category name is required",
-                Duration = 4000,
-            });
-            return;
-        }
-
-        try
-        {
-            if (IsAddingNew)
-            {
-                // Create new category
-                var id = await CategoryService.CreateAsync(ModuleState.ModuleId, EditModel);
-                await logger.LogInformation("Category Created {Id}", id);
-
-                NotificationService.Notify(new Radzen.NotificationMessage
-                {
-                    Severity = Radzen.NotificationSeverity.Success,
-                    Summary = "Success",
-                    Detail = "Category created successfully",
-                    Duration = 4000,
-                });
-            }
-            else if (SelectedCategory != null)
-            {
-                // Update existing category
-                await CategoryService.UpdateAsync(SelectedCategory.Id, ModuleState.ModuleId, EditModel);
-                await logger.LogInformation("Category Updated {Id}", SelectedCategory.Id);
-
-                NotificationService.Notify(new Radzen.NotificationMessage
-                {
-                    Severity = Radzen.NotificationSeverity.Success,
-                    Summary = "Success",
-                    Detail = "Category updated successfully",
-                    Duration = 4000,
-                });
-            }
-
-            IsAddingNew = false;
-            SelectedCategory = null;
-            await RefreshCategories();
-        }
-        catch (Exception ex)
-        {
-            await logger.LogError(ex, "Error Saving Category {Error}", ex.Message);
-            NotificationService.Notify(new Radzen.NotificationMessage
-            {
-                Severity = Radzen.NotificationSeverity.Error,
-                Summary = "Error",
-                Detail = "Failed to save category",
-                Duration = 4000,
-            });
-        }
-    }
-
-    private void CancelEdit()
-    {
-        IsAddingNew = false;
-        SelectedCategory = null;
-    }
-
     private async Task PromptDeleteCategory()
     {
-        if (SelectedCategory == null) return;
+        if (SelectedCategory == null)
+        {
+            return;
+        }
 
         var confirmed = await DialogService.Confirm(
             $"Are you sure you want to delete the category \"{SelectedCategory.Name}\"?",
@@ -575,12 +525,15 @@ public partial class Category : ModuleBase
 
     private async Task DeleteCategory()
     {
-        if (SelectedCategory == null) return;
+        if (SelectedCategory == null)
+        {
+            return;
+        }
 
         try
         {
             var categoryToDelete = SelectedCategory;
-            
+
             await CategoryService.DeleteAsync(categoryToDelete.Id, ModuleState.ModuleId);
             await logger.LogInformation("Category Deleted {Id}", categoryToDelete.Id);
 
@@ -601,7 +554,7 @@ public partial class Category : ModuleBase
             NotificationService.Notify(new Radzen.NotificationMessage
             {
                 Severity = Radzen.NotificationSeverity.Success,
-                Summary = "Success",
+                Summary = SuccessNotificationMessage,
                 Detail = "Category deleted successfully",
                 Duration = 4000,
             });
@@ -615,29 +568,10 @@ public partial class Category : ModuleBase
             NotificationService.Notify(new Radzen.NotificationMessage
             {
                 Severity = Radzen.NotificationSeverity.Error,
-                Summary = "Error",
+                Summary = ErrorNotificationMessage,
                 Detail = "Failed to delete category",
                 Duration = 4000,
             });
-        }
-    }
-
-    private async Task RefreshCategories()
-    {
-        IsLoading = true;
-        try
-        {
-            Categories = await CategoryService.ListAsync(ModuleState.ModuleId, pageNumber: 1, pageSize: int.MaxValue);
-            CreateTreeStructure();
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = $"Failed to reload categories: {ex.Message}";
-        }
-        finally
-        {
-            IsLoading = false;
-            StateHasChanged();
         }
     }
 
@@ -673,7 +607,6 @@ public partial class Category : ModuleBase
             .ThenBy(c => c.Name, StringComparer.Ordinal)
             .ToList();
 
-
         foreach (var category in Categories.Items)
         {
             if (category.ParentId is not null && categoryDict.TryGetValue(category.ParentId.Value, out var parent))
@@ -696,7 +629,7 @@ public partial class Category : ModuleBase
         };
     }
 
-    private void SortChildren(List<ListCategoryDto> categories)
+    private static void SortChildren(List<ListCategoryDto> categories)
     {
         foreach (var category in categories)
         {
@@ -712,7 +645,7 @@ public partial class Category : ModuleBase
         }
     }
 
-    private Task OnNodeExpand(Radzen.TreeExpandEventArgs args)
+    private static Task OnNodeExpand(Radzen.TreeExpandEventArgs args)
     {
         if (args.Value is ListCategoryDto category)
         {
@@ -721,7 +654,7 @@ public partial class Category : ModuleBase
         return Task.CompletedTask;
     }
 
-    private void OnNodeCollapse(Radzen.TreeEventArgs args)
+    private static void OnNodeCollapse(Radzen.TreeEventArgs args)
     {
         if (args.Value is ListCategoryDto category)
         {
