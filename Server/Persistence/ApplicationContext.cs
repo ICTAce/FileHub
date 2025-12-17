@@ -8,6 +8,7 @@ public class ApplicationContext(
 {
     public virtual DbSet<Entities.SampleModule> SampleModule { get; set; }
     public virtual DbSet<Entities.Category> Category { get; set; }
+    public virtual DbSet<Entities.FileHubUpload> FileHubUpload { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -22,6 +23,16 @@ public class ApplicationContext(
             entity.HasOne(c => c.ParentCategory)
                   .WithMany(c => c.Subcategories)
                   .HasForeignKey(c => c.ParentId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<Entities.FileHubUpload>(entity =>
+        {
+            entity.ToTable(ActiveDatabase.RewriteName("ICTAce_FileHub_Upload"));
+
+            entity.HasOne(s => s.Category)
+                  .WithMany()
+                  .HasForeignKey(s => s.CategoryId)
                   .OnDelete(DeleteBehavior.Restrict);
         });
     }
