@@ -49,7 +49,7 @@ public static class CategoryTestHelpers
         int moduleId = 1,
         string name = "Test Category",
         int viewOrder = 1,
-        int parentId = 0,
+        int? parentId = null,
         string createdBy = "admin",
         DateTime? createdOn = null,
         string modifiedBy = "admin",

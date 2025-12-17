@@ -186,7 +186,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).HasCount().EqualTo(5);
+        await Assert.That(result!.Items).Count().IsEqualTo(5);
         await Assert.That(result.TotalCount).IsEqualTo(15);
 
         await connection.CloseAsync().ConfigureAwait(false);
@@ -198,7 +198,7 @@ public class ListHandlerTests : HandlerTestBase
         // Arrange
         var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await SeedQueryDataAsync(options,
-            CreateTestEntity(id: 1, name: "Parent", parentId: 0),
+            CreateTestEntity(id: 1, name: "Parent", parentId: null),
             CreateTestEntity(id: 2, name: "Child", parentId: 1)).ConfigureAwait(false);
 
         var handler = new CategoryHandlers.ListHandler(
@@ -211,7 +211,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).HasCount().EqualTo(2);
+        await Assert.That(result!.Items).Count().IsEqualTo(2);
 
         var parent = result.Items.First(c => string.Equals(c.Name, "Parent", StringComparison.Ordinal));
         var child = result.Items.First(c => string.Equals(c.Name, "Child", StringComparison.Ordinal));

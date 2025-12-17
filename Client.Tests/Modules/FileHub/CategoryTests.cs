@@ -101,11 +101,11 @@ public class CategoryTests : BaseTest
 
         await Assert.That(category1.Id).IsEqualTo(1);
         await Assert.That(category1.Name).IsEqualTo("Test Category 1");
-        await Assert.That(category1.ParentId).IsEqualTo(0);
+        await Assert.That(category1.ParentId).IsNull();
         
         await Assert.That(category2.Id).IsEqualTo(2);
         await Assert.That(category2.Name).IsEqualTo("Test Category 2");
-        await Assert.That(category2.ParentId).IsEqualTo(0);
+        await Assert.That(category2.ParentId).IsNull();
     }
 
     [Test]
@@ -246,7 +246,7 @@ public class CategoryTests : BaseTest
         {
             Name = "Valid Category Name",
             ViewOrder = 0,
-            ParentId = 0
+            ParentId = null
         };
 
         var validationResults = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
@@ -386,7 +386,7 @@ public class CategoryTests : BaseTest
         
         await Assert.That(categories).IsNotNull();
         await Assert.That(categories.Count).IsEqualTo(3);
-        await Assert.That(categories.Any(c => c.ParentId == 0)).IsTrue();
+        await Assert.That(categories.Any(c => c.ParentId is null)).IsTrue();
         await Assert.That(categories.Any(c => c.ParentId == 1)).IsTrue();
     }
 
@@ -454,7 +454,7 @@ public class CategoryTests : BaseTest
         var result = await _mockCategoryService!.ListAsync(1, pageNumber: 1, pageSize: 10);
 
         await Assert.That(result.Items).IsNotNull();
-        await Assert.That(result.Items.Any(c => c.ParentId == 0)).IsTrue();
+        await Assert.That(result.Items.Any(c => c.ParentId is null)).IsTrue();
         await Assert.That(result.Items.Any(c => c.ParentId == 1)).IsTrue();
     }
 
