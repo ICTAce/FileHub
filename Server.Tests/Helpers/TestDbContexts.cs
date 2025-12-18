@@ -69,6 +69,7 @@ public class TestApplicationCommandContext : ApplicationCommandContext
     private static readonly IServiceProvider _serviceProvider;
 
     [SuppressMessage("Microsoft.Performance", "CA1810:Initialize reference type static fields inline", Justification = "Service provider initialization requires complex setup")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S3963:Initialize all 'static fields' inline and remove the 'static constructor'", Justification = "Service provider initialization requires complex setup")]
     static TestApplicationCommandContext()
     {
         // Create a service provider with all necessary EF Core services
@@ -147,6 +148,7 @@ public class TestApplicationQueryContext : ApplicationQueryContext
     private static readonly IServiceProvider _serviceProvider;
 
     [SuppressMessage("Microsoft.Performance", "CA1810:Initialize reference type static fields inline", Justification = "Service provider initialization requires complex setup")]
+    [SuppressMessage("SonarAnalyzer.CSharp", "S3963:Initialize all 'static fields' inline and remove the 'static constructor'", Justification = "Service provider initialization requires complex setup")]
     static TestApplicationQueryContext()
     {
         // Create a service provider with all necessary EF Core services

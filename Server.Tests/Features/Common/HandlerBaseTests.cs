@@ -75,16 +75,16 @@ public class HandlerBaseTests : HandlerTestBase
             CreateCommandHandlerServices(options, isAuthorized: true));
 
         // Act - Create multiple entities
-        var id1 = await handler.Handle(new CreateSampleModuleRequest 
-        { 
-            ModuleId = 1, 
-            Name = "First" 
+        var id1 = await handler.Handle(new CreateSampleModuleRequest
+        {
+            ModuleId = 1,
+            Name = "First"
         }, CancellationToken.None).ConfigureAwait(false);
 
-        var id2 = await handler.Handle(new CreateSampleModuleRequest 
-        { 
-            ModuleId = 1, 
-            Name = "Second" 
+        var id2 = await handler.Handle(new CreateSampleModuleRequest
+        {
+            ModuleId = 1,
+            Name = "Second"
         }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert - IDs are auto-incremented

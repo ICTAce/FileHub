@@ -8,11 +8,11 @@ public partial class Index
     [Inject] protected NavigationManager NavigationManager { get; set; } = default!;
     [Inject] protected IStringLocalizer<Index> Localizer { get; set; } = default!;
 
-    public override List<Resource> Resources => new List<Resource>()
-    {
+    public override List<Resource> Resources =>
+    [
         new Stylesheet(ModulePath() + "Module.css"),
         new Script(ModulePath() + "Module.js")
-    };
+    ];
 
     private List<ListSampleModuleDto>? _samplesModules;
 

@@ -27,7 +27,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).HasCount().EqualTo(3);
+        await Assert.That(result!.Items).Count().IsEqualTo(3);
         await Assert.That(result.TotalCount).IsEqualTo(3);
         await Assert.That(result.PageNumber).IsEqualTo(1);
         await Assert.That(result.PageSize).IsEqualTo(10);
@@ -60,7 +60,7 @@ public class ListHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
-        
+
         for (int i = 1; i <= 25; i++)
         {
             await SeedQueryDataAsync(options, CreateTestEntity(id: i, name: $"Category {i}", viewOrder: i)).ConfigureAwait(false);
@@ -76,7 +76,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).HasCount().EqualTo(10);
+        await Assert.That(result!.Items).Count().IsEqualTo(10);
         await Assert.That(result.TotalCount).IsEqualTo(25);
         await Assert.That(result.PageNumber).IsEqualTo(2);
         await Assert.That(result.Items.First().Name).IsEqualTo("Category 11");
@@ -101,7 +101,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).IsEmpty();
+        await Assert.That(result!.Items).Count().IsEqualTo(0);
         await Assert.That(result.TotalCount).IsEqualTo(0);
 
         await connection.CloseAsync().ConfigureAwait(false);
@@ -127,7 +127,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).HasCount().EqualTo(3);
+        await Assert.That(result!.Items).Count().IsEqualTo(3);
 
         // ViewOrder 1 first (Apple, Banana alphabetically), then ViewOrder 2 (Zebra)
         var items = result.Items.ToList();
@@ -158,7 +158,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).HasCount().EqualTo(2);
+        await Assert.That(result!.Items).Count().IsEqualTo(2);
         await Assert.That(result.TotalCount).IsEqualTo(2);
         await Assert.That(result.Items.All(c => c.Name.StartsWith("Module 1", StringComparison.Ordinal))).IsTrue();
 
@@ -170,7 +170,7 @@ public class ListHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
-        
+
         for (int i = 1; i <= 15; i++)
         {
             await SeedQueryDataAsync(options, CreateTestEntity(id: i, name: $"Category {i}", viewOrder: i)).ConfigureAwait(false);
@@ -186,7 +186,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).HasCount().EqualTo(5);
+        await Assert.That(result!.Items).Count().IsEqualTo(5);
         await Assert.That(result.TotalCount).IsEqualTo(15);
 
         await connection.CloseAsync().ConfigureAwait(false);
@@ -198,7 +198,7 @@ public class ListHandlerTests : HandlerTestBase
         // Arrange
         var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
         await SeedQueryDataAsync(options,
-            CreateTestEntity(id: 1, name: "Parent", parentId: 0),
+            CreateTestEntity(id: 1, name: "Parent", parentId: null),
             CreateTestEntity(id: 2, name: "Child", parentId: 1)).ConfigureAwait(false);
 
         var handler = new CategoryHandlers.ListHandler(
@@ -211,12 +211,12 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).HasCount().EqualTo(2);
-        
+        await Assert.That(result!.Items).Count().IsEqualTo(2);
+
         var parent = result.Items.First(c => string.Equals(c.Name, "Parent", StringComparison.Ordinal));
         var child = result.Items.First(c => string.Equals(c.Name, "Child", StringComparison.Ordinal));
 
-        await Assert.That(parent.ParentId).IsEqualTo(0);
+        await Assert.That(parent.ParentId).IsNull();
         await Assert.That(child.ParentId).IsEqualTo(1);
 
         await connection.CloseAsync().ConfigureAwait(false);
@@ -241,7 +241,7 @@ public class ListHandlerTests : HandlerTestBase
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Items).HasCount().EqualTo(1);
+        await Assert.That(result!.Items).Count().IsEqualTo(1);
         await Assert.That(result.TotalCount).IsEqualTo(2);
         await Assert.That(result.Items.First().Name).IsEqualTo("Category 1");
 

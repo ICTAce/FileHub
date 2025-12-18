@@ -14,10 +14,10 @@ public partial class Edit
 
     public override string Title => "Manage SampleModule";
 
-    public override List<Resource> Resources => new List<Resource>()
-    {
+    public override List<Resource> Resources =>
+    [
         new Stylesheet(ModulePath() + "Module.css")
-    };
+    ];
 
     private ElementReference form;
     private bool _validated;

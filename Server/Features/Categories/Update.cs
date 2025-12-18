@@ -6,7 +6,7 @@ public record UpdateCategoryRequest : EntityRequestBase, IRequest<int>
 {
     public required string Name { get; set; }
     public int ViewOrder { get; set; }
-    public int ParentId { get; set; }
+    public int? ParentId { get; set; }
 }
 
 public class UpdateHandler(HandlerServices<ApplicationCommandContext> services)

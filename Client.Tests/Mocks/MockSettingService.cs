@@ -11,8 +11,8 @@ namespace ICTAce.FileHub.Client.Tests.Mocks;
 /// </summary>
 public class MockSettingService : ISettingService
 {
-    private readonly Dictionary<string, Dictionary<int, Dictionary<string, string>>> _settings = new();
-    private readonly List<Setting> _settingsList = new();
+    private readonly Dictionary<string, Dictionary<int, Dictionary<string, string>>> _settings = new(StringComparer.Ordinal);
+    private readonly List<Setting> _settingsList = [];
     private int _nextId = 1;
 
     public Task<Dictionary<string, string>> GetModuleSettingsAsync(int moduleId)
@@ -45,22 +45,22 @@ public class MockSettingService : ISettingService
         if (_settings.TryGetValue(entityName, out var entitySettings)
             && entitySettings.TryGetValue(entityId, out var settings))
         {
-            return Task.FromResult(new Dictionary<string, string>(settings));
+            return Task.FromResult(new Dictionary<string, string>(settings, StringComparer.Ordinal));
         }
-        return Task.FromResult(new Dictionary<string, string>());
+        return Task.FromResult(new Dictionary<string, string>(StringComparer.Ordinal));
     }
 
     public Task<List<Setting>> GetSettingsAsync(string entityName, int entityId, string settingName)
     {
         var matchingSettings = _settingsList
-            .Where(s => s.EntityName == entityName && s.EntityId == entityId && s.SettingName == settingName)
+            .Where(s => string.Equals(s.EntityName, entityName, StringComparison.Ordinal) && s.EntityId == entityId && string.Equals(s.SettingName, settingName, StringComparison.Ordinal))
             .ToList();
         return Task.FromResult(matchingSettings);
     }
 
     public Task<Setting> GetSettingAsync(int entityId, string settingName)
     {
-        var setting = _settingsList.FirstOrDefault(s => s.EntityId == entityId && s.SettingName == settingName);
+        var setting = _settingsList.FirstOrDefault(s => s.EntityId == entityId && string.Equals(s.SettingName, settingName, StringComparison.Ordinal));
         return Task.FromResult(setting ?? null!);
     }
 
@@ -128,8 +128,8 @@ public class MockSettingService : ISettingService
         EnsureEntity(entityName, entityId);
         _settings[entityName][entityId][settingName] = settingValue;
 
-        var existing = _settingsList.FirstOrDefault(s => s.EntityName == entityName
-            && s.EntityId == entityId && s.SettingName == settingName);
+        var existing = _settingsList.FirstOrDefault(s => string.Equals(s.EntityName, entityName, StringComparison.Ordinal)
+            && s.EntityId == entityId && string.Equals(s.SettingName, settingName, StringComparison.Ordinal));
         if (existing != null)
         {
             existing.SettingValue = settingValue;
@@ -336,3 +336,4 @@ public class MockSettingService : ISettingService
         }
     }
 }
+

@@ -6,7 +6,7 @@ public record CreateCategoryRequest : RequestBase, IRequest<int>
 {
     public string Name { get; set; } = string.Empty;
     public int ViewOrder { get; set; }
-    public int ParentId { get; set; }
+    public int? ParentId { get; set; }
 }
 
 public class CreateHandler(HandlerServices<ApplicationCommandContext> services)

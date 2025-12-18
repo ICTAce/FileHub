@@ -65,7 +65,7 @@ public abstract class HandlerTestBase : IDisposable
     /// <summary>
     /// Creates a mock IDbContextFactory that returns TestApplicationCommandContext instances.
     /// </summary>
-    protected IDbContextFactory<ApplicationCommandContext> CreateMockCommandContextFactory(
+    protected static IDbContextFactory<ApplicationCommandContext> CreateMockCommandContextFactory(
         DbContextOptions<TestApplicationCommandContext> options)
     {
         var mockFactory = Substitute.For<IDbContextFactory<ApplicationCommandContext>>();
@@ -76,7 +76,7 @@ public abstract class HandlerTestBase : IDisposable
     /// <summary>
     /// Creates a mock IDbContextFactory that returns TestApplicationQueryContext instances.
     /// </summary>
-    protected IDbContextFactory<ApplicationQueryContext> CreateMockQueryContextFactory(
+    protected static IDbContextFactory<ApplicationQueryContext> CreateMockQueryContextFactory(
         DbContextOptions<TestApplicationQueryContext> options)
     {
         var mockFactory = Substitute.For<IDbContextFactory<ApplicationQueryContext>>();
@@ -92,7 +92,7 @@ public abstract class HandlerTestBase : IDisposable
     /// Creates a mock IUserPermissions with configurable authorization.
     /// </summary>
     /// <param name="isAuthorized">Whether the user should be authorized (default: true)</param>
-    protected IUserPermissions CreateMockUserPermissions(bool isAuthorized = true)
+    protected static IUserPermissions CreateMockUserPermissions(bool isAuthorized = true)
     {
         var mockUserPermissions = Substitute.For<IUserPermissions>();
         mockUserPermissions.IsAuthorized(
@@ -119,7 +119,7 @@ public abstract class HandlerTestBase : IDisposable
     /// <summary>
     /// Creates a mock IHttpContextAccessor with a test claims principal.
     /// </summary>
-    protected IHttpContextAccessor CreateMockHttpContextAccessor()
+    protected static IHttpContextAccessor CreateMockHttpContextAccessor()
     {
         return TestHelpers.CreateMockHttpContextAccessor(new ClaimsPrincipal());
     }
@@ -127,7 +127,7 @@ public abstract class HandlerTestBase : IDisposable
     /// <summary>
     /// Creates a mock ILogManager for test logging.
     /// </summary>
-    protected ILogManager CreateMockLogger()
+    protected static ILogManager CreateMockLogger()
     {
         return Substitute.For<ILogManager>();
     }

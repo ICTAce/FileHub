@@ -172,7 +172,7 @@ public class PaginationTests : HandlerTestBase
         var page1List = page1!.Items.ToList();
         var page2List = page2!.Items.ToList();
         var page3List = page3!.Items.ToList();
-        
+
         await Assert.That(page1List[0].Name).IsEqualTo("Apple");
         await Assert.That(page1List[1].Name).IsEqualTo("Banana");
         await Assert.That(page2List[0].Name).IsEqualTo("Mango");

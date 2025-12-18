@@ -17,9 +17,13 @@
     <File Path=".github/instructions/github-actions-ci-cd-best-practices.instructions.md" />
     <File Path=".github/instructions/instructions.instructions.md" />
     <File Path=".github/instructions/markdown.instructions.md" />
+    <File Path=".github/instructions/meziantou-analyzer-rules.instructions.md" />
     <File Path=".github/instructions/project-properties.instructions.md" />
     <File Path=".github/instructions/prompt.instructions.md" />
     <File Path=".github/instructions/security-and-owasp.instructions.md" />
+  </Folder>
+  <Folder Name="/Solution Items/workflows/">
+    <File Path=".github/workflows/ci.yml" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="Client/ICTAce.FileHub.Client.csproj" />

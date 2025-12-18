@@ -28,7 +28,7 @@ public class GetHandlerTests : HandlerTestBase
         await Assert.That(result.Name).IsEqualTo("Test Category");
         await Assert.That(result.ModuleId).IsEqualTo(1);
         await Assert.That(result.ViewOrder).IsEqualTo(1);
-        await Assert.That(result.ParentId).IsEqualTo(0);
+        await Assert.That(result.ParentId).IsNull();
 
         await connection.CloseAsync().ConfigureAwait(false);
     }
@@ -102,7 +102,7 @@ public class GetHandlerTests : HandlerTestBase
         var createdOn = DateTime.UtcNow.AddDays(-5);
         var modifiedOn = DateTime.UtcNow.AddDays(-1);
 
-        await SeedQueryDataAsync(options, 
+        await SeedQueryDataAsync(options,
             CreateTestEntity(id: 1, moduleId: 1, name: "Test Category", viewOrder: 1, parentId: 0,
                 createdBy: "creator", createdOn: createdOn, modifiedBy: "modifier", modifiedOn: modifiedOn)).ConfigureAwait(false);
 
@@ -129,7 +129,7 @@ public class GetHandlerTests : HandlerTestBase
     {
         // Arrange
         var (connection, options) = await CreateQueryDatabaseAsync().ConfigureAwait(false);
-        await SeedQueryDataAsync(options, 
+        await SeedQueryDataAsync(options,
             CreateTestEntity(id: 1, name: "Parent Category", parentId: 0),
             CreateTestEntity(id: 2, name: "Child Category", parentId: 1)).ConfigureAwait(false);
 

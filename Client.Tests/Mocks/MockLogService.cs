@@ -22,7 +22,7 @@ public class MockLogService : ILogService
 
     public Task<Log> GetLogAsync(int logId) => Task.FromResult(new Log());
 
-    public Task<List<Log>> GetLogsAsync(int siteId, string level, string function, int rows) 
+    public Task<List<Log>> GetLogsAsync(int siteId, string level, string function, int rows)
         => Task.FromResult(new List<Log>());
 
     public Task Log(int? pageId, int? moduleId, int? userId, string category, string feature, LogFunction function, Oqtane.Shared.LogLevel level, Exception? exception, string message, params object[] args)
@@ -41,7 +41,7 @@ public class MockLogService : ILogService
             Args = args,
             Timestamp = DateTime.UtcNow
         });
-        
+
         return Task.CompletedTask;
     }
 
@@ -62,7 +62,7 @@ public class MockLogService : ILogService
             Args = args,
             Timestamp = DateTime.UtcNow
         });
-        
+
         return Task.CompletedTask;
     }
 

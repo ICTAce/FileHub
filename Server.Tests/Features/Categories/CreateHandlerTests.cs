@@ -21,7 +21,7 @@ public class CreateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "New Category",
             ViewOrder = 1,
-            ParentId = 0,
+            ParentId = null,
         };
 
         // Act
@@ -35,7 +35,7 @@ public class CreateHandlerTests : HandlerTestBase
         await Assert.That(entity!.Name).IsEqualTo("New Category");
         await Assert.That(entity.ModuleId).IsEqualTo(1);
         await Assert.That(entity.ViewOrder).IsEqualTo(1);
-        await Assert.That(entity.ParentId).IsEqualTo(0);
+        await Assert.That(entity.ParentId).IsNull();
 
         await connection.CloseAsync().ConfigureAwait(false);
     }
@@ -54,7 +54,7 @@ public class CreateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "New Category",
             ViewOrder = 1,
-            ParentId = 0,
+            ParentId = null,
         };
 
         // Act
@@ -116,7 +116,7 @@ public class CreateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "Category 1",
             ViewOrder = 1,
-            ParentId = 0,
+            ParentId = null,
         }, CancellationToken.None).ConfigureAwait(false);
 
         var id2 = await handler.Handle(new CategoryHandlers.CreateCategoryRequest
@@ -124,7 +124,7 @@ public class CreateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "Category 2",
             ViewOrder = 2,
-            ParentId = 0,
+            ParentId = null,
         }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert
@@ -152,7 +152,7 @@ public class CreateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "Zero Order Category",
             ViewOrder = 0,
-            ParentId = 0,
+            ParentId = null,
         };
 
         // Act
@@ -183,7 +183,7 @@ public class CreateHandlerTests : HandlerTestBase
             ModuleId = 1,
             Name = "Module 1 Category",
             ViewOrder = 1,
-            ParentId = 0,
+            ParentId = null,
         }, CancellationToken.None).ConfigureAwait(false);
 
         var id2 = await handler.Handle(new CategoryHandlers.CreateCategoryRequest
@@ -191,7 +191,7 @@ public class CreateHandlerTests : HandlerTestBase
             ModuleId = 2,
             Name = "Module 2 Category",
             ViewOrder = 1,
-            ParentId = 0,
+            ParentId = null,
         }, CancellationToken.None).ConfigureAwait(false);
 
         // Assert

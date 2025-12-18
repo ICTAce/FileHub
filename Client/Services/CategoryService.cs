@@ -1,5 +1,7 @@
 // Licensed to ICTAce under the MIT license.
 
+using System.Net.Http.Json;
+
 namespace ICTAce.FileHub.Services;
 
 public record GetCategoryDto
@@ -8,7 +10,7 @@ public record GetCategoryDto
     public int ModuleId { get; set; }
     public required string Name { get; set; }
     public int ViewOrder { get; set; }
-    public int ParentId { get; set; }
+    public int? ParentId { get; set; }
 
     public required string CreatedBy { get; set; }
     public required DateTime CreatedOn { get; set; }
@@ -21,8 +23,9 @@ public record ListCategoryDto
     public int Id { get; set; }
     public required string Name { get; set; }
     public int ViewOrder { get; set; }
-    public int ParentId { get; set; }
-    public List<ListCategoryDto> Children { get; set; } = new();
+    public int? ParentId { get; set; }
+    public bool IsExpanded { get; set; }
+    public IList<ListCategoryDto> Children { get; set; } = [];
 }
 
 public record CreateAndUpdateCategoryDto
@@ -34,8 +37,8 @@ public record CreateAndUpdateCategoryDto
     [Range(0, int.MaxValue, ErrorMessage = "ViewOrder must be greater than or equal to 0")]
     public int ViewOrder { get; set; }
 
-    [Range(0, int.MaxValue, ErrorMessage = "ParentId must be greater than or equal to 0")]
-    public int ParentId { get; set; }
+    [Range(1, int.MaxValue, ErrorMessage = "ParentId must be greater than 0 or null")]
+    public int? ParentId { get; set; }
 }
 
 public interface ICategoryService
@@ -45,10 +48,45 @@ public interface ICategoryService
     Task<int> CreateAsync(int moduleId, CreateAndUpdateCategoryDto dto);
     Task<int> UpdateAsync(int id, int moduleId, CreateAndUpdateCategoryDto dto);
     Task DeleteAsync(int id, int moduleId);
+    Task<int> MoveUpAsync(int id, int moduleId);
+    Task<int> MoveDownAsync(int id, int moduleId);
 }
 
-public class CategoryService(HttpClient http, SiteState siteState)
-    : ModuleService<GetCategoryDto, ListCategoryDto, CreateAndUpdateCategoryDto>(http, siteState, "ictace/fileHub/categories"),
-      ICategoryService
+public class CategoryService : ModuleService<GetCategoryDto, ListCategoryDto, CreateAndUpdateCategoryDto>, ICategoryService
 {
+    private readonly HttpClient _httpClient;
+
+    public CategoryService(HttpClient http, SiteState siteState)
+        : base(http, siteState, "ictace/fileHub/categories")
+    {
+        _httpClient = http;
+    }
+
+    /// <summary>
+    /// Moves a category up in the sort order.
+    /// </summary>
+    /// <param name="id">The category ID to move.</param>
+    /// <param name="moduleId">The module ID.</param>
+    /// <returns>The updated category ID.</returns>
+    public async Task<int> MoveUpAsync(int id, int moduleId)
+    {
+        var url = $"api/ictace/fileHub/categories/{id}/move-up?moduleId={moduleId}";
+        var response = await _httpClient.PatchAsync(url, null).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<int>().ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Moves a category down in the sort order.
+    /// </summary>
+    /// <param name="id">The category ID to move.</param>
+    /// <param name="moduleId">The module ID.</param>
+    /// <returns>The updated category ID.</returns>
+    public async Task<int> MoveDownAsync(int id, int moduleId)
+    {
+        var url = $"api/ictace/fileHub/categories/{id}/move-down?moduleId={moduleId}";
+        var response = await _httpClient.PatchAsync(url, null).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<int>().ConfigureAwait(false);
+    }
 }

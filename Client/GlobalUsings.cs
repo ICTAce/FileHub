@@ -4,6 +4,7 @@ global using System.ComponentModel.DataAnnotations;
 global using ICTAce.FileHub.Services;
 global using ICTAce.FileHub.Services.Common;
 global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Localization;
 global using Microsoft.JSInterop;
