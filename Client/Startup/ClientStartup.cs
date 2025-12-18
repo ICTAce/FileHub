@@ -18,6 +18,11 @@ public class ClientStartup : IClientStartup
             services.AddScoped<ICategoryService, CategoryService>();
         }
 
+        if (!services.Any(s => s.ServiceType == typeof(Services.IFileService)))
+        {
+            services.AddScoped<Services.IFileService, Services.FileService>();
+        }
+
         services.AddRadzenComponents();
     }
 }
