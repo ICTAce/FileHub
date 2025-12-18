@@ -104,5 +104,6 @@
   "System.IO.Pipelines.dll": 1,
   "System.Net.Http.Json.dll": 1,
   "System.Text.Encodings.Web.dll": 1,
-  "System.Text.Json.dll": 1
+  "System.Text.Json.dll": 1,
+  "System.Diagnostics.DiagnosticSource.dll": 1
 }
