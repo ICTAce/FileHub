@@ -11,7 +11,7 @@ public partial class Index
     public override List<Resource> Resources =>
     [
         new Stylesheet(ModulePath() + "Module.css"),
-        new Script(ModulePath() + "Module.js")
+        new Script(ModulePath() + "Module.js"),
     ];
 
     private List<ListSampleModuleDto>? _samplesModules;
