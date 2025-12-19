@@ -28,17 +28,17 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0  # Full history for better analysis
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
           
       - name: Cache NuGet packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/Directory.Packages.props', '**/Directory.Build.props') }}
@@ -67,15 +67,15 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Cache NuGet packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/Directory.Packages.props', '**/Directory.Build.props') }}
@@ -93,7 +93,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload server test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: server-test-results
@@ -107,15 +107,15 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Cache NuGet packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/Directory.Packages.props', '**/Directory.Build.props') }}
@@ -133,7 +133,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload client test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: client-test-results

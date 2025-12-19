@@ -16,6 +16,9 @@ public partial class Category : ModuleBase
     [Inject]
     private Radzen.DialogService DialogService { get; set; } = default!;
 
+    [Parameter]
+    public int ModuleId { get; set; }
+
     private const string SuccessNotificationMessage = "Success";
     private const string ErrorNotificationMessage = "Error";
     private List<ListCategoryDto> _treeData = [];
@@ -41,7 +44,7 @@ public partial class Category : ModuleBase
         ErrorMessage = null;
         try
         {
-            Categories = await CategoryService.ListAsync(ModuleState.ModuleId, pageNumber: 1, pageSize: int.MaxValue);
+            Categories = await CategoryService.ListAsync(ModuleId, pageNumber: 1, pageSize: int.MaxValue);
             CreateTreeStructure();
         }
         catch (Exception ex)
@@ -56,7 +59,10 @@ public partial class Category : ModuleBase
 
     private void ShowContextMenu(MouseEventArgs args, ListCategoryDto? category)
     {
-        if (category == null) return;
+        if (category == null)
+        {
+            return;
+        }
 
         SelectedCategory = category;
 
@@ -69,7 +75,7 @@ public partial class Category : ModuleBase
                     Text = "Add Category",
                     Value = "add",
                     Icon = "add",
-                }
+                },
             };
 
             ContextMenuService.Open(args, rootMenuItems, OnContextMenuClick);
@@ -117,8 +123,10 @@ public partial class Category : ModuleBase
         ContextMenuService.Open(args, menuItems, OnContextMenuClick);
     }
 
-    private void OnContextMenuClick(Radzen.MenuItemEventArgs args)
+    private async void OnContextMenuClick(Radzen.MenuItemEventArgs args)
     {
+        ContextMenuService.Close();
+
         var action = args.Value?.ToString();
 
         switch (action)
@@ -130,17 +138,15 @@ public partial class Category : ModuleBase
                 EditCategoryInline();
                 break;
             case "moveup":
-                _ = MoveUp();
+                await MoveUp();
                 break;
             case "movedown":
-                _ = MoveDown();
+                await MoveDown();
                 break;
             case "delete":
-                PromptDeleteCategory();
+                await PromptDeleteCategory();
                 break;
         }
-
-        ContextMenuService.Close();
     }
 
     private bool CanMoveUp(ListCategoryDto category)
@@ -283,7 +289,7 @@ public partial class Category : ModuleBase
                     ParentId = EditingNode.ParentId,
                 };
 
-                var id = await CategoryService.CreateAsync(ModuleState.ModuleId, createDto);
+                var id = await CategoryService.CreateAsync(ModuleId, createDto);
                 await logger.LogInformation("Category Created {Id}", id);
 
                 // Update the temporary node in-place with the real ID and name
@@ -308,7 +314,7 @@ public partial class Category : ModuleBase
                     ParentId = EditingNode.ParentId,
                 };
 
-                await CategoryService.UpdateAsync(EditingNode.Id, ModuleState.ModuleId, updateDto);
+                await CategoryService.UpdateAsync(EditingNode.Id, ModuleId, updateDto);
                 await logger.LogInformation("Category Updated {Id}", EditingNode.Id);
 
                 // Update the node name in-place
@@ -405,7 +411,7 @@ public partial class Category : ModuleBase
             var previous = siblings[currentIndex - 1];
 
             // Update on server using dedicated move endpoint
-            await CategoryService.MoveUpAsync(current.Id, ModuleState.ModuleId);
+            await CategoryService.MoveUpAsync(current.Id, ModuleId);
 
             // Swap ViewOrder values locally
             (current.ViewOrder, previous.ViewOrder) = (previous.ViewOrder, current.ViewOrder);
@@ -460,7 +466,7 @@ public partial class Category : ModuleBase
             var next = siblings[currentIndex + 1];
 
             // Update on server using dedicated move endpoint
-            await CategoryService.MoveDownAsync(current.Id, ModuleState.ModuleId);
+            await CategoryService.MoveDownAsync(current.Id, ModuleId);
 
             // Swap ViewOrder values locally
             (current.ViewOrder, next.ViewOrder) = (next.ViewOrder, current.ViewOrder);
@@ -534,7 +540,7 @@ public partial class Category : ModuleBase
         {
             var categoryToDelete = SelectedCategory;
 
-            await CategoryService.DeleteAsync(categoryToDelete.Id, ModuleState.ModuleId);
+            await CategoryService.DeleteAsync(categoryToDelete.Id, ModuleId);
             await logger.LogInformation("Category Deleted {Id}", categoryToDelete.Id);
 
             if (categoryToDelete.ParentId is null)
@@ -545,10 +551,7 @@ public partial class Category : ModuleBase
             else
             {
                 var parent = FindCategoryById([_rootNode], categoryToDelete.ParentId.Value);
-                if (parent != null)
-                {
-                    parent.Children.Remove(categoryToDelete);
-                }
+                parent?.Children.Remove(categoryToDelete);
             }
 
             NotificationService.Notify(new Radzen.NotificationMessage
@@ -577,7 +580,7 @@ public partial class Category : ModuleBase
 
     private void CreateTreeStructure()
     {
-        if (Categories.Items is null || !Categories.Items.Any())
+        if (Categories.Items?.Any() != true)
         {
             _treeData = [];
 
@@ -589,7 +592,7 @@ public partial class Category : ModuleBase
                 ParentId = -1,
                 ViewOrder = 0,
                 IsExpanded = true,
-                Children = []
+                Children = [],
             };
             return;
         }
@@ -625,7 +628,7 @@ public partial class Category : ModuleBase
             ParentId = null,
             ViewOrder = 0,
             IsExpanded = true,
-            Children = _treeData
+            Children = _treeData,
         };
     }
 
@@ -633,15 +636,18 @@ public partial class Category : ModuleBase
     {
         foreach (var category in categories)
         {
-            if (category.Children.Any())
+            if (category.Children.Count == 0)
             {
-                category.Children = category.Children
-                    .OrderBy(c => c.ViewOrder)
-                    .ThenBy(c => c.Name, StringComparer.Ordinal)
-                    .ToList();
-
-                SortChildren(category.Children.ToList());
+                continue;
             }
+
+            var sortedChildren = category.Children
+                .OrderBy(c => c.ViewOrder)
+                .ThenBy(c => c.Name, StringComparer.Ordinal)
+                .ToList();
+
+            category.Children = sortedChildren;
+            SortChildren(sortedChildren);
         }
     }
 
