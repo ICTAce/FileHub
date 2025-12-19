@@ -31,65 +31,277 @@ This project implements a modern, maintainable architecture using:
 - **CQRS Pattern**: Clear separation between commands (Create, Update, Delete) and queries (Get, List) using MediatR handlers with dedicated base classes (`CommandHandlerBase`, `QueryHandlerBase`).
 - **MediatR**: Implements the mediator pattern for in-process messaging, decoupling request handling across feature slices and enabling clean separation of concerns.
 
-### Key Libraries
-- **Mapperly**: Compile-time object mapper providing type-safe, performant DTO mapping between entities and response models without runtime reflection overhead.
-- **Entity Framework Core 9.0**: Data access with DbContext factory pattern for efficient database operations.
-- **Oqtane Framework**: Built as a native Oqtane CMS module with full framework integration.
+### Key Libraries & Frameworks
+
+**Core Framework:**
+- **Oqtane 6.2.1**: Modular application framework providing CMS capabilities, multi-tenancy, and module infrastructure
+- **.NET 9.0 SDK**: Latest .NET platform with C# 13 language features
+
+**Backend:**
+- **MediatR 14.0.0**: Mediator pattern implementation for CQRS with in-process messaging
+- **Mapperly 4.3.0**: Source generator for compile-time object mapping (zero-reflection, high-performance)
+- **Entity Framework Core 9.0**: Modern ORM with DbContext factory pattern and advanced querying
+- **ASP.NET Core Identity**: Authentication and authorization infrastructure
+
+**Frontend:**
+- **Blazor WebAssembly**: Client-side SPA framework with full .NET runtime in the browser
+- **Radzen.Blazor 8.4.1**: Professional UI component library with data grids, charts, and forms
+- **Microsoft.AspNetCore.Components.WebAssembly.Authentication**: Built-in auth support for SPAs
+
+**Testing:**
+- **TUnit 1.5.70**: Modern testing framework with native async/await and performance optimizations
+- **bUnit 2.3.4**: Testing library specifically designed for Blazor components
+- **Playwright 1.57.0**: Browser automation for cross-browser end-to-end testing
+- **NSubstitute 5.3.0**: Friendly mocking library for .NET tests
+- **Bogus 35.6.1**: Fake data generator for realistic test scenarios
+
+**Development Tools:**
+- **User Secrets**: Secure local development credential storage
+- **EditorConfig**: Consistent coding style across IDEs
+- **Central Package Management**: Unified version control via Directory.Packages.props
 
 ### Code Quality & Security
-The project enforces high code quality and security standards with multiple analyzers:
-- **SonarCloud**: Continuous code quality and security analysis with detailed metrics and quality gates
-- **Snyk**: Automated vulnerability scanning for dependencies and container images
-- **SonarAnalyzer.CSharp**: Detects bugs, code smells, and security vulnerabilities
-- **Meziantou.Analyzer**: Enforces best practices and performance patterns
-- **AsyncFixer**: Ensures proper async/await usage and ConfigureAwait patterns
-- **Roslynator.Analyzers**: Provides extensive code analysis and refactoring suggestions
-- **GitHub Advanced Security**: Automated security scanning with CodeQL, Dependabot, and secret scanning
+
+The project implements defense-in-depth with multiple layers of automated analysis:
+
+**Static Code Analyzers (Build-Time):**
+- **SonarAnalyzer.CSharp 10.17.0**: 5000+ rules for bugs, vulnerabilities, and code smells
+- **Meziantou.Analyzer 2.0.263**: Best practices and performance optimization rules
+- **AsyncFixer 1.6.0**: Async/await pattern enforcement and deadlock prevention
+- **Roslynator.Analyzers 4.15.0**: 500+ analyzers and refactorings for C# code
+- **TUnit.Analyzers 0.1.984**: Test-specific rules for proper test authoring
+- **Microsoft.CodeAnalysis.BannedApiAnalyzers 4.14.0**: Prevents usage of banned APIs (Moq, AutoFixture)
+
+**Continuous Security Monitoring:**
+- **SonarCloud**: Cloud-based code quality platform with quality gates, technical debt tracking, and security hotspots
+- **GitHub Advanced Security**: 
+  - CodeQL for semantic code analysis (C# & JavaScript)
+  - Dependabot for automated dependency updates
+  - Secret scanning for credential leak prevention
+- **Snyk**: Real-time vulnerability detection for NuGet/npm packages and container images
+
+**Code Quality Configuration:**
+- **Nullable Reference Types**: Enabled project-wide to prevent null reference exceptions
+- **Treat Warnings as Errors**: Configurable per project for strict quality control
+- **Analysis Level**: Set to 'latest' for newest compiler warnings and suggestions
+- **EnforceCodeStyleInBuild**: Automatic code style validation during compilation
+- **EditorConfig**: 200+ style rules enforced across all files
+- **BannedSymbols.txt**: Explicit API bans with justifications (security and maintainability)
 
 ## Project Structure
 
 The solution consists of 5 projects organized in a modular architecture:
 
 ### Production Projects
-- **ICTAce.FileHub.Server** - ASP.NET Core backend with:
-  - Feature-based organization (`Features/SampleModules/`)
-  - MediatR handlers for CQRS implementation
-  - Entity Framework Core entities and migrations
-  - RESTful API controllers
-  - Oqtane module manager integration
 
-- **ICTAce.FileHub.Client** - Blazor WebAssembly frontend with:
-  - Blazor components for UI (`Modules/SampleModule/`)
-  - HTTP service layer for API communication
-  - MediatR contracts for request/response DTOs
-  - Oqtane client integration
+#### **ICTAce.FileHub.Server** - ASP.NET Core Backend
+A feature-rich server application built with modern .NET patterns:
+
+**Architecture & Patterns:**
+- Feature-based organization using Vertical Slice Architecture (`Features/`)
+- CQRS implementation with MediatR handlers
+- DbContext Factory pattern for efficient database operations
+- Separated read/write contexts (Command & Query)
+- Generic base handlers with dependency injection
+- RESTful API controllers with proper HTTP semantics
+
+**Data Management:**
+- Entity Framework Core 9.0 with code-first migrations
+- Auditable entity base classes (CreatedBy, CreatedOn, ModifiedBy, ModifiedOn)
+- Multi-database support (SQL Server, SQLite, MySQL, PostgreSQL)
+- Fluent API entity configuration with builders
+- Automatic audit trail tracking
+
+**Key Features:**
+- User secrets management for development
+- Oqtane module manager integration
+- Permission-based authorization
+- Tenant isolation support
+- Comprehensive logging with ILogManager
+
+#### **ICTAce.FileHub.Client** - Blazor WebAssembly Frontend
+Modern, interactive web UI built with Blazor WebAssembly:
+
+**UI Components:**
+- Blazor components with code-behind pattern (`.razor.cs`)
+- Radzen.Blazor UI component library integration
+- Responsive design with custom CSS modules
+- JavaScript interop for enhanced functionality
+
+**Architecture:**
+- Service-oriented architecture with typed HTTP clients
+- Generic base service classes for common operations
+- Strongly-typed DTOs for API communication
+- PagedResult pattern for efficient data loading
+- Module-based organization aligning with Oqtane
+
+**Features:**
+- Localization support with .resx resource files
+- Client-side validation with data annotations
+- Oqtane framework integration (navigation, logging, state management)
+- Static web asset management
 
 ### Test Projects
-The project uses modern testing frameworks for comprehensive test coverage:
 
-- **ICTAce.FileHub.Server.Tests** - Server-side unit and integration tests
-- **ICTAce.FileHub.Client.Tests** - Client-side component tests using bUnit
-- **ICTAce.FileHub.EndToEnd.Tests** - End-to-end tests using TUnit.Playwright
+The project implements comprehensive testing across all layers:
 
-#### Testing Stack
-- **TUnit**: Modern, fast, and flexible testing framework for .NET with native async support and enhanced performance
-- **bUnit**: Testing library for Blazor components, enabling comprehensive UI component testing with rendering and interaction validation
-- **Playwright**: Browser automation for end-to-end testing scenarios
+#### **ICTAce.FileHub.Server.Tests** - Server Unit & Integration Tests
+- **Framework**: TUnit with modern async support
+- **Database**: SQLite in-memory for fast, isolated tests
+- **Mocking**: NSubstitute for clean, type-safe mocks
+- **Test Data**: Bogus for realistic fake data generation
+- **Patterns**: HandlerTestBase for consistent test setup
+- **Coverage**: Feature handlers, pagination, entity mappings
+
+#### **ICTAce.FileHub.Client.Tests** - Client Component Tests
+- **Framework**: bUnit for Blazor component testing
+- **Features**: Component rendering, interaction testing, service mocking
+- **Patterns**: Mock services (MockLogService) for isolation
+- **Coverage**: Blazor components, user interactions, state management
+
+#### **ICTAce.FileHub.EndToEnd.Tests** - Browser Automation Tests
+- **Framework**: TUnit.Playwright for end-to-end testing
+- **Capabilities**: Cross-browser testing, user workflow validation
+- **Features**: Full application testing in real browser environments
+
+## Architecture Deep Dive
+
+### Vertical Slice Architecture (VSA)
+
+FileHub organizes code by feature rather than technical layers. Each feature slice contains:
+
+```
+Server/Features/
+├── Categories/
+│   ├── Create.cs         # Command: Create new category
+│   ├── Update.cs         # Command: Update existing category
+│   ├── Delete.cs         # Command: Delete category
+│   ├── Get.cs           # Query: Get single category
+│   ├── List.cs          # Query: List categories with pagination
+│   ├── MoveUp.cs        # Command: Reorder category up
+│   ├── MoveDown.cs      # Command: Reorder category down
+│   └── Controller.cs    # API endpoints for category operations
+└── _Common/
+    ├── HandlerBase.cs           # Base class for all handlers
+    ├── RequestBase.cs           # Base request classes
+    ├── PagedRequestBase.cs      # Pagination support
+    └── HandlerServices.cs       # Service injection pattern
+```
+
+**Benefits:**
+- High cohesion: related code stays together
+- Easy to find: feature location is predictable
+- Simple to test: each slice is independently testable
+- Scalable: add new features without touching existing code
+
+### CQRS with MediatR
+
+Commands and queries are separated for clarity and optimization:
+
+**Commands** (Write operations):
+- Modify application state
+- Use `ApplicationCommandContext` (write-optimized)
+- Return simple results (id, success/failure)
+- Examples: Create, Update, Delete
+
+**Queries** (Read operations):
+- Never modify state
+- Use `ApplicationQueryContext` (read-optimized)
+- Return DTOs optimized for display
+- Support pagination and filtering
+- Examples: Get, List
+
+### Database Context Pattern
+
+Three specialized DbContext implementations:
+
+1. **ApplicationContext**: Base context with common configuration
+2. **ApplicationCommandContext**: Optimized for write operations
+3. **ApplicationQueryContext**: Optimized for read operations with `.AsNoTracking()`
+
+**DbContext Factory Pattern:**
+- Thread-safe context creation
+- Proper disposal management
+- Supports high-concurrency scenarios
+- Enables unit testing with in-memory databases
+
+### Entity Auditing
+
+All entities inherit from `AuditableBase` or `AuditableModuleBase`:
+
+```csharp
+public abstract class AuditableBase
+{
+    public int Id { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public string? ModifiedBy { get; set; }
+    public DateTime ModifiedOn { get; set; }
+}
+```
+
+Audit fields are automatically populated in handlers using Oqtane's user context.
+
+### Client-Side Architecture
+
+**Service Pattern:**
+- Generic `ModuleService<TGet, TList, TCreate>` base class
+- Typed HTTP client injection
+- Automatic URL construction
+- PagedResult support for lists
+- Consistent error handling
+
+**Component Pattern:**
+- Code-behind with `.razor.cs` files
+- Dependency injection via `[Inject]` attributes
+- Proper use of `ConfigureAwait(true)` in UI code
+- Localization with `IStringLocalizer<T>`
 
 ## Database Support
 
 FileHub supports multiple database providers through Oqtane's abstraction layer:
-- SQL Server (LocalDB & Azure SQL)
-- SQLite
-- MySQL
-- PostgreSQL
+- **SQL Server** (LocalDB for development, Azure SQL for production)
+- **SQLite** (lightweight, file-based, perfect for testing)
+- **MySQL** (open-source, cross-platform)
+- **PostgreSQL** (advanced features, high performance)
+
+**Migration Strategy:**
+- Code-first migrations in `Server/Persistence/Migrations/`
+- Entity builders for Fluent API configuration
+- Initial data seeding support
+- Automatic migration application on startup
+
+## Localization & Internationalization
+
+FileHub is built with internationalization in mind:
+
+**Resource Files (.resx):**
+- Located in `Client/Resources/`
+- Organized by module and component
+- Examples: `Index.resx`, `Edit.resx`, `Settings.resx`
+- Support for multiple languages (add `Index.es.resx` for Spanish, etc.)
+
+**Usage in Components:**
+```csharp
+[Inject] protected IStringLocalizer<Index> Localizer { get; set; } = default!;
+
+// In code:
+AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
+```
+
+**Best Practices:**
+- All user-facing strings should be in resource files
+- Use descriptive keys: `Message.LoadError`, `Button.Save`, `Label.Name`
+- Provide context in resource comments
+- Keep error messages consistent across modules
 
 ## Getting Started
 
 ### Prerequisites
-- .NET 9.0 SDK
-- SQL Server LocalDB (or another supported database)
-- Visual Studio 2022 or JetBrains Rider
+- **.NET 9.0 SDK** - [Download](https://dotnet.microsoft.com/download/dotnet/9.0)
+- **SQL Server LocalDB** (or another supported database) - Included with Visual Studio
+- **IDE**: Visual Studio 2022 17.8+ or JetBrains Rider 2024.1+
+- **Optional**: Docker (for containerized database testing)
 
 ### Installation
 
@@ -122,36 +334,151 @@ Default credentials for development:
 
 ## Features
 
-- ✅ Vertical Slice Architecture for maintainable feature development
-- ✅ CQRS pattern with MediatR for clean separation of concerns
-- ✅ Compile-time mapping with Mapperly for performance
-- ✅ Comprehensive code quality enforcement with multiple analyzers
-- ✅ Full test coverage with modern testing frameworks (TUnit, bUnit, Playwright)
+**Architecture & Design Patterns:**
+- ✅ Vertical Slice Architecture (VSA) - features organized by business capability
+- ✅ CQRS pattern with MediatR for clean command/query separation
+- ✅ DbContext Factory pattern for efficient multi-threaded database access
+- ✅ Repository pattern abstraction through EF Core
+- ✅ Service layer pattern for client-side API communication
+- ✅ Generic base classes for reducing boilerplate code
+
+**Performance & Optimization:**
+- ✅ Compile-time object mapping with Mapperly (zero reflection overhead)
+- ✅ Source generators for build-time code generation
+- ✅ Pagination support for efficient data loading
+- ✅ Separated read/write database contexts for optimization
+- ✅ NuGet package caching in CI/CD pipeline
+- ✅ Central Package Management for faster restores
+
+**Code Quality & Security:**
+- ✅ 6 static analyzers enforcing 6000+ rules at build time
+- ✅ SonarCloud integration with quality gate enforcement
+- ✅ GitHub Advanced Security (CodeQL, Dependabot, Secret Scanning)
+- ✅ Snyk vulnerability monitoring for dependencies
+- ✅ BannedSymbols enforcement preventing insecure API usage
+- ✅ EditorConfig for consistent coding standards
+- ✅ Nullable reference types enabled project-wide
+
+**Testing & Quality Assurance:**
+- ✅ Comprehensive test coverage across all layers (unit, integration, E2E)
+- ✅ Modern testing with TUnit framework
+- ✅ Blazor component testing with bUnit
+- ✅ Browser automation with Playwright
+- ✅ NSubstitute for clean mocking
+- ✅ Bogus for realistic test data generation
+- ✅ Automated test execution in CI/CD pipeline
+
+**Data & Persistence:**
+- ✅ Multi-database support (SQL Server, SQLite, MySQL, PostgreSQL)
+- ✅ Entity Framework Core 9.0 with code-first migrations
+- ✅ Automatic audit trail (CreatedBy, CreatedOn, ModifiedBy, ModifiedOn)
+- ✅ Fluent API entity configuration
+- ✅ Database seeding for initial data
+
+**Frontend & User Experience:**
+- ✅ Blazor WebAssembly for rich client-side interactions
+- ✅ Radzen UI components for professional data grids and forms
+- ✅ Localization support with resource files (.resx)
+- ✅ Responsive design with custom CSS modules
+- ✅ JavaScript interop for advanced browser features
+- ✅ Client-side validation with data annotations
+
+**DevOps & Automation:**
 - ✅ Automated CI/CD with GitHub Actions
-- ✅ GitHub Advanced Security for continuous security monitoring
-- ✅ Multi-database support through Oqtane framework
-- ✅ Entity auditing (CreatedBy, CreatedOn, ModifiedBy, ModifiedOn)
+- ✅ Parallel test execution for faster feedback
+- ✅ Test result artifacts with 30-day retention
+- ✅ Automated security scanning on every commit
+- ✅ Dependency update automation with Dependabot
+- ✅ Workflow concurrency control to prevent conflicts
+
+**Oqtane Integration:**
+- ✅ Native Oqtane module with full framework support
+- ✅ Multi-tenancy with tenant isolation
 - ✅ Role-based authorization and permissions
+- ✅ Module settings and configuration UI
+- ✅ Integration with Oqtane's logging infrastructure
+- ✅ Support for Oqtane's localization system
 
 ## Development
 
+### Solution Configuration
+
+The solution uses modern .NET configuration files for centralized management:
+
+**Directory.Build.props:**
+- Target framework: .NET 9.0
+- C# language version: 13
+- Nullable reference types: Enabled
+- Implicit usings: Enabled
+- XML documentation generation: Enabled
+- Common project metadata (company, product, copyright)
+- Global analyzer references for all projects
+- Shared test project configuration
+
+**Directory.Packages.props:**
+- Central Package Management (CPM) enabled
+- Unified version management across all projects
+- 30+ package references with pinned versions
+- Version ranges for framework dependencies
+
+**global.json:**
+- .NET SDK version: 9.0.307
+- Roll-forward policy: latestFeature
+
 ### Building the Solution
+
 ```bash
-dotnet build
+# Build all projects
+dotnet build ICTAce.FileHub.slnx
+
+# Build with specific configuration
+dotnet build ICTAce.FileHub.slnx --configuration Release
+
+# Clean and rebuild
+dotnet clean && dotnet build
 ```
 
 ### Running Tests
+
 ```bash
-dotnet test
+# Run all tests
+dotnet test ICTAce.FileHub.slnx
+
+# Run specific test project
+dotnet test Server.Tests/ICTAce.FileHub.Server.Tests.csproj
+dotnet test Client.Tests/ICTAce.FileHub.Client.Tests.csproj
+dotnet test EndToEnd.Tests/ICTAce.FileHub.EndToEnd.Tests.csproj
+
+# Run with detailed output
+dotnet test --verbosity detailed
+
+# Generate test results file
+dotnet test --logger "trx;LogFileName=test-results.trx"
 ```
 
-### Code Quality
-The project is configured with:
-- Nullable reference types enabled
-- Analysis level set to latest
-- Code style enforcement during build
-- Multiple analyzers for code quality and security
-- SonarCloud integration for continuous quality monitoring
+### Code Quality Tools
+
+**Local Development:**
+```bash
+# Restore dependencies
+dotnet restore
+
+# Check for code style violations
+dotnet build --no-restore
+
+# View analyzer warnings
+dotnet build -warnaserror
+```
+
+**Banned API Analysis:**
+The project uses `BannedSymbols.txt` to prevent usage of:
+- **Moq**: Banned due to security concerns and licensing issues (use NSubstitute)
+- **AutoFixture**: Banned for test clarity (use explicit test data or Bogus)
+
+**Editor Configuration:**
+- `.editorconfig` enforces consistent style across IDEs
+- 200+ rules for formatting, naming, and code style
+- Automatically applied in Visual Studio, Rider, and VS Code
 
 ### Continuous Integration
 The project uses GitHub Actions for automated CI/CD:
@@ -225,22 +552,133 @@ For security concerns, please review our [Security Policy](SECURITY.md) for resp
 
 ## Contributing
 
-Contributions are welcome! Please ensure:
-1. All tests pass
-2. Code follows the established VSA pattern
-3. Proper use of `ConfigureAwait(false)` in async methods
-4. Code analyzer warnings are addressed
+Contributions are welcome! Please follow these guidelines:
+
+### Before You Start
+1. Check existing issues or create a new one to discuss your idea
+2. Fork the repository and create a feature branch
+3. Ensure you have the latest .NET 9.0 SDK installed
+
+### Development Guidelines
+
+**Code Organization:**
+- Follow Vertical Slice Architecture - add new features as complete slices
+- Place commands and queries in appropriate feature folders
+- Use existing base classes (`HandlerBase`, `ModuleService`) for consistency
+
+**Code Quality:**
+- All tests must pass (`dotnet test`)
+- No analyzer warnings (`dotnet build` should be clean)
+- Follow existing code style (enforced by `.editorconfig`)
+- Add XML documentation comments for public APIs
+- Keep methods focused and small (< 50 lines preferred)
+
+**Async Patterns:**
+- Use `ConfigureAwait(false)` in server/library code
+- Use `ConfigureAwait(true)` in UI components (Blazor requirement)
+- Never use `.Result` or `.Wait()` - always `await`
+- Accept `CancellationToken` parameters for long-running operations
+
+**Testing Requirements:**
+- Add unit tests for new handlers in `Server.Tests`
+- Add component tests for new Blazor components in `Client.Tests`
+- Use NSubstitute for mocking (Moq is banned)
+- Use Bogus for test data generation (AutoFixture is banned)
+- Ensure tests are isolated and can run in parallel
+
+**Security:**
+- Never commit secrets or connection strings
+- Use User Secrets for local development
+- Validate all user inputs
+- Follow OWASP Top 10 guidelines
+- Check BannedSymbols.txt for forbidden APIs
+
+**Pull Request Process:**
+1. Update README if you're adding new features or dependencies
+2. Ensure CI/CD pipeline passes (all checks must be green)
+3. Add/update tests to maintain code coverage
+4. Update documentation and resource files for UI changes
+5. Respond to code review feedback promptly
+
+### Commit Message Convention
+```
+<type>(<scope>): <subject>
+
+Examples:
+feat(categories): add move up/down functionality
+fix(auth): resolve token expiration issue
+docs(readme): update architecture section
+test(handlers): add pagination edge cases
+chore(deps): update Mapperly to 4.3.0
+```
+
+### Local Development Setup
+```bash
+# Clone and restore
+git clone https://github.com/ICTAce/FileHub.git
+cd FileHub
+dotnet restore
+
+# Setup user secrets (optional)
+dotnet user-secrets init --project Server
+dotnet user-secrets set "ConnectionString" "your-connection-string" --project Server
+
+# Build and test
+dotnet build
+dotnet test
+
+# Run the application
+dotnet run --project Server
+```
 
 ## License
 
 This project is licensed under the MIT License - see the repository for details.
 
+## Technology Stack Summary
+
+| Category | Technologies |
+|----------|-------------|
+| **Framework** | .NET 9.0, C# 13, Blazor WebAssembly |
+| **CMS Platform** | Oqtane 6.2.1 |
+| **Architecture** | Vertical Slice Architecture, CQRS, MediatR |
+| **Data Access** | Entity Framework Core 9.0, DbContext Factory |
+| **Mapping** | Mapperly (source generator) |
+| **UI Components** | Radzen.Blazor 8.4.1 |
+| **Testing** | TUnit 1.5.70, bUnit 2.3.4, Playwright 1.57.0 |
+| **Mocking** | NSubstitute 5.3.0 |
+| **Test Data** | Bogus 35.6.1 |
+| **Analyzers** | SonarAnalyzer, Meziantou, AsyncFixer, Roslynator, BannedApiAnalyzers |
+| **Security** | GitHub Advanced Security, SonarCloud, Snyk |
+| **CI/CD** | GitHub Actions |
+| **Databases** | SQL Server, SQLite, MySQL, PostgreSQL |
+| **Configuration** | Central Package Management, User Secrets, EditorConfig |
+
 ## Acknowledgments
 
-Built with:
-- [Oqtane Framework](https://www.oqtane.org/) - Modular Application Framework
-- [MediatR](https://github.com/jbogard/MediatR) - Simple mediator implementation
-- [Mapperly](https://github.com/riok/mapperly) - .NET source generator for object mapping
-- [TUnit](https://github.com/thomhurst/TUnit) - Modern .NET testing framework
+Built with these excellent open-source projects:
+
+**Core Framework:**
+- [Oqtane Framework](https://www.oqtane.org/) - Modular Application Framework for Blazor
+- [.NET](https://dotnet.microsoft.com/) - Free, open-source, cross-platform framework
+
+**Architecture & Patterns:**
+- [MediatR](https://github.com/jbogard/MediatR) - Simple mediator implementation in .NET
+- [Mapperly](https://github.com/riok/mapperly) - Source generator for object-to-object mapping
+
+**Testing:**
+- [TUnit](https://github.com/thomhurst/TUnit) - Modern, fast, and flexible testing framework
 - [bUnit](https://bunit.dev/) - Testing library for Blazor components
+- [Playwright](https://playwright.dev/) - Cross-browser automation framework
+- [NSubstitute](https://nsubstitute.github.io/) - Friendly mocking framework
+- [Bogus](https://github.com/bchavez/Bogus) - Fake data generator
+
+**UI & Components:**
+- [Radzen Blazor](https://blazor.radzen.com/) - Professional Blazor UI components
+
+**Code Quality:**
+- [SonarAnalyzer](https://github.com/SonarSource/sonar-dotnet) - Static code analysis
+- [Meziantou.Analyzer](https://github.com/meziantou/Meziantou.Analyzer) - Best practices analyzer
+- [AsyncFixer](https://github.com/semihokur/AsyncFixer) - Async/await analyzer
+- [Roslynator](https://github.com/dotnet/roslynator) - Collection of analyzers and refactorings
 
