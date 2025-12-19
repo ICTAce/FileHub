@@ -93,7 +93,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload server test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: server-test-results
@@ -133,7 +133,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload client test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: client-test-results
