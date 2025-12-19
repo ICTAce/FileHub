@@ -21,10 +21,6 @@ public partial class Settings : ModuleBase
         new Script("_content/Radzen.Blazor/Radzen.Blazor.js"),
     ];
 
-    protected override async Task OnInitializedAsync()
-    {
-    }
-
     private async Task HandleErrorAsync(Exception ex)
     {
         AddModuleMessage(ex.Message, MessageType.Error);
