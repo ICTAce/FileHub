@@ -1,6 +1,15 @@
 # FileHub
 
 [![CI](https://github.com/ICTAce/FileHub/actions/workflows/ci.yml/badge.svg)](https://github.com/ICTAce/FileHub/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/ICTAce/FileHub/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/ICTAce/FileHub/actions/workflows/codeql-analysis.yml)
+[![Known Vulnerabilities](https://snyk.io/test/github/ICTAce/FileHub/badge.svg)](https://snyk.io/test/github/ICTAce/FileHub)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ICTAce_FileHub&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ICTAce_FileHub)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ICTAce_FileHub&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ICTAce_FileHub)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ICTAce_FileHub&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ICTAce_FileHub)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ICTAce_FileHub&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ICTAce_FileHub)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ICTAce_FileHub&metric=bugs)](https://sonarcloud.io/summary/new_code?id=ICTAce_FileHub)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ICTAce_FileHub&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=ICTAce_FileHub)
 
 A modular file management system built as an **Oqtane CMS module** using modern .NET architecture patterns and best practices.
 
@@ -27,12 +36,15 @@ This project implements a modern, maintainable architecture using:
 - **Entity Framework Core 9.0**: Data access with DbContext factory pattern for efficient database operations.
 - **Oqtane Framework**: Built as a native Oqtane CMS module with full framework integration.
 
-### Code Quality
-The project enforces high code quality standards with multiple analyzers:
+### Code Quality & Security
+The project enforces high code quality and security standards with multiple analyzers:
+- **SonarCloud**: Continuous code quality and security analysis with detailed metrics and quality gates
+- **Snyk**: Automated vulnerability scanning for dependencies and container images
 - **SonarAnalyzer.CSharp**: Detects bugs, code smells, and security vulnerabilities
 - **Meziantou.Analyzer**: Enforces best practices and performance patterns
 - **AsyncFixer**: Ensures proper async/await usage and ConfigureAwait patterns
 - **Roslynator.Analyzers**: Provides extensive code analysis and refactoring suggestions
+- **GitHub Advanced Security**: Automated security scanning with CodeQL, Dependabot, and secret scanning
 
 ## Project Structure
 
@@ -116,6 +128,7 @@ Default credentials for development:
 - ✅ Comprehensive code quality enforcement with multiple analyzers
 - ✅ Full test coverage with modern testing frameworks (TUnit, bUnit, Playwright)
 - ✅ Automated CI/CD with GitHub Actions
+- ✅ GitHub Advanced Security for continuous security monitoring
 - ✅ Multi-database support through Oqtane framework
 - ✅ Entity auditing (CreatedBy, CreatedOn, ModifiedBy, ModifiedOn)
 - ✅ Role-based authorization and permissions
@@ -138,6 +151,7 @@ The project is configured with:
 - Analysis level set to latest
 - Code style enforcement during build
 - Multiple analyzers for code quality and security
+- SonarCloud integration for continuous quality monitoring
 
 ### Continuous Integration
 The project uses GitHub Actions for automated CI/CD:
@@ -155,7 +169,59 @@ The project uses GitHub Actions for automated CI/CD:
 - **Client Tests**: Blazor component tests using bUnit
 - **E2E Tests**: End-to-end browser automation using Playwright
 
-The CI workflow ensures code quality and prevents regressions before merging to main branches.
+**Code Quality Analysis:**
+- **SonarCloud**: Automated code quality and security analysis
+  - Quality gate enforcement on pull requests
+  - Code coverage tracking and reporting
+  - Technical debt measurement
+  - Security hotspot detection
+  - Continuous monitoring of code smells and bugs
+
+**Security & Dependency Scanning:**
+- **Snyk**: Continuous vulnerability monitoring
+  - Automated dependency vulnerability detection
+  - License compliance checks
+  - Container security scanning
+  - Actionable remediation advice
+
+The CI workflow ensures code quality and prevents regressions before merging to main branches. View detailed quality metrics on [SonarCloud](https://sonarcloud.io/project/overview?id=ICTAce_FileHub) and security insights on [Snyk](https://snyk.io/test/github/ICTAce/FileHub).
+
+## Security
+
+FileHub implements comprehensive security measures using **GitHub Advanced Security** to protect the codebase:
+
+### Automated Security Scanning
+- **CodeQL Analysis**: Continuous code scanning for security vulnerabilities and coding errors
+  - Scans C# and JavaScript code on every push and pull request
+  - Weekly scheduled scans for comprehensive coverage
+  - Security-extended query suite for deeper analysis
+
+- **Snyk**: Comprehensive vulnerability and license compliance scanning
+  - Real-time monitoring of NuGet and npm dependencies
+  - Automated pull requests for security patches
+  - Container image scanning for vulnerabilities
+  - License policy enforcement
+  - Integration with GitHub for seamless security workflows
+
+- **Dependabot**: Automated dependency management and vulnerability detection
+  - Monitors NuGet packages for known vulnerabilities
+  - Tracks npm dependencies for security issues
+  - Automatic pull requests for security updates
+  - Weekly dependency version checks
+
+- **Secret Scanning**: Prevents accidental exposure of sensitive information
+  - Detects API keys, tokens, and credentials in commits
+  - Alerts on potential secret leaks before they reach production
+
+### Security Best Practices
+- OWASP Top 10 compliance guidelines enforced
+- SonarCloud security analysis for vulnerability detection and security hotspots
+- Secure coding standards validated by multiple analyzers
+- Role-based access control and authorization
+- Regular security updates through automated workflows
+
+### Reporting Vulnerabilities
+For security concerns, please review our [Security Policy](SECURITY.md) for responsible disclosure guidelines.
 
 ## Contributing
 
