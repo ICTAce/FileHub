@@ -14,6 +14,12 @@ public partial class Settings : ModuleBase
 
     public override string Title => "FileHub Settings";
 
+    public override List<Resource> Resources =>
+    [
+        new Stylesheet(ModulePath() + "Module.css"),
+        new Script(ModulePath() + "Module.js"),
+    ];
+
     protected override async Task OnInitializedAsync()
     {
     }

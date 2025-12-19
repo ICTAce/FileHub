@@ -2,7 +2,7 @@
 
 namespace ICTAce.FileHub;
 
-public partial class Category
+public partial class Category : ModuleBase
 {
     [Inject]
     private ICategoryService CategoryService { get; set; } = default!;

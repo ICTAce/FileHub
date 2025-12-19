@@ -1,1 +1,14 @@
 /* Module Custom Styles */
+
+/* Ensure Radzen overlays appear above Oqtane modals */
+div.rz-tooltip.rz-open.rz-popup {
+    z-index: 99999 !important;
+}
+
+.rz-dialog-wrapper {
+    z-index: 99999 !important;
+}
+
+.rz-dialog-mask {
+    z-index: 99998 !important;
+}
