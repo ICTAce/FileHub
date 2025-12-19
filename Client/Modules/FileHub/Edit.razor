@@ -1,20 +1,128 @@
 ﻿@namespace ICTAce.FileHub
 @inherits ModuleBase
 
+<RadzenTheme Theme="material" />
+
 <form @ref="form" class="@(_validated ? " was-validated" : "needs-validation" )" novalidate>
     <div class="container">
-        <div class="row mb-1 align-items-center">
-            <Label Class="col-sm-3" For="name" HelpText="Enter a name" ResourceKey="Name">Name: </Label>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <h4>@(PageState.Action == "Add" ? "Add New File" : "Edit File")</h4>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <Label Class="col-sm-3" For="name" HelpText="Enter file name" ResourceKey="Name">Name: </Label>
             <div class="col-sm-9">
-                <input id="name" class="form-control" @bind="@_name" required />
+                <input id="name" class="form-control" @bind="@_name" maxlength="100" required />
+                <div class="invalid-feedback">Name is required (max 100 characters)</div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <Label Class="col-sm-3" For="fileName" HelpText="Enter the actual file name" ResourceKey="FileName">File Name: </Label>
+            <div class="col-sm-9">
+                <input id="fileName" class="form-control" @bind="@_fileName" maxlength="255" required />
+                <div class="invalid-feedback">File name is required (max 255 characters)</div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <Label Class="col-sm-3" For="imageName" HelpText="Enter the image/thumbnail name" ResourceKey="ImageName">Image Name: </Label>
+            <div class="col-sm-9">
+                <input id="imageName" class="form-control" @bind="@_imageName" maxlength="255" required />
+                <div class="invalid-feedback">Image name is required (max 255 characters)</div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <Label Class="col-sm-3" For="fileSize" HelpText="Enter the file size" ResourceKey="FileSize">File Size: </Label>
+            <div class="col-sm-9">
+                <input id="fileSize" class="form-control" @bind="@_fileSize" maxlength="12" required />
+                <div class="invalid-feedback">File size is required (max 12 characters)</div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <Label Class="col-sm-3" For="description" HelpText="Enter a description (optional)" ResourceKey="Description">Description: </Label>
+            <div class="col-sm-9">
+                <textarea id="description" class="form-control" @bind="@_description" maxlength="1000" rows="4"></textarea>
+                <div class="form-text">Optional - max 1000 characters</div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <Label Class="col-sm-3" For="downloads" HelpText="Number of downloads" ResourceKey="Downloads">Downloads: </Label>
+            <div class="col-sm-9">
+                <input id="downloads" type="number" class="form-control" @bind="@_downloads" min="0" />
+                <div class="invalid-feedback">Downloads must be 0 or greater</div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <Label Class="col-sm-3" For="categories" HelpText="Select categories for this file" ResourceKey="Categories">Categories: </Label>
+            <div class="col-sm-9">
+                @if (_isLoadingCategories)
+                {
+                    <p><em>Loading categories...</em></p>
+                }
+                else
+                {
+                    <div style="border: 1px solid #dee2e6; border-radius: 4px; padding: 10px; max-height: 300px; overflow-y: auto;">
+                        <RadzenTree Data="@(new List<ListCategoryDto> { _rootNode })"
+                                    Value="@_selectedCategories"
+                                    Change="@OnCategorySelectionChanged"
+                                    Style="width: 100%;"
+                                    AllowCheckBoxes="true"
+                                    AllowCheckChildren="true"
+                                    AllowCheckParents="true">
+                            <RadzenTreeLevel TextProperty="@(nameof(ListCategoryDto.Name))"
+                                             ChildrenProperty="@(nameof(ListCategoryDto.Children))"
+                                             HasChildren="@(e => ((ListCategoryDto)e).Children?.Any() == true)"
+                                             Expanded="@(e => ((ListCategoryDto)e).IsExpanded)">
+                                <Template>
+                                    @{
+                                        var category = (context.Value as ListCategoryDto);
+                                        var isRootNode = category?.Id == 0;
+                                    }
+                                    <span style="font-weight: @(isRootNode ? "bold" : "normal");">
+                                        @if (isRootNode)
+                                        {
+                                            <i class="oi oi-folder" style="margin-right: 4px;"></i>
+                                        }
+                                        @category?.Name
+                                    </span>
+                                </Template>
+                            </RadzenTreeLevel>
+                        </RadzenTree>
+                    </div>
+                    <div class="form-text mt-2">
+                        @if (_selectedCategories != null && _selectedCategories.Any())
+                        {
+                            <span>Selected: @string.Join(", ", _selectedCategories.OfType<ListCategoryDto>().Where(c => c.Id > 0).Select(c => c.Name))</span>
+                        }
+                        else
+                        {
+                            <span>No categories selected</span>
+                        }
+                    </div>
+                }
             </div>
         </div>
     </div>
-    <button type="button" class="btn btn-success" @onclick="Save">@Localizer["Save"]</button>
-    <NavLink class="btn btn-secondary" href="@NavigateUrl()">@Localizer["Cancel"]</NavLink>
+
+    <div class="mt-4">
+        <button type="button" class="btn btn-success" @onclick="Save">
+            <i class="oi oi-check"></i> @Localizer["Save"]
+        </button>
+        <NavLink class="btn btn-secondary" href="@NavigateUrl()">
+            <i class="oi oi-x"></i> @Localizer["Cancel"]
+        </NavLink>
+    </div>
+
     <br /><br />
     @if (PageState.Action == "Edit")
     {
-    <AuditInfo CreatedBy="@_createdby" CreatedOn="@_createdon" ModifiedBy="@_modifiedby" ModifiedOn="@_modifiedon"></AuditInfo>
+        <AuditInfo CreatedBy="@_createdby" CreatedOn="@_createdon" ModifiedBy="@_modifiedby" ModifiedOn="@_modifiedon"></AuditInfo>
     }
 </form>
