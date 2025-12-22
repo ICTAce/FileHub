@@ -7,10 +7,14 @@ namespace ICTAce.FileHub.Features.Files;
 public class ICTAceFileHubFilesController(
     IMediator mediator,
     ILogManager logger,
-    IHttpContextAccessor accessor)
+    IHttpContextAccessor accessor,
+    IWebHostEnvironment environment,
+    ITenantManager tenantManager)
     : ModuleControllerBase(logger, accessor)
 {
     private readonly IMediator _mediator = mediator;
+    private readonly IWebHostEnvironment _environment = environment;
+    private readonly ITenantManager _tenantManager = tenantManager;
 
     [HttpGet("{id}")]
     [Authorize(Policy = PolicyNames.ViewModule)]
@@ -206,5 +210,76 @@ public class ICTAceFileHubFilesController(
         await _mediator.Send(command, cancellationToken).ConfigureAwait(false);
 
         return NoContent();
+    }
+
+    [HttpPost("upload")]
+    [Authorize(Policy = PolicyNames.EditModule)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<string>> UploadFileAsync(
+        [FromQuery] int moduleId,
+        IFormFile file,
+        CancellationToken cancellationToken = default)
+    {
+        if (!IsAuthorizedEntityId(EntityNames.Module, moduleId))
+        {
+            _logger.Log(LogLevel.Error, this, LogFunction.Security,
+                "Unauthorized File Upload Attempt ModuleId={ModuleId}", moduleId);
+            return Forbid();
+        }
+
+        if (file is null || file.Length == 0)
+        {
+            return BadRequest("No file uploaded");
+        }
+
+        try
+        {
+            var alias = _tenantManager.GetAlias();
+            var filePath = GetFileStoragePath(alias.TenantId, alias.SiteId, moduleId);
+            
+            // Ensure directory exists
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
+
+            // Generate unique filename to prevent overwrites
+            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+            var fullPath = Path.Combine(filePath, fileName);
+
+            // Save the file
+            using (var stream = new FileStream(fullPath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream, cancellationToken).ConfigureAwait(false);
+            }
+
+            _logger.Log(LogLevel.Information, this, LogFunction.Create,
+                "File Uploaded FileName={FileName} Size={Size} ModuleId={ModuleId}", 
+                fileName, file.Length, moduleId);
+
+            return Ok(fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, this, LogFunction.Create,
+                ex, "Error Uploading File ModuleId={ModuleId}", moduleId);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error uploading file");
+        }
+    }
+
+    private string GetFileStoragePath(int tenantId, int siteId, int moduleId)
+    {
+        // Content/Tenants/{TenantId}/Sites/{SiteId}/FileHub/{ModuleId}/
+        return Path.Combine(
+            _environment.ContentRootPath,
+            "Content",
+            "Tenants",
+            tenantId.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            "Sites",
+            siteId.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            "FileHub",
+            moduleId.ToString(System.Globalization.CultureInfo.InvariantCulture));
     }
 }

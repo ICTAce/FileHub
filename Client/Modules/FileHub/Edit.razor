@@ -12,6 +12,26 @@
         </div>
 
         <div class="row mb-3">
+            <Label Class="col-sm-3" For="fileUpload" HelpText="Upload a file" ResourceKey="FileUpload">File Upload: </Label>
+            <div class="col-sm-9">
+                <InputFile id="fileUpload" class="form-control" OnChange="@OnFileSelected" />
+                @if (!string.IsNullOrEmpty(_uploadedFileName))
+                {
+                    <div class="form-text text-success mt-2">
+                        <i class="oi oi-check"></i> Uploaded: @_uploadedFileName
+                    </div>
+                }
+                @if (_isUploading)
+                {
+                    <div class="form-text mt-2">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Uploading...
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="row mb-3">
             <Label Class="col-sm-3" For="name" HelpText="Enter file name" ResourceKey="Name">Name: </Label>
             <div class="col-sm-9">
                 <input id="name" class="form-control" @bind="@_name" maxlength="100" required />
@@ -112,7 +132,7 @@
     </div>
 
     <div class="mt-4">
-        <button type="button" class="btn btn-success" @onclick="Save">
+        <button type="button" class="btn btn-success" @onclick="Save" disabled="@_isUploading">
             <i class="oi oi-check"></i> @Localizer["Save"]
         </button>
         <NavLink class="btn btn-secondary" href="@NavigateUrl()">

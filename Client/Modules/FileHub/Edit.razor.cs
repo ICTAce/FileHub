@@ -1,5 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
+using Microsoft.AspNetCore.Components.Forms;
 using Radzen;
 
 namespace ICTAce.FileHub;
@@ -25,6 +26,8 @@ public partial class Edit
 
     private ElementReference form;
     private bool _validated;
+    private bool _isUploading;
+    private string? _uploadedFileName;
 
     private int _id;
     private string _name = string.Empty;
@@ -67,6 +70,13 @@ public partial class Edit
                     _createdon = file.CreatedOn;
                     _modifiedby = file.ModifiedBy;
                     _modifiedon = file.ModifiedOn;
+                    
+                    // Load selected categories
+                    if (file.CategoryIds.Any())
+                    {
+                        var selectedCats = GetAllCategories().Where(c => file.CategoryIds.Contains(c.Id)).ToList();
+                        _selectedCategories = selectedCats.Cast<object>();
+                    }
                 }
             }
         }
@@ -75,6 +85,65 @@ public partial class Edit
             await logger.LogError(ex, "Error Loading File {Id} {Error}", _id, ex.Message).ConfigureAwait(true);
             AddModuleMessage(Localizer["Message.LoadError"], MessageType.Error);
         }
+    }
+
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            _isUploading = true;
+            StateHasChanged();
+
+            var file = e.File;
+            
+            // Limit file size to 100MB
+            const long maxFileSize = 100 * 1024 * 1024;
+            if (file.Size > maxFileSize)
+            {
+                AddModuleMessage("File size exceeds 100MB limit", MessageType.Error);
+                return;
+            }
+
+            // Upload the file
+            using var stream = file.OpenReadStream(maxFileSize);
+            _uploadedFileName = await FileService.UploadFileAsync(ModuleState.ModuleId, stream, file.Name).ConfigureAwait(true);
+            
+            // Auto-fill form fields
+            if (string.IsNullOrEmpty(_name))
+            {
+                _name = Path.GetFileNameWithoutExtension(file.Name);
+            }
+            if (string.IsNullOrEmpty(_fileName))
+            {
+                _fileName = _uploadedFileName;
+            }
+            _fileSize = FormatFileSize(file.Size);
+            
+            AddModuleMessage("File uploaded successfully", MessageType.Success);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Uploading File {Error}", ex.Message).ConfigureAwait(true);
+            AddModuleMessage("Error uploading file", MessageType.Error);
+        }
+        finally
+        {
+            _isUploading = false;
+            StateHasChanged();
+        }
+    }
+
+    private static string FormatFileSize(long bytes)
+    {
+        string[] sizes = ["B", "KB", "MB", "GB", "TB"];
+        double len = bytes;
+        int order = 0;
+        while (len >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            len = len / 1024;
+        }
+        return $"{len:0.##} {sizes[order]}";
     }
 
     private async Task LoadCategories()
@@ -177,6 +246,12 @@ public partial class Edit
             var interop = new Oqtane.UI.Interop(JSRuntime);
             if (await interop.FormValid(form))
             {
+                var selectedCategoryIds = _selectedCategories?
+                    .OfType<ListCategoryDto>()
+                    .Where(c => c.Id > 0)
+                    .Select(c => c.Id)
+                    .ToList() ?? [];
+
                 if (string.Equals(PageState.Action, "Add", StringComparison.Ordinal))
                 {
                     var dto = new CreateAndUpdateFileDto
@@ -186,7 +261,8 @@ public partial class Edit
                         ImageName = _imageName,
                         Description = _description,
                         FileSize = _fileSize,
-                        Downloads = _downloads
+                        Downloads = _downloads,
+                        CategoryIds = selectedCategoryIds
                     };
                     var id = await FileService.CreateAsync(ModuleState.ModuleId, dto).ConfigureAwait(true);
                     await logger.LogInformation("File Created {Id}", id).ConfigureAwait(true);
@@ -200,7 +276,8 @@ public partial class Edit
                         ImageName = _imageName,
                         Description = _description,
                         FileSize = _fileSize,
-                        Downloads = _downloads
+                        Downloads = _downloads,
+                        CategoryIds = selectedCategoryIds
                     };
                     var id = await FileService.UpdateAsync(_id, ModuleState.ModuleId, dto).ConfigureAwait(true);
                     await logger.LogInformation("File Updated {Id}", id).ConfigureAwait(true);
