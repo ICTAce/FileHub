@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Components.Forms;
 using Radzen;
+using Radzen.Blazor;
 
 namespace ICTAce.FileHub;
 
@@ -27,6 +28,7 @@ public partial class Edit
     private ElementReference form;
     private bool _validated;
     private bool _isUploading;
+    private int _uploadProgress;
     private string? _uploadedFileName;
 
     private int _id;
@@ -87,39 +89,43 @@ public partial class Edit
         }
     }
 
-    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    private async Task OnFileSelected(UploadChangeEventArgs args)
     {
         try
         {
             _isUploading = true;
+            _uploadProgress = 0;
             StateHasChanged();
 
-            var file = e.File;
-            
-            // Limit file size to 100MB
-            const long maxFileSize = 100 * 1024 * 1024;
-            if (file.Size > maxFileSize)
+            foreach (var file in args.Files)
             {
-                AddModuleMessage("File size exceeds 100MB limit", MessageType.Error);
-                return;
-            }
+                // Limit file size to 100MB
+                const long maxFileSize = 100 * 1024 * 1024;
+                if (file.Size > maxFileSize)
+                {
+                    AddModuleMessage("File size exceeds 100MB limit", MessageType.Error);
+                    _isUploading = false;
+                    return;
+                }
 
-            // Upload the file
-            using var stream = file.OpenReadStream(maxFileSize);
-            _uploadedFileName = await FileService.UploadFileAsync(ModuleState.ModuleId, stream, file.Name).ConfigureAwait(true);
-            
-            // Auto-fill form fields
-            if (string.IsNullOrEmpty(_name))
-            {
-                _name = Path.GetFileNameWithoutExtension(file.Name);
+                // Upload the file
+                using var stream = file.OpenReadStream(maxFileSize);
+                _uploadedFileName = await FileService.UploadFileAsync(ModuleState.ModuleId, stream, file.Name).ConfigureAwait(true);
+                
+                // Auto-fill form fields
+                if (string.IsNullOrEmpty(_name))
+                {
+                    _name = Path.GetFileNameWithoutExtension(file.Name);
+                }
+                if (string.IsNullOrEmpty(_fileName))
+                {
+                    _fileName = _uploadedFileName;
+                }
+                _fileSize = FormatFileSize(file.Size);
+                
+                _uploadProgress = 100;
+                AddModuleMessage("File uploaded successfully", MessageType.Success);
             }
-            if (string.IsNullOrEmpty(_fileName))
-            {
-                _fileName = _uploadedFileName;
-            }
-            _fileSize = FormatFileSize(file.Size);
-            
-            AddModuleMessage("File uploaded successfully", MessageType.Success);
         }
         catch (Exception ex)
         {
@@ -131,6 +137,27 @@ public partial class Edit
             _isUploading = false;
             StateHasChanged();
         }
+    }
+
+    private void OnUploadProgress(UploadProgressArgs args)
+    {
+        _uploadProgress = args.Progress;
+        StateHasChanged();
+    }
+
+    private Task OnUploadComplete(UploadCompleteEventArgs args)
+    {
+        _isUploading = false;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task OnUploadError(UploadErrorEventArgs args)
+    {
+        _isUploading = false;
+        AddModuleMessage($"Upload error: {args.Message}", MessageType.Error);
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 
     private static string FormatFileSize(long bytes)
