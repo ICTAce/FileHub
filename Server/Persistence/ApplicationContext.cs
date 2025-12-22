@@ -29,6 +29,19 @@ public class ApplicationContext(
 
         builder.Entity<Entities.File>().ToTable(ActiveDatabase.RewriteName("ICTAce_FileHub_File"));
 
-        builder.Entity<Entities.FileCategory>().ToTable(ActiveDatabase.RewriteName("ICTAce_FileHub_FileCategory"));
+        builder.Entity<Entities.FileCategory>(entity =>
+        {
+            entity.ToTable(ActiveDatabase.RewriteName("ICTAce_FileHub_FileCategory"));
+
+            entity.HasOne(fc => fc.FileHub)
+                  .WithMany()
+                  .HasForeignKey(fc => fc.FileHubId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(fc => fc.Category)
+                  .WithMany()
+                  .HasForeignKey(fc => fc.CategoryId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
     }
 }

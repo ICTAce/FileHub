@@ -7,7 +7,7 @@ public class FileCategoryEntityBuilder : AuditableBaseEntityBuilder<FileCategory
     private const string _entityTableName = "ICTAce_FileHub_FileCategory";
     private readonly PrimaryKey<FileCategoryEntityBuilder> _primaryKey = new("PK_ICTAce_FileHub_FileCategory", x => x.Id);
     private readonly ForeignKey<FileCategoryEntityBuilder> _fileForeignKey = new("FK_ICTAce_FileHub_FileCategory_File", x => x.FileHubId, "ICTAce_FileHub_File", "Id", ReferentialAction.Cascade);
-    private readonly ForeignKey<FileCategoryEntityBuilder> _categoryForeignKey = new("FK_ICTAce_FileHub_FileCategory_Category", x => x.CategoryId, "ICTAce_FileHub_Category", "Id", ReferentialAction.Cascade);
+    private readonly ForeignKey<FileCategoryEntityBuilder> _categoryForeignKey = new("FK_ICTAce_FileHub_FileCategory_Category", x => x.CategoryId, "ICTAce_FileHub_Category", "Id", ReferentialAction.Restrict);
 
     public FileCategoryEntityBuilder(MigrationBuilder migrationBuilder, IDatabase database) : base(migrationBuilder, database)
     {

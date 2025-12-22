@@ -21,7 +21,7 @@ public class FileEntityBuilder : AuditableBaseEntityBuilder<FileEntityBuilder>
         ModuleId = AddIntegerColumn(table, "ModuleId");
         Name = AddStringColumn(table, "Name", 100);
         FileName = AddStringColumn(table, "FileName", 255);
-        FileName = AddStringColumn(table, "ImageName", 255);
+        ImageName = AddStringColumn(table, "ImageName", 255);
         Description = AddStringColumn(table, "Description", 1000, nullable: true);
         FileSize = AddStringColumn(table, "FileSize", 12);
         Downloads = AddIntegerColumn(table, "Downloads");
