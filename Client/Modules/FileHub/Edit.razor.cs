@@ -2,7 +2,6 @@
 
 using Microsoft.AspNetCore.Components.Forms;
 using Radzen;
-using Radzen.Blazor;
 
 namespace ICTAce.FileHub;
 
@@ -30,6 +29,9 @@ public partial class Edit
     private bool _isUploading;
     private int _uploadProgress;
     private string? _uploadedFileName;
+    private bool _isUploadingImage;
+    private int _imageUploadProgress;
+    private string? _uploadedImageName;
 
     private int _id;
     private string _name = string.Empty;
@@ -65,6 +67,7 @@ public partial class Edit
                     _name = file.Name;
                     _fileName = file.FileName;
                     _imageName = file.ImageName;
+                    _uploadedImageName = file.ImageName;
                     _description = file.Description;
                     _fileSize = file.FileSize;
                     _downloads = file.Downloads;
@@ -89,7 +92,7 @@ public partial class Edit
         }
     }
 
-    private async Task OnFileSelected(UploadChangeEventArgs args)
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
     {
         try
         {
@@ -97,35 +100,45 @@ public partial class Edit
             _uploadProgress = 0;
             StateHasChanged();
 
-            foreach (var file in args.Files)
+            var file = e.File;
+            
+            // Limit file size to 100MB
+            const long maxFileSize = 100 * 1024 * 1024;
+            if (file.Size > maxFileSize)
             {
-                // Limit file size to 100MB
-                const long maxFileSize = 100 * 1024 * 1024;
-                if (file.Size > maxFileSize)
-                {
-                    AddModuleMessage("File size exceeds 100MB limit", MessageType.Error);
-                    _isUploading = false;
-                    return;
-                }
-
-                // Upload the file
-                using var stream = file.OpenReadStream(maxFileSize);
-                _uploadedFileName = await FileService.UploadFileAsync(ModuleState.ModuleId, stream, file.Name).ConfigureAwait(true);
-                
-                // Auto-fill form fields
-                if (string.IsNullOrEmpty(_name))
-                {
-                    _name = Path.GetFileNameWithoutExtension(file.Name);
-                }
-                if (string.IsNullOrEmpty(_fileName))
-                {
-                    _fileName = _uploadedFileName;
-                }
-                _fileSize = FormatFileSize(file.Size);
-                
-                _uploadProgress = 100;
-                AddModuleMessage("File uploaded successfully", MessageType.Success);
+                AddModuleMessage("File size exceeds 100MB limit", MessageType.Error);
+                _isUploading = false;
+                return;
             }
+
+            // Simulate progress for better UX
+            _uploadProgress = 10;
+            StateHasChanged();
+
+            // Upload the file
+            using var stream = file.OpenReadStream(maxFileSize);
+            
+            _uploadProgress = 30;
+            StateHasChanged();
+            
+            _uploadedFileName = await FileService.UploadFileAsync(ModuleState.ModuleId, stream, file.Name).ConfigureAwait(true);
+            
+            _uploadProgress = 90;
+            StateHasChanged();
+            
+            // Auto-fill form fields
+            if (string.IsNullOrEmpty(_name))
+            {
+                _name = Path.GetFileNameWithoutExtension(file.Name);
+            }
+            if (string.IsNullOrEmpty(_fileName))
+            {
+                _fileName = _uploadedFileName;
+            }
+            _fileSize = FormatFileSize(file.Size);
+            
+            _uploadProgress = 100;
+            AddModuleMessage("File uploaded successfully", MessageType.Success);
         }
         catch (Exception ex)
         {
@@ -139,25 +152,71 @@ public partial class Edit
         }
     }
 
-    private void OnUploadProgress(UploadProgressArgs args)
+    private async Task OnImageSelected(InputFileChangeEventArgs e)
     {
-        _uploadProgress = args.Progress;
-        StateHasChanged();
+        try
+        {
+            _isUploadingImage = true;
+            _imageUploadProgress = 0;
+            StateHasChanged();
+
+            var file = e.File;
+            
+            // Limit image size to 10MB
+            const long maxImageSize = 10 * 1024 * 1024;
+            if (file.Size > maxImageSize)
+            {
+                AddModuleMessage("Image size exceeds 10MB limit", MessageType.Error);
+                _isUploadingImage = false;
+                return;
+            }
+
+            // Validate image type
+            if (!file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+            {
+                AddModuleMessage("Please select a valid image file", MessageType.Error);
+                _isUploadingImage = false;
+                return;
+            }
+
+            // Simulate progress for better UX
+            _imageUploadProgress = 10;
+            StateHasChanged();
+
+            // Upload the image
+            using var stream = file.OpenReadStream(maxImageSize);
+            
+            _imageUploadProgress = 30;
+            StateHasChanged();
+            
+            _uploadedImageName = await FileService.UploadFileAsync(ModuleState.ModuleId, stream, file.Name).ConfigureAwait(true);
+            _imageName = _uploadedImageName;
+            
+            _imageUploadProgress = 100;
+            AddModuleMessage("Image uploaded successfully", MessageType.Success);
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Uploading Image {Error}", ex.Message).ConfigureAwait(true);
+            AddModuleMessage("Error uploading image", MessageType.Error);
+        }
+        finally
+        {
+            _isUploadingImage = false;
+            StateHasChanged();
+        }
     }
 
-    private Task OnUploadComplete(UploadCompleteEventArgs args)
+    private string GetImageUrl()
     {
-        _isUploading = false;
-        StateHasChanged();
-        return Task.CompletedTask;
-    }
+        if (string.IsNullOrEmpty(_uploadedImageName))
+        {
+            return string.Empty;
+        }
 
-    private Task OnUploadError(UploadErrorEventArgs args)
-    {
-        _isUploading = false;
-        AddModuleMessage($"Upload error: {args.Message}", MessageType.Error);
-        StateHasChanged();
-        return Task.CompletedTask;
+        // Construct the URL to the uploaded image
+        // Path: Content/Tenants/{TenantId}/Sites/{SiteId}/FileHub/{ModuleId}/{filename}
+        return $"/Content/Tenants/{PageState.Alias.TenantId}/Sites/{PageState.Site.SiteId}/FileHub/{ModuleState.ModuleId}/{_uploadedImageName}";
     }
 
     private static string FormatFileSize(long bytes)

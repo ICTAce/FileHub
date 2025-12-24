@@ -14,30 +14,31 @@
         <div class="row mb-3">
             <Label Class="col-sm-3" For="fileUpload" HelpText="Upload a file" ResourceKey="FileUpload">File Upload: </Label>
             <div class="col-sm-9">
-                <RadzenUpload id="fileUpload" 
-                              Auto="false" 
-                              Multiple="false" 
-                              Accept="*/*"
-                              Change="@OnFileSelected"
-                              Complete="@OnUploadComplete"
-                              Error="@OnUploadError"
-                              Progress="@OnUploadProgress"
-                              ChooseText="Choose File"
-                              Style="width: 100%">
-                </RadzenUpload>
+                <div class="input-group">
+                    <InputFile id="fileUpload" 
+                               class="form-control" 
+                               OnChange="@OnFileSelected"
+                               accept="*/*"
+                               disabled="@_isUploading" />
+                    <label class="input-group-text" for="fileUpload">
+                        @if (_isUploading)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            <text>@_uploadProgress%</text>
+                        }
+                        else
+                        {
+                            <i class="oi oi-cloud-upload"></i>
+                        }
+                    </label>
+                </div>
                 @if (!string.IsNullOrEmpty(_uploadedFileName))
                 {
                     <div class="form-text text-success mt-2">
                         <i class="oi oi-check"></i> Uploaded: @_uploadedFileName
                     </div>
                 }
-                @if (_isUploading)
-                {
-                    <div class="form-text mt-2">
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        Uploading... @_uploadProgress%
-                    </div>
-                }
+                <div class="form-text">Maximum file size: 100MB</div>
             </div>
         </div>
 
@@ -52,24 +53,53 @@
         <div class="row mb-3">
             <Label Class="col-sm-3" For="fileName" HelpText="Enter the actual file name" ResourceKey="FileName">File Name: </Label>
             <div class="col-sm-9">
-                <input id="fileName" class="form-control" @bind="@_fileName" maxlength="255" required />
+                <input id="fileName" class="form-control" @bind="@_fileName" maxlength="255" required readonly />
                 <div class="invalid-feedback">File name is required (max 255 characters)</div>
+                <div class="form-text">Auto-filled from uploaded file</div>
             </div>
         </div>
 
         <div class="row mb-3">
-            <Label Class="col-sm-3" For="imageName" HelpText="Enter the image/thumbnail name" ResourceKey="ImageName">Image Name: </Label>
+            <Label Class="col-sm-3" For="imageName" HelpText="Upload thumbnail/preview image" ResourceKey="ImageName">Thumbnail Image: </Label>
             <div class="col-sm-9">
-                <input id="imageName" class="form-control" @bind="@_imageName" maxlength="255" required />
-                <div class="invalid-feedback">Image name is required (max 255 characters)</div>
+                <div class="input-group mb-2">
+                    <InputFile id="imageUpload" 
+                               class="form-control" 
+                               OnChange="@OnImageSelected"
+                               accept="image/*"
+                               disabled="@_isUploadingImage" />
+                    <label class="input-group-text" for="imageUpload">
+                        @if (_isUploadingImage)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            <text>@_imageUploadProgress%</text>
+                        }
+                        else
+                        {
+                            <i class="oi oi-image"></i>
+                        }
+                    </label>
+                </div>
+                @if (!string.IsNullOrEmpty(_uploadedImageName))
+                {
+                    <div class="form-text text-success mb-2">
+                        <i class="oi oi-check"></i> Uploaded: @_uploadedImageName
+                    </div>
+                    <div class="mb-2">
+                        <img src="@GetImageUrl()" alt="Thumbnail preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" />
+                    </div>
+                }
+                <input id="imageName" type="hidden" @bind="@_imageName" />
+                <div class="form-text">Optional - Upload thumbnail/preview image (JPG, PNG, GIF - Max 10MB)</div>
             </div>
         </div>
 
         <div class="row mb-3">
-            <Label Class="col-sm-3" For="fileSize" HelpText="Enter the file size" ResourceKey="FileSize">File Size: </Label>
+            <Label Class="col-sm-3" For="fileSize" HelpText="File size" ResourceKey="FileSize">File Size: </Label>
             <div class="col-sm-9">
-                <input id="fileSize" class="form-control" @bind="@_fileSize" maxlength="12" required />
+                <input id="fileSize" class="form-control" @bind="@_fileSize" maxlength="12" readonly />
                 <div class="invalid-feedback">File size is required (max 12 characters)</div>
+                <div class="form-text">Auto-filled from uploaded file</div>
             </div>
         </div>
 
