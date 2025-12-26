@@ -13,7 +13,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Localization" Version="$(AspNetCoreVersion)" />
-    <PackageVersion Include="Radzen.Blazor" Version="8.4.1" />
+    <PackageVersion Include="Radzen.Blazor" Version="8.4.2" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.57.0" />
     <PackageVersion Include="Riok.Mapperly" Version="4.3.0" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
