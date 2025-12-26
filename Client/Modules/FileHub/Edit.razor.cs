@@ -318,13 +318,7 @@ public partial class Edit
         }
     }
 
-    private void OnCategorySelectionChanged(TreeEventArgs args)
-    {
-        _selectedCategories = args.Value as IEnumerable<object>;
-        StateHasChanged();
-    }
-
-    private async Task Save()
+        private async Task Save()
     {
         try
         {

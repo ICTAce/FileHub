@@ -14,4 +14,6 @@ public class Category : AuditableModuleBase
     public Category? ParentCategory { get; set; }
 
     public ICollection<Category>? Subcategories { get; set; }
+
+    public ICollection<FileCategory> FileCategories { get; set; } = [];
 }

@@ -10,6 +10,7 @@ public record CreateFileRequest : RequestBase, IRequest<int>
     public string? Description { get; set; }
     public string FileSize { get; set; } = string.Empty;
     public int Downloads { get; set; }
+    public List<int> CategoryIds { get; set; } = [];
 }
 
 public class CreateHandler(HandlerServices<ApplicationCommandContext> services)
@@ -17,13 +18,41 @@ public class CreateHandler(HandlerServices<ApplicationCommandContext> services)
 {
     private static readonly CreateMapper _mapper = new();
 
-    public Task<int> Handle(CreateFileRequest request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateFileRequest request, CancellationToken cancellationToken)
     {
-        return HandleCreateAsync(
-            request: request,
-            mapToEntity: _mapper.ToEntity,
-            cancellationToken: cancellationToken
-        );
+        var alias = GetAlias();
+
+        if (!IsAuthorized(alias.SiteId, request.ModuleId, PermissionNames.Edit))
+        {
+            Logger.Log(LogLevel.Error, this, LogFunction.Security, "Unauthorized File Add Attempt {ModuleId}", request.ModuleId);
+            return -1;
+        }
+
+        var entity = _mapper.ToEntity(request);
+
+        using var db = CreateDbContext();
+        db.Set<Persistence.Entities.File>().Add(entity);
+        await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+        // Save file-category relationships
+        if (request.CategoryIds.Any())
+        {
+            foreach (var categoryId in request.CategoryIds)
+            {
+                var fileCategory = new Persistence.Entities.FileCategory
+                {
+                    FileId = entity.Id,
+                    CategoryId = categoryId,
+                    CreatedBy = entity.CreatedBy,
+                    CreatedOn = entity.CreatedOn
+                };
+                db.Set<Persistence.Entities.FileCategory>().Add(fileCategory);
+            }
+            await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        Logger.Log(LogLevel.Information, this, LogFunction.Create, "File Added {Entity}", entity);
+        return entity.Id;
     }
 }
 

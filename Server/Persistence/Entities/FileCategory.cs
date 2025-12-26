@@ -2,12 +2,12 @@
 
 namespace ICTAce.FileHub.Persistence.Entities;
 
-public class FileCategory
+public class FileCategory : AuditableModuleBase
 {
     [Key]
     public int Id { get; set; }
 
-    public int FileHubId { get; set; }
+    public int FileId { get; set; }
     public File FileHub { get; set; } = null!;
 
     public int CategoryId { get; set; }

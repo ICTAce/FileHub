@@ -130,8 +130,7 @@
                 {
                     <div style="border: 1px solid #dee2e6; border-radius: 4px; padding: 10px; max-height: 300px; overflow-y: auto;">
                         <RadzenTree Data="@(new List<ListCategoryDto> { _rootNode })"
-                                    Value="@_selectedCategories"
-                                    Change="@OnCategorySelectionChanged"
+                                    @bind-CheckedValues="@_selectedCategories"
                                     Style="width: 100%;"
                                     AllowCheckBoxes="true"
                                     AllowCheckChildren="true"

@@ -21,4 +21,6 @@ public class File : AuditableModuleBase
     public required string FileSize { get; set; }
 
     public int Downloads { get; set; }
+
+    public ICollection<FileCategory> FileCategories { get; set; } = [];
 }

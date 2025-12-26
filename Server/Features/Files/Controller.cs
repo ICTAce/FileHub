@@ -131,6 +131,7 @@ public class ICTAceFileHubFilesController(
             Description = dto.Description,
             FileSize = dto.FileSize,
             Downloads = dto.Downloads,
+            CategoryIds = dto.CategoryIds
         };
 
         var id = await _mediator.Send(command, cancellationToken).ConfigureAwait(false);
@@ -173,6 +174,7 @@ public class ICTAceFileHubFilesController(
             Description = dto.Description,
             FileSize = dto.FileSize,
             Downloads = dto.Downloads,
+            CategoryIds = dto.CategoryIds
         };
 
         var result = await _mediator.Send(command, cancellationToken).ConfigureAwait(false);

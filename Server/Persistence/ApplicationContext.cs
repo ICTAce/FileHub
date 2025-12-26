@@ -34,12 +34,12 @@ public class ApplicationContext(
             entity.ToTable(ActiveDatabase.RewriteName("ICTAce_FileHub_FileCategory"));
 
             entity.HasOne(fc => fc.FileHub)
-                  .WithMany()
-                  .HasForeignKey(fc => fc.FileHubId)
+                  .WithMany(f => f.FileCategories)
+                  .HasForeignKey(fc => fc.FileId)
                   .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(fc => fc.Category)
-                  .WithMany()
+                  .WithMany(c => c.FileCategories)
                   .HasForeignKey(fc => fc.CategoryId)
                   .OnDelete(DeleteBehavior.Restrict);
         });
