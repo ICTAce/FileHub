@@ -20,6 +20,7 @@ public class FileCategoryEntityBuilder : AuditableBaseEntityBuilder<FileCategory
     protected override FileCategoryEntityBuilder BuildTable(ColumnsBuilder table)
     {
         Id = AddAutoIncrementColumn(table, "Id");
+        ModuleId = AddIntegerColumn(table, "ModuleId");
         FileId = AddIntegerColumn(table, "FileId");
         CategoryId = AddIntegerColumn(table, "CategoryId");
         AddAuditableColumns(table);
@@ -27,6 +28,7 @@ public class FileCategoryEntityBuilder : AuditableBaseEntityBuilder<FileCategory
     }
 
     public OperationBuilder<AddColumnOperation> Id { get; set; }
+    public OperationBuilder<AddColumnOperation> ModuleId { get; set; }
     public OperationBuilder<AddColumnOperation> FileId { get; set; }
     public OperationBuilder<AddColumnOperation> CategoryId { get; set; }
 }

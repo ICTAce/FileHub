@@ -43,12 +43,13 @@ public class CreateHandler(HandlerServices<ApplicationCommandContext> services)
                 {
                     FileId = entity.Id,
                     CategoryId = categoryId,
+                    ModuleId = entity.ModuleId,
                     CreatedBy = entity.CreatedBy,
                     CreatedOn = entity.CreatedOn
                 };
                 db.Set<Persistence.Entities.FileCategory>().Add(fileCategory);
             }
-            await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            var result = await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
         Logger.Log(LogLevel.Information, this, LogFunction.Create, "File Added {Entity}", entity);
