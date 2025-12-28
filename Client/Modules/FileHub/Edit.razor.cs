@@ -127,10 +127,6 @@ public partial class Edit
             StateHasChanged();
             
             // Auto-fill form fields
-            if (string.IsNullOrEmpty(_name))
-            {
-                _name = Path.GetFileNameWithoutExtension(file.Name);
-            }
             if (string.IsNullOrEmpty(_fileName))
             {
                 _fileName = _uploadedFileName;
@@ -214,9 +210,8 @@ public partial class Edit
             return string.Empty;
         }
 
-        // Construct the URL to the uploaded image
-        // Path: Content/Tenants/{TenantId}/Sites/{SiteId}/FileHub/{ModuleId}/{filename}
-        return $"/Content/Tenants/{PageState.Alias.TenantId}/Sites/{PageState.Site.SiteId}/FileHub/{ModuleState.ModuleId}/{_uploadedImageName}";
+        // Use the serve endpoint - moduleId will be looked up server-side
+        return $"/api/ictace/fileHub/files/serve/{Uri.EscapeDataString(_uploadedImageName)}";
     }
 
     private static string FormatFileSize(long bytes)

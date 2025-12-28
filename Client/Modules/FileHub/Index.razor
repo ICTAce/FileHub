@@ -1,32 +1,96 @@
 ﻿@namespace ICTAce.FileHub
 @inherits ModuleBase
 
-@if (_filehubs == null)
+<RadzenTheme Theme="material" />
+
+@if (_isLoading)
 {
-    <p><em>Loading...</em></p>
+    <div class="text-center py-5">
+        <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large">
+            <Template>Loading...</Template>
+        </RadzenProgressBarCircular>
+    </div>
 }
 else
 {
-    <ActionLink Action="Add" Security="SecurityAccessLevel.Edit" Text="Add FileHub" ResourceKey="Add" />
-    <br />
-    <br />
-    @if (_filehubs.Count != 0)
+    <div class="mb-3">
+        <RadzenButton Icon="add" Text="Add New File" Click="@NavigateToAdd" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Medium" />
+    </div>
+
+    @if (_files == null || !_files.Any())
     {
-        <Pager Items="@_filehubs">
-            <Header>
-                <th style="width: 1px;">&nbsp;</th>
-                <th style="width: 1px;">&nbsp;</th>
-                <th>@Localizer["Name"]</th>
-            </Header>
-            <Row>
-                <td><ActionLink Action="Edit" Parameters="@($"id=" + context.Id.ToString())" ResourceKey="Edit" /></td>
-                <td><ActionDialog Header="Delete FileHub" Message="Are You Sure You Wish To Delete This FileHub?" Action="Delete" Security="SecurityAccessLevel.Edit" Class="btn btn-danger" OnClick="@(async () => await Delete(context))" ResourceKey="Delete" Id="@context.Id.ToString()" /></td>
-                <td>@context.Name</td>
-            </Row>
-        </Pager>
+        <div class="alert alert-info">
+            <i class="oi oi-info"></i> @Localizer["Message.DisplayNone"]
+        </div>
     }
     else
     {
-        <p>@Localizer["Message.DisplayNone"]</p>
+        <RadzenDataList Data="@_files" 
+                        TItem="ListFileDto" 
+                        PageSize="12" 
+                        AllowPaging="true" 
+                        PagerHorizontalAlign="HorizontalAlign.Center"
+                        ShowPagingSummary="true">
+            <Template Context="file">
+                <RadzenCard @onclick="@(() => NavigateToEdit(file.Id))">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-12 text-center mb-3 mb-md-0">
+                            @if (!string.IsNullOrEmpty(file.ImageName))
+                            {
+                                <RadzenImage Path="@GetImageUrl(file.ImageName)" 
+                                           Class="file-card-image"
+                                           AlternateText="@file.Name" />
+                            }
+                            else
+                            {
+                                <div class="file-thumbnail-placeholder">
+                                    <i class="oi oi-file" style="font-size: 48px; opacity: 0.3;"></i>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-9 col-sm-12 file-card-content">
+                            <h5 class="mb-2">
+                                <strong>@file.Name</strong>
+                            </h5>
+                            @if (!string.IsNullOrEmpty(file.Description))
+                            {
+                                <p class="text-muted mb-2">
+                                    @(file.Description.Length > 150 ? file.Description.Substring(0, 150) + "..." : file.Description)
+                                </p>
+                            }
+                            <div class="mb-2">
+                                <RadzenBadge BadgeStyle="BadgeStyle.Light" Text="@file.FileName" />
+                                <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@file.FileSize" />
+                                <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"{file.Downloads} downloads")" />
+                            </div>
+                            <div class="mt-3">
+                                <RadzenButton Icon="edit" 
+                                            Text="Edit" 
+                                            Click="@(() => NavigateToEdit(file.Id))" 
+                                            ButtonStyle="ButtonStyle.Primary" 
+                                            Size="ButtonSize.Small" 
+                                            class="me-2"
+                                            @onclick:stopPropagation="true" />
+                                <RadzenButton Icon="download" 
+                                            Text="Download" 
+                                            Click="@(() => {})"
+                                            ButtonStyle="ButtonStyle.Secondary" 
+                                            Size="ButtonSize.Small" 
+                                            class="me-2"
+                                            @onclick:stopPropagation="true" />
+                                <ActionDialog Header="Delete File" 
+                                            Message="Are You Sure You Wish To Delete This File?" 
+                                            Action="Delete" 
+                                            Security="SecurityAccessLevel.Edit" 
+                                            Class="btn btn-danger btn-sm" 
+                                            OnClick="@(async () => await Delete(file))" 
+                                            ResourceKey="Delete" 
+                                            Id="@file.Id.ToString()" />
+                            </div>
+                        </div>
+                    </div>
+                </RadzenCard>
+            </Template>
+        </RadzenDataList>
     }
 }
