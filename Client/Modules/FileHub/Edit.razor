@@ -74,23 +74,13 @@
                 @if (!string.IsNullOrEmpty(_uploadedImageName))
                 {
                     <div class="form-text text-success mb-2">
-                        <i class="oi oi-check"></i> Uploaded
+                        <i class="oi oi-check"></i> Uploaded - size: @_fileSize
                     </div>
                 }
                 <input id="imageName" type="hidden" @bind="@_imageName" />
                 <div class="form-text">Optional - Upload thumbnail/preview image (JPG, PNG, GIF - Max 10MB)</div>
             </div>
         </div>
-
-        <div class="row mb-3">
-            <Label Class="col-sm-3" For="fileSize" HelpText="File size" ResourceKey="FileSize">File Size: </Label>
-            <div class="col-sm-9">
-                <input id="fileSize" class="form-control" @bind="@_fileSize" maxlength="12" readonly />
-                <div class="invalid-feedback">File size is required (max 12 characters)</div>
-                <div class="form-text">Auto-filled from uploaded file</div>
-            </div>
-        </div>
-
         <div class="row mb-3">
             <Label Class="col-sm-3" For="description" HelpText="Enter a description (optional)" ResourceKey="Description">Description: </Label>
             <div class="col-sm-9">
@@ -98,15 +88,16 @@
                 <div class="form-text">Optional - max 1000 characters</div>
             </div>
         </div>
-
-        <div class="row mb-3">
-            <Label Class="col-sm-3" For="downloads" HelpText="Number of downloads" ResourceKey="Downloads">Downloads: </Label>
-            <div class="col-sm-9">
-                <input id="downloads" type="number" class="form-control" @bind="@_downloads" min="0" />
-                <div class="invalid-feedback">Downloads must be 0 or greater</div>
+        @if (string.Equals(PageState.Action, "Edit", StringComparison.Ordinal))
+        {
+            <div class="row mb-3">
+                <Label Class="col-sm-3" For="downloads" HelpText="Number of downloads" ResourceKey="Downloads">Downloads: </Label>
+                <div class="col-sm-9">
+                    <input id="downloads" type="number" class="form-control" @bind="@_downloads" min="0" readonly />
+                    <div class="invalid-feedback">Downloads must be 0 or greater</div>
+                </div>
             </div>
-        </div>
-
+        }
         <div class="row mb-3">
             <Label Class="col-sm-3" For="categories" HelpText="Select categories for this file" ResourceKey="Categories">Categories: </Label>
             <div class="col-sm-9">
