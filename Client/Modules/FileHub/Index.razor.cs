@@ -55,6 +55,13 @@ public partial class Index
         }
     }
 
+    private void OnDownloadClick(ListFileDto file)
+    {
+        // Increment the counter in the UI immediately for instant feedback
+        file.Downloads++;
+        StateHasChanged();
+    }
+
     private void NavigateToEdit(int fileId)
     {
         NavigationManager.NavigateTo(EditUrl("id", fileId.ToString()));
@@ -72,7 +79,7 @@ public partial class Index
             return string.Empty;
         }
 
-        // Use the serve endpoint - moduleId will be looked up server-side
+        // Use the serve endpoint for image display (no download counter increment)
         return $"/api/ictace/fileHub/files/serve/{Uri.EscapeDataString(imageName)}";
     }
 
@@ -83,7 +90,7 @@ public partial class Index
             return string.Empty;
         }
 
-        // Use the serve endpoint - moduleId will be looked up server-side
-        return $"/api/ictace/fileHub/files/serve/{Uri.EscapeDataString(fileName)}";
+        // Use the serve endpoint with download=true to increment counter
+        return $"/api/ictace/fileHub/files/serve/{Uri.EscapeDataString(fileName)}?download=true";
     }
 }

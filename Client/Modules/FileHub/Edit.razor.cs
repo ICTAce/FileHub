@@ -210,7 +210,7 @@ public partial class Edit
             return string.Empty;
         }
 
-        // Use the serve endpoint - moduleId will be looked up server-side
+        // Use the serve endpoint for image display (no download counter increment)
         return $"/api/ictace/fileHub/files/serve/{Uri.EscapeDataString(_uploadedImageName)}";
     }
 

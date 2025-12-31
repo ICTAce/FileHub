@@ -63,6 +63,7 @@ else
                                 <a href="@GetDownloadUrl(file.FileName)" 
                                    class="btn btn-secondary btn-sm me-2" 
                                    target="_blank"
+                                   @onclick="@(() => OnDownloadClick(file))"
                                    @onclick:stopPropagation="true">
                                     <i class="oi oi-data-transfer-download"></i> Download
                                 </a>
