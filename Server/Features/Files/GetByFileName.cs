@@ -19,12 +19,27 @@ public class GetByFileNameHandler(HandlerServices<ApplicationQueryContext> servi
     {
         using var db = CreateDbContext();
         
-        // Look up file by FileName or ImageName
+        var trimmedFileName = request.FileName.Trim();
+        
+        // Look up file by FileName or ImageName (case-insensitive)
         var file = await db.File
-            .Where(f => f.FileName == request.FileName || f.ImageName == request.FileName)
+            .Where(f => f.FileName == trimmedFileName || f.ImageName == trimmedFileName)
             .Select(f => new FileModuleInfo { ModuleId = f.ModuleId })
             .FirstOrDefaultAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        // Log if not found for debugging
+        if (file is null)
+        {
+            Logger.Log(LogLevel.Warning, this, LogFunction.Read,
+                "GetByFileName: File not found in database FileName={FileName}", trimmedFileName);
+        }
+        else
+        {
+            Logger.Log(LogLevel.Information, this, LogFunction.Read,
+                "GetByFileName: File found ModuleId={ModuleId} FileName={FileName}", 
+                file.ModuleId, trimmedFileName);
+        }
 
         return file;
     }

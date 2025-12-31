@@ -271,6 +271,109 @@ public class ICTAceFileHubFilesController(
         }
     }
 
+    [HttpGet("serve/{fileName}")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ServeFileAsync(
+        string fileName,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(fileName))
+        {
+            _logger.Log(LogLevel.Warning, this, LogFunction.Read,
+                "ServeFile: Empty filename provided");
+            return BadRequest("Filename is required");
+        }
+
+        try
+        {
+            _logger.Log(LogLevel.Information, this, LogFunction.Read,
+                "ServeFile: Looking up file FileName={FileName}", fileName);
+
+            var fileModuleInfo = await _mediator.Send(
+                new GetFileByFileNameRequest { FileName = fileName },
+                cancellationToken).ConfigureAwait(false);
+
+            if (fileModuleInfo is null)
+            {
+                _logger.Log(LogLevel.Warning, this, LogFunction.Read,
+                    "ServeFile: File not found in database FileName={FileName}", fileName);
+                return NotFound(new { message = "File not found in database", fileName });
+            }
+
+            _logger.Log(LogLevel.Information, this, LogFunction.Read,
+                "ServeFile: File found in database ModuleId={ModuleId} FileName={FileName}", 
+                fileModuleInfo.ModuleId, fileName);
+
+            var alias = _tenantManager.GetAlias();
+            var filePath = GetFileStoragePath(alias.TenantId, alias.SiteId, fileModuleInfo.ModuleId);
+            var fullPath = Path.Combine(filePath, fileName);
+
+            _logger.Log(LogLevel.Information, this, LogFunction.Read,
+                "ServeFile: Checking physical file path Path={Path}", fullPath);
+
+            if (!System.IO.File.Exists(fullPath))
+            {
+                _logger.Log(LogLevel.Warning, this, LogFunction.Read,
+                    "ServeFile: Physical file not found Path={Path}", fullPath);
+                return NotFound(new { message = "Physical file not found", path = fullPath });
+            }
+
+            var contentType = GetContentType(fileName);
+            var fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+            _logger.Log(LogLevel.Information, this, LogFunction.Read,
+                "ServeFile: Successfully serving file FileName={FileName} ModuleId={ModuleId} ContentType={ContentType}", 
+                fileName, fileModuleInfo.ModuleId, contentType);
+
+            return File(fileStream, contentType, Path.GetFileName(fileName));
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, this, LogFunction.Read,
+                ex, "ServeFile: Error serving file FileName={FileName} Error={Error}", fileName, ex.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, 
+                new { message = "Error serving file", error = ex.Message });
+        }
+    }
+
+    [HttpGet("debug/list-files")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    public async Task<IActionResult> DebugListFilesAsync([FromQuery] int moduleId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var files = await _mediator.Send(
+                new ListFileRequest { ModuleId = moduleId, PageNumber = 1, PageSize = 100 },
+                cancellationToken).ConfigureAwait(false);
+
+            var debugInfo = files?.Items?.Select(f => new
+            {
+                f.Id,
+                f.Name,
+                f.FileName,
+                f.ImageName,
+                f.FileSize,
+                f.Downloads
+            }).ToList();
+
+            return Ok(new
+            {
+                totalCount = files?.TotalCount ?? 0,
+                files = debugInfo
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, this, LogFunction.Read,
+                ex, "Error listing files for debug ModuleId={ModuleId}", moduleId);
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "Error listing files", error = ex.Message });
+        }
+    }
+
     private string GetFileStoragePath(int tenantId, int siteId, int moduleId)
     {
         // Content/Tenants/{TenantId}/Sites/{SiteId}/FileHub/{ModuleId}/
@@ -283,5 +386,35 @@ public class ICTAceFileHubFilesController(
             siteId.ToString(System.Globalization.CultureInfo.InvariantCulture),
             "FileHub",
             moduleId.ToString(System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    private static string GetContentType(string fileName)
+    {
+        var extension = Path.GetExtension(fileName).ToLowerInvariant();
+        return extension switch
+        {
+            ".pdf" => "application/pdf",
+            ".doc" => "application/msword",
+            ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ".xls" => "application/vnd.ms-excel",
+            ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            ".ppt" => "application/vnd.ms-powerpoint",
+            ".pptx" => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            ".zip" => "application/zip",
+            ".rar" => "application/x-rar-compressed",
+            ".txt" => "text/plain",
+            ".csv" => "text/csv",
+            ".json" => "application/json",
+            ".xml" => "application/xml",
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            ".gif" => "image/gif",
+            ".bmp" => "image/bmp",
+            ".svg" => "image/svg+xml",
+            ".mp3" => "audio/mpeg",
+            ".mp4" => "video/mp4",
+            ".avi" => "video/x-msvideo",
+            _ => "application/octet-stream"
+        };
     }
 }

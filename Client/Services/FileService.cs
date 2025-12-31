@@ -29,6 +29,7 @@ public record ListFileDto
     public string? Description { get; set; }
     public required string FileSize { get; set; }
     public int Downloads { get; set; }
+    public required DateTime CreatedOn { get; set; }
 }
 
 public record CreateAndUpdateFileDto

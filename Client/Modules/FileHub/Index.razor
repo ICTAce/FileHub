@@ -60,13 +60,12 @@ else
                                           Text="Edit" 
                                           ResourceKey="Edit" 
                                           Class="btn btn-primary btn-sm me-2" />
-                                <RadzenButton Icon="download" 
-                                            Text="Download" 
-                                            Click="@(() => {})"
-                                            ButtonStyle="ButtonStyle.Secondary" 
-                                            Size="ButtonSize.Small" 
-                                            class="me-2"
-                                            @onclick:stopPropagation="true" />
+                                <a href="@GetDownloadUrl(file.FileName)" 
+                                   class="btn btn-secondary btn-sm me-2" 
+                                   target="_blank"
+                                   @onclick:stopPropagation="true">
+                                    <i class="oi oi-data-transfer-download"></i> Download
+                                </a>
                                 <ActionDialog Header="Delete File" 
                                             Message="Are You Sure You Wish To Delete This File?" 
                                             Action="Delete" 
