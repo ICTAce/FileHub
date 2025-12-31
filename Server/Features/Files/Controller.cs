@@ -277,6 +277,7 @@ public class ICTAceFileHubFilesController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ServeFileAsync(
         string fileName,
+        [FromQuery] bool download = false,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(fileName))
@@ -289,7 +290,7 @@ public class ICTAceFileHubFilesController(
         try
         {
             _logger.Log(LogLevel.Information, this, LogFunction.Read,
-                "ServeFile: Looking up file FileName={FileName}", fileName);
+                "ServeFile: Looking up file FileName={FileName} Download={Download}", fileName, download);
 
             var fileModuleInfo = await _mediator.Send(
                 new GetFileByFileNameRequest { FileName = fileName },
@@ -303,8 +304,8 @@ public class ICTAceFileHubFilesController(
             }
 
             _logger.Log(LogLevel.Information, this, LogFunction.Read,
-                "ServeFile: File found in database ModuleId={ModuleId} FileName={FileName}", 
-                fileModuleInfo.ModuleId, fileName);
+                "ServeFile: File found in database ModuleId={ModuleId} FileId={FileId} FileName={FileName}", 
+                fileModuleInfo.ModuleId, fileModuleInfo.FileId, fileName);
 
             var alias = _tenantManager.GetAlias();
             var filePath = GetFileStoragePath(alias.TenantId, alias.SiteId, fileModuleInfo.ModuleId);
@@ -320,12 +321,20 @@ public class ICTAceFileHubFilesController(
                 return NotFound(new { message = "Physical file not found", path = fullPath });
             }
 
+            // Only increment download counter if this is an actual download (not image display)
+            if (download)
+            {
+                await _mediator.Send(
+                    new IncrementDownloadRequest { FileId = fileModuleInfo.FileId, ModuleId = fileModuleInfo.ModuleId },
+                    cancellationToken).ConfigureAwait(false);
+            }
+
             var contentType = GetContentType(fileName);
             var fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
             _logger.Log(LogLevel.Information, this, LogFunction.Read,
-                "ServeFile: Successfully serving file FileName={FileName} ModuleId={ModuleId} ContentType={ContentType}", 
-                fileName, fileModuleInfo.ModuleId, contentType);
+                "ServeFile: Successfully serving file FileName={FileName} ModuleId={ModuleId} ContentType={ContentType} Download={Download}", 
+                fileName, fileModuleInfo.ModuleId, contentType, download);
 
             return File(fileStream, contentType, Path.GetFileName(fileName));
         }
@@ -335,42 +344,6 @@ public class ICTAceFileHubFilesController(
                 ex, "ServeFile: Error serving file FileName={FileName} Error={Error}", fileName, ex.Message);
             return StatusCode(StatusCodes.Status500InternalServerError, 
                 new { message = "Error serving file", error = ex.Message });
-        }
-    }
-
-    [HttpGet("debug/list-files")]
-    [AllowAnonymous]
-    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-    public async Task<IActionResult> DebugListFilesAsync([FromQuery] int moduleId, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var files = await _mediator.Send(
-                new ListFileRequest { ModuleId = moduleId, PageNumber = 1, PageSize = 100 },
-                cancellationToken).ConfigureAwait(false);
-
-            var debugInfo = files?.Items?.Select(f => new
-            {
-                f.Id,
-                f.Name,
-                f.FileName,
-                f.ImageName,
-                f.FileSize,
-                f.Downloads
-            }).ToList();
-
-            return Ok(new
-            {
-                totalCount = files?.TotalCount ?? 0,
-                files = debugInfo
-            });
-        }
-        catch (Exception ex)
-        {
-            _logger.Log(LogLevel.Error, this, LogFunction.Read,
-                ex, "Error listing files for debug ModuleId={ModuleId}", moduleId);
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                new { message = "Error listing files", error = ex.Message });
         }
     }
 
