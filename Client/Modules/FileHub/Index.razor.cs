@@ -37,24 +37,6 @@ public partial class Index
         }
     }
 
-    private async Task Delete(ListFileDto file)
-    {
-        try
-        {
-            await FileService.DeleteAsync(file.Id, ModuleState.ModuleId).ConfigureAwait(true);
-            await logger.LogInformation("File Deleted {Id}", file.Id).ConfigureAwait(true);
-
-            var pagedResult = await FileService.ListAsync(ModuleState.ModuleId, pageNumber: 1, pageSize: int.MaxValue).ConfigureAwait(true);
-            _files = pagedResult?.Items?.ToList();
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            await logger.LogError(ex, "Error Deleting File {Id} {Error}", file.Id, ex.Message).ConfigureAwait(true);
-            AddModuleMessage(Localizer["Message.DeleteError"], MessageType.Error);
-        }
-    }
-
     private void OnDownloadClick(ListFileDto file)
     {
         // Increment the counter in the UI immediately for instant feedback

@@ -156,6 +156,17 @@
         <NavLink class="btn btn-secondary" href="@NavigateUrl()">
             <i class="oi oi-x"></i> @Localizer["Cancel"]
         </NavLink>
+        @if (PageState.Action == "Edit")
+        {
+            <ActionDialog Header="Delete File" 
+                        Message="Are You Sure You Wish To Delete This File?" 
+                        Action="Delete" 
+                        Security="SecurityAccessLevel.Edit" 
+                        Class="btn btn-danger" 
+                        OnClick="@(async () => await Delete())" 
+                        ResourceKey="Delete" 
+                        Id="@_id.ToString()" />
+        }
     </div>
 
     <br /><br />

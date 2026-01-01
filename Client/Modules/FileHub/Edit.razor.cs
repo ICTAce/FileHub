@@ -371,6 +371,21 @@ public partial class Edit
         }
     }
 
+    private async Task Delete()
+    {
+        try
+        {
+            await FileService.DeleteAsync(_id, ModuleState.ModuleId).ConfigureAwait(true);
+            await logger.LogInformation("File Deleted {Id}", _id).ConfigureAwait(true);
+            NavigationManager.NavigateTo(NavigateUrl());
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Deleting File {Id} {Error}", _id, ex.Message).ConfigureAwait(true);
+            AddModuleMessage(Localizer["Message.DeleteError"], MessageType.Error);
+        }
+    }
+
     private IEnumerable<ListCategoryDto> GetAllCategories()
     {
         var result = new List<ListCategoryDto>();

@@ -67,14 +67,6 @@ else
                                    @onclick:stopPropagation="true">
                                     <i class="oi oi-data-transfer-download"></i> Download
                                 </a>
-                                <ActionDialog Header="Delete File" 
-                                            Message="Are You Sure You Wish To Delete This File?" 
-                                            Action="Delete" 
-                                            Security="SecurityAccessLevel.Edit" 
-                                            Class="btn btn-danger btn-sm" 
-                                            OnClick="@(async () => await Delete(file))" 
-                                            ResourceKey="Delete" 
-                                            Id="@file.Id.ToString()" />
                             </div>
                         </div>
                     </div>
