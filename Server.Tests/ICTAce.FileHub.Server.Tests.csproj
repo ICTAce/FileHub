@@ -13,4 +13,10 @@
     <ProjectReference Include="..\Server\ICTAce.FileHub.Server.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Common\" />
+    <Folder Include="Features\Integration\" />
+    <Folder Include="Features\Security\" />
+  </ItemGroup>
+
 </Project>

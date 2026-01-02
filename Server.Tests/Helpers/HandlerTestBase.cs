@@ -7,7 +7,7 @@ namespace ICTAce.FileHub.Server.Tests.Helpers;
 /// <summary>
 /// Base class for handler tests providing common test infrastructure.
 /// Entity-agnostic - handles only databases, mocks, and disposal.
-/// Use entity-specific helper classes (SampleModuleTestHelpers, CategoryTestHelpers) for entity operations.
+/// Use entity-specific helper classes (CategoryTestHelpers) for entity operations.
 /// </summary>
 public abstract class HandlerTestBase : IDisposable
 {
