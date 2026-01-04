@@ -16,9 +16,6 @@ public partial class Category : ModuleBase
     [Inject]
     private Radzen.DialogService DialogService { get; set; } = default!;
 
-    [Inject]
-    private ISettingService SettingService { get; set; } = default!;
-
     [Parameter]
     public int ModuleId { get; set; }
 

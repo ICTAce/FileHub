@@ -4,8 +4,6 @@ namespace ICTAce.FileHub;
 
 public partial class Settings : ModuleBase
 {
-    private const string ResourceType = "ICTAce.FileHub.Settings, ICTAce.FileHub.Client.Oqtane";
-
     public override string Title => "FileHub Settings";
 
     public override List<Resource> Resources =>
