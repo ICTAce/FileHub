@@ -117,25 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Name.Text" xml:space="preserve">
-    <value>Name: </value>
-  </data>
-  <data name="Name.HelpText" xml:space="preserve">
-    <value>Enter the name</value>
-  </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
-  </data>
-  <data name="Message.SaveValidation" xml:space="preserve">
-    <value>Please Provide All Required Information</value>
-  </data>
-  <data name="Message.SaveError" xml:space="preserve">
-    <value>Error Saving SampleModule</value>
-  </data>
-  <data name="Message.LoadError" xml:space="preserve">
-    <value>Error Loading SampleModule</value>
   </data>
 </root>
