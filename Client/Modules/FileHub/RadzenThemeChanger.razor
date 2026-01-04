@@ -1,0 +1,510 @@
+﻿@namespace ICTAce.FileHub
+@inherits ModuleBase
+
+<RadzenTheme Theme="@RadzenTheme" />
+
+<h4>Theme Settings</h4>
+<div class="rz-theme-selector">
+    @foreach (var theme in AvailableThemes)
+    {
+        <div class="rz-theme-card @(RadzenTheme == theme.Value ? "rz-theme-card-selected" : "")"
+             @onclick="() => OnThemeSelectedAsync(theme.Value)"
+             title="@theme.Name">
+            <div class="rz-theme-name">@theme.Name</div>
+            <svg class="rz-theme-svg" viewBox="0 0 288 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background -->
+                <rect width="288" height="72" fill="@theme.Background"/>
+                
+                <!-- Card 1: Form with icon and text -->
+                <g filter="url(#dropShadow-@theme.Value-0)">
+                    <rect x="12" y="12" width="84" height="48" rx="@theme.BorderRadius" fill="@theme.Card"/>
+                </g>
+                <!-- "A" icon box -->
+                <rect x="20" y="20" width="24" height="24" rx="2" fill="@theme.Primary" opacity="0.15"/>
+                <text x="26" y="38" font-size="16" font-weight="bold" fill="@theme.Primary" font-family="Arial, sans-serif">A</text>
+                <!-- Text lines next to icon -->
+                <rect x="50" y="22" width="38" height="3" rx="1" fill="@theme.Text" opacity="0.7"/>
+                <rect x="50" y="28" width="30" height="2" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="50" y="33" width="24" height="2" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <!-- Buttons -->
+                <rect x="20" y="46" width="32" height="8" rx="2" fill="@theme.Primary"/>
+                <rect x="56" y="46" width="32" height="8" rx="2" fill="@theme.Accent"/>
+
+                <!-- Card 2: Data grid -->
+                <g filter="url(#dropShadow-@theme.Value-1)">
+                    <rect x="104" y="12" width="80" height="48" rx="@theme.BorderRadius" fill="@theme.Card"/>
+                </g>
+                <!-- Header row -->
+                <rect x="108" y="16" width="72" height="8" rx="1" fill="@theme.Primary" opacity="0.12"/>
+                <rect x="112" y="18" width="14" height="4" rx="1" fill="@theme.Primary"/>
+                <rect x="130" y="18" width="14" height="4" rx="1" fill="@theme.Primary"/>
+                <rect x="148" y="18" width="14" height="4" rx="1" fill="@theme.Primary"/>
+                <rect x="166" y="18" width="10" height="4" rx="1" fill="@theme.Primary"/>
+                <!-- Data rows -->
+                <rect x="112" y="28" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="130" y="28" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="148" y="28" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="166" y="28" width="10" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="112" y="34" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="130" y="34" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="148" y="34" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="166" y="34" width="10" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="112" y="40" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="130" y="40" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="148" y="40" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="166" y="40" width="10" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="112" y="46" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="130" y="46" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="148" y="46" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="166" y="46" width="10" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="112" y="52" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="130" y="52" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="148" y="52" width="14" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+                <rect x="166" y="52" width="10" height="3" rx="1" fill="@theme.Text" opacity="0.4"/>
+
+                <!-- Card 3: Pie chart -->
+                <g filter="url(#dropShadow-@theme.Value-2)">
+                    <rect x="196" y="12" width="80" height="48" rx="@theme.BorderRadius" fill="@theme.Card"/>
+                </g>
+                <!-- Pie chart -->
+                <circle cx="229" cy="36" r="16" fill="@theme.ChartColor1"/>
+                <path d="M229 20V36H229.059L240.343 47.2841C237.446 50.1969 233.433 52 229 52C220.163 52 213 44.8366 213 36C213 27.1634 220.163 20 229 20Z" fill="@theme.ChartColor2"/>
+                <path d="M229 36V20C220.163 20 213 27.1634 213 36H229Z" fill="@theme.ChartColor3"/>
+                <!-- Legend -->
+                <rect x="253" y="24" width="6" height="6" rx="2" fill="@theme.ChartColor1"/>
+                <rect x="253" y="33" width="6" height="6" rx="2" fill="@theme.ChartColor2"/>
+                <rect x="253" y="42" width="6" height="6" rx="2" fill="@theme.ChartColor3"/>
+                <rect x="261" y="25" width="10" height="4" rx="1" fill="@theme.Text" opacity="0.3"/>
+                <rect x="261" y="34" width="10" height="4" rx="1" fill="@theme.Text" opacity="0.3"/>
+                <rect x="261" y="43" width="10" height="4" rx="1" fill="@theme.Text" opacity="0.3"/>
+
+                <!-- Drop shadow filters -->
+                <defs>
+                    <filter id="dropShadow-@theme.Value-0" x="9" y="10" width="90" height="54" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-opacity="0.15"/>
+                    </filter>
+                    <filter id="dropShadow-@theme.Value-1" x="101" y="10" width="86" height="54" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-opacity="0.15"/>
+                    </filter>
+                    <filter id="dropShadow-@theme.Value-2" x="193" y="10" width="86" height="54" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-opacity="0.15"/>
+                    </filter>
+                </defs>
+            </svg>
+        </div>
+    }
+</div>
+
+<!-- Theme Preview Section -->
+<div class="rz-theme-preview-section">
+    <h5>Theme Preview</h5>
+    <RadzenCard class="rz-mt-4">
+        <RadzenStack Gap="1.5rem">
+            <!-- Buttons -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Buttons</RadzenText>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
+                    <RadzenButton Text="Primary" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Text="Secondary" ButtonStyle="ButtonStyle.Secondary" />
+                    <RadzenButton Text="Success" ButtonStyle="ButtonStyle.Success" />
+                    <RadzenButton Text="Danger" ButtonStyle="ButtonStyle.Danger" />
+                    <RadzenButton Text="Warning" ButtonStyle="ButtonStyle.Warning" />
+                    <RadzenButton Text="Info" ButtonStyle="ButtonStyle.Info" />
+                    <RadzenButton Text="Light" ButtonStyle="ButtonStyle.Light" />
+                    <RadzenButton Text="Dark" ButtonStyle="ButtonStyle.Dark" />
+                </RadzenStack>
+            </div>
+
+            <!-- Form Elements -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Form Elements</RadzenText>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" Wrap="FlexWrap.Wrap" AlignItems="AlignItems.End">
+                    <RadzenFormField Text="Text Input" Style="width: 200px;">
+                        <RadzenTextBox Placeholder="Enter text..." />
+                    </RadzenFormField>
+                    <RadzenFormField Text="Dropdown" Style="width: 200px;">
+                        <RadzenDropDown TValue="string" Data="@(new[] { "Option 1", "Option 2", "Option 3" })" Placeholder="Select..." />
+                    </RadzenFormField>
+                    <RadzenFormField Text="Date Picker" Style="width: 200px;">
+                        <RadzenDatePicker TValue="DateTime?" Placeholder="Pick a date..." />
+                    </RadzenFormField>
+                    <RadzenFormField Text="Numeric" Style="width: 150px;">
+                        <RadzenNumeric TValue="int" Placeholder="0" />
+                    </RadzenFormField>
+                </RadzenStack>
+            </div>
+
+            <!-- Checkboxes and Switches -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Controls</RadzenText>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="1.5rem" Wrap="FlexWrap.Wrap" AlignItems="AlignItems.Center">
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                        <RadzenCheckBox TValue="bool" Value="true" />
+                        <RadzenLabel Text="Checkbox" />
+                    </RadzenStack>
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                        <RadzenSwitch @bind-Value="_switchValue" />
+                        <RadzenLabel Text="Switch" />
+                    </RadzenStack>
+                    <RadzenRadioButtonList TValue="int" @bind-Value="_radioValue" Orientation="Orientation.Horizontal">
+                        <Items>
+                            <RadzenRadioButtonListItem Text="Option A" Value="1" />
+                            <RadzenRadioButtonListItem Text="Option B" Value="2" />
+                        </Items>
+                    </RadzenRadioButtonList>
+                    <RadzenSlider @bind-Value="_sliderValue" Min="0" Max="100" Style="width: 150px;" />
+                </RadzenStack>
+            </div>
+
+            <!-- Progress and Badges -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Progress & Badges</RadzenText>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" Wrap="FlexWrap.Wrap" AlignItems="AlignItems.Center">
+                    <RadzenProgressBarCircular Value="75" Size="ProgressBarCircularSize.Medium" ShowValue="true" />
+                    <RadzenProgressBar Value="65" Style="width: 200px;" />
+                    <RadzenBadge Text="Primary" BadgeStyle="BadgeStyle.Primary" />
+                    <RadzenBadge Text="Success" BadgeStyle="BadgeStyle.Success" />
+                    <RadzenBadge Text="Warning" BadgeStyle="BadgeStyle.Warning" />
+                    <RadzenBadge Text="Danger" BadgeStyle="BadgeStyle.Danger" />
+                    <RadzenBadge Text="Info" BadgeStyle="BadgeStyle.Info" />
+                </RadzenStack>
+            </div>
+
+            <!-- Alerts -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Alerts</RadzenText>
+                <RadzenStack Gap="0.5rem">
+                    <RadzenAlert AlertStyle="AlertStyle.Success" Shade="Shade.Lighter" AllowClose="false" Size="AlertSize.Small">
+                        Success alert message
+                    </RadzenAlert>
+                    <RadzenAlert AlertStyle="AlertStyle.Info" Shade="Shade.Lighter" AllowClose="false" Size="AlertSize.Small">
+                        Info alert message
+                    </RadzenAlert>
+                    <RadzenAlert AlertStyle="AlertStyle.Warning" Shade="Shade.Lighter" AllowClose="false" Size="AlertSize.Small">
+                        Warning alert message
+                    </RadzenAlert>
+                </RadzenStack>
+            </div>
+
+            <!-- DataGrid -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">DataGrid</RadzenText>
+                <RadzenDataGrid TItem="SampleData" Data="@_sampleData" AllowSorting="true" AllowFiltering="true" 
+                                FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" 
+                                Style="height: 300px;" Density="Density.Compact">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="SampleData" Property="Id" Title="ID" Width="60px" />
+                        <RadzenDataGridColumn TItem="SampleData" Property="Name" Title="Name" />
+                        <RadzenDataGridColumn TItem="SampleData" Property="Category" Title="Category" />
+                        <RadzenDataGridColumn TItem="SampleData" Property="Price" Title="Price" FormatString="{0:C}" />
+                        <RadzenDataGridColumn TItem="SampleData" Property="Date" Title="Date" FormatString="{0:d}" />
+                        <RadzenDataGridColumn TItem="SampleData" Property="IsActive" Title="Active" Width="80px">
+                            <Template Context="data">
+                                <RadzenCheckBox TValue="bool" Value="@data.IsActive" Disabled="true" />
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            </div>
+
+            <!-- Tabs -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Tabs</RadzenText>
+                <RadzenTabs>
+                    <Tabs>
+                        <RadzenTabsItem Text="Tab 1">
+                            <RadzenText>Content of Tab 1. This demonstrates the tab styling.</RadzenText>
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="Tab 2">
+                            <RadzenText>Content of Tab 2. Switch tabs to see the active state.</RadzenText>
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="Tab 3">
+                            <RadzenText>Content of Tab 3. Tabs are commonly used for navigation.</RadzenText>
+                        </RadzenTabsItem>
+                    </Tabs>
+                </RadzenTabs>
+            </div>
+
+            <!-- Panel and Fieldset -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Panel & Fieldset</RadzenText>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" Wrap="FlexWrap.Wrap">
+                    <RadzenPanel AllowCollapse="true" Style="width: 300px;">
+                        <HeaderTemplate>
+                            <RadzenText TextStyle="TextStyle.Subtitle2">Collapsible Panel</RadzenText>
+                        </HeaderTemplate>
+                        <ChildContent>
+                            <RadzenText>This is panel content that can be collapsed.</RadzenText>
+                        </ChildContent>
+                    </RadzenPanel>
+                    <RadzenFieldset Text="Fieldset" Style="width: 300px;">
+                        <RadzenText>This is fieldset content with a border and legend.</RadzenText>
+                    </RadzenFieldset>
+                </RadzenStack>
+            </div>
+
+            <!-- Menu and Timeline -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Menu</RadzenText>
+                <RadzenMenu>
+                    <RadzenMenuItem Text="Home" Icon="home" />
+                    <RadzenMenuItem Text="Products" Icon="inventory_2">
+                        <RadzenMenuItem Text="Category 1" />
+                        <RadzenMenuItem Text="Category 2" />
+                    </RadzenMenuItem>
+                    <RadzenMenuItem Text="Settings" Icon="settings" />
+                    <RadzenMenuItem Text="About" Icon="info" />
+                </RadzenMenu>
+            </div>
+
+            <!-- Timeline -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Timeline</RadzenText>
+                <RadzenTimeline>
+                    <Items>
+                        <RadzenTimelineItem PointStyle="PointStyle.Primary">
+                            <LabelContent>
+                                <RadzenText TextStyle="TextStyle.Caption">Jan 2024</RadzenText>
+                            </LabelContent>
+                            <ChildContent>
+                                <RadzenCard Style="padding: 0.5rem;">
+                                    <RadzenText TextStyle="TextStyle.Subtitle2">Project Started</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Caption">Initial setup complete</RadzenText>
+                                </RadzenCard>
+                            </ChildContent>
+                        </RadzenTimelineItem>
+                        <RadzenTimelineItem PointStyle="PointStyle.Success">
+                            <LabelContent>
+                                <RadzenText TextStyle="TextStyle.Caption">Mar 2024</RadzenText>
+                            </LabelContent>
+                            <ChildContent>
+                                <RadzenCard Style="padding: 0.5rem;">
+                                    <RadzenText TextStyle="TextStyle.Subtitle2">Beta Release</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Caption">Testing phase</RadzenText>
+                                </RadzenCard>
+                            </ChildContent>
+                        </RadzenTimelineItem>
+                        <RadzenTimelineItem PointStyle="PointStyle.Info">
+                            <LabelContent>
+                                <RadzenText TextStyle="TextStyle.Caption">Jun 2024</RadzenText>
+                            </LabelContent>
+                            <ChildContent>
+                                <RadzenCard Style="padding: 0.5rem;">
+                                    <RadzenText TextStyle="TextStyle.Subtitle2">Production</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Caption">Live deployment</RadzenText>
+                                </RadzenCard>
+                            </ChildContent>
+                        </RadzenTimelineItem>
+                    </Items>
+                </RadzenTimeline>
+            </div>
+
+            <!-- Steps -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Steps</RadzenText>
+                <RadzenSteps @bind-SelectedIndex="_stepsIndex">
+                    <Steps>
+                        <RadzenStepsItem Text="Cart">
+                            <RadzenText>Review your shopping cart items.</RadzenText>
+                        </RadzenStepsItem>
+                        <RadzenStepsItem Text="Shipping">
+                            <RadzenText>Enter your shipping address.</RadzenText>
+                        </RadzenStepsItem>
+                        <RadzenStepsItem Text="Payment">
+                            <RadzenText>Complete your payment.</RadzenText>
+                        </RadzenStepsItem>
+                        <RadzenStepsItem Text="Confirm">
+                            <RadzenText>Order confirmation.</RadzenText>
+                        </RadzenStepsItem>
+                    </Steps>
+                </RadzenSteps>
+            </div>
+
+            <!-- Accordion -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Accordion</RadzenText>
+                <RadzenAccordion>
+                    <Items>
+                        <RadzenAccordionItem Text="Section 1" Icon="info">
+                            <RadzenText>This is the content of section 1. Accordions help organize content into collapsible sections.</RadzenText>
+                        </RadzenAccordionItem>
+                        <RadzenAccordionItem Text="Section 2" Icon="settings">
+                            <RadzenText>This is the content of section 2. Click the headers to expand or collapse.</RadzenText>
+                        </RadzenAccordionItem>
+                        <RadzenAccordionItem Text="Section 3" Icon="help">
+                            <RadzenText>This is the content of section 3. Great for FAQs and settings pages.</RadzenText>
+                        </RadzenAccordionItem>
+                    </Items>
+                </RadzenAccordion>
+            </div>
+
+            <!-- Rating and Gauges -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Rating & Gauges</RadzenText>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="2rem" Wrap="FlexWrap.Wrap" AlignItems="AlignItems.Center">
+                    <RadzenStack Gap="0.25rem">
+                        <RadzenText TextStyle="TextStyle.Caption">Rating</RadzenText>
+                        <RadzenRating @bind-Value="_ratingValue" Stars="5" />
+                    </RadzenStack>
+                    <RadzenArcGauge Style="width: 150px; height: 100px;">
+                        <RadzenArcGaugeScale Min="0" Max="100" Step="20">
+                            <RadzenArcGaugeScaleValue Value="@_gaugeValue" ShowValue="true" />
+                        </RadzenArcGaugeScale>
+                    </RadzenArcGauge>
+                    <RadzenRadialGauge Style="width: 120px; height: 120px;">
+                        <RadzenRadialGaugeScale Min="0" Max="100" Step="25">
+                            <RadzenRadialGaugeScalePointer Value="@_gaugeValue" ShowValue="true" />
+                        </RadzenRadialGaugeScale>
+                    </RadzenRadialGauge>
+                </RadzenStack>
+            </div>
+
+            <!-- Splitter -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Splitter</RadzenText>
+                <RadzenSplitter Style="height: 150px; border: 1px solid var(--rz-base-300);">
+                    <RadzenSplitterPane Size="40%">
+                        <div style="padding: 1rem;">
+                            <RadzenText TextStyle="TextStyle.Subtitle2">Left Pane</RadzenText>
+                            <RadzenText>Drag the splitter to resize.</RadzenText>
+                        </div>
+                    </RadzenSplitterPane>
+                    <RadzenSplitterPane>
+                        <div style="padding: 1rem;">
+                            <RadzenText TextStyle="TextStyle.Subtitle2">Right Pane</RadzenText>
+                            <RadzenText>Content adjusts dynamically.</RadzenText>
+                        </div>
+                    </RadzenSplitterPane>
+                </RadzenSplitter>
+            </div>
+
+            <!-- BreadCrumb -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Breadcrumb</RadzenText>
+                <RadzenBreadCrumb>
+                    <RadzenBreadCrumbItem Text="Home" Icon="home" />
+                    <RadzenBreadCrumbItem Text="Products" />
+                    <RadzenBreadCrumbItem Text="Electronics" />
+                    <RadzenBreadCrumbItem Text="Laptops" />
+                </RadzenBreadCrumb>
+            </div>
+
+            <!-- ListBox and Tree -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">ListBox & Tree</RadzenText>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" Wrap="FlexWrap.Wrap">
+                    <RadzenListBox TValue="string" Data="@(new[] { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" })" 
+                                   Style="width: 200px; height: 150px;" />
+                    <RadzenTree Style="width: 250px; height: 150px;">
+                        <RadzenTreeItem Text="Documents" Icon="folder" Expanded="true">
+                            <RadzenTreeItem Text="Reports" Icon="folder">
+                                <RadzenTreeItem Text="Annual Report.pdf" Icon="description" />
+                                <RadzenTreeItem Text="Q1 Summary.xlsx" Icon="description" />
+                            </RadzenTreeItem>
+                            <RadzenTreeItem Text="Presentations" Icon="folder">
+                                <RadzenTreeItem Text="Sales Pitch.pptx" Icon="description" />
+                            </RadzenTreeItem>
+                        </RadzenTreeItem>
+                        <RadzenTreeItem Text="Images" Icon="folder">
+                            <RadzenTreeItem Text="Logo.png" Icon="image" />
+                        </RadzenTreeItem>
+                    </RadzenTree>
+                </RadzenStack>
+            </div>
+
+            <!-- Chip and SplitButton -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Chips & Split Button</RadzenText>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" Wrap="FlexWrap.Wrap" AlignItems="AlignItems.Center">
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                        <RadzenBadge Text="Technology" BadgeStyle="BadgeStyle.Primary" IsPill="true" />
+                        <RadzenBadge Text="Design" BadgeStyle="BadgeStyle.Success" IsPill="true" />
+                        <RadzenBadge Text="Marketing" BadgeStyle="BadgeStyle.Info" IsPill="true" />
+                    </RadzenStack>
+                    <RadzenSplitButton Text="Actions" Icon="bolt" ButtonStyle="ButtonStyle.Primary">
+                        <ChildContent>
+                            <RadzenSplitButtonItem Text="Edit" Icon="edit" />
+                            <RadzenSplitButtonItem Text="Delete" Icon="delete" />
+                            <RadzenSplitButtonItem Text="Archive" Icon="archive" />
+                        </ChildContent>
+                    </RadzenSplitButton>
+                    <RadzenToggleButton @bind-Value="_toggleValue" Text="Toggle" Icon="toggle_on" 
+                                        ButtonStyle="ButtonStyle.Primary" ToggleButtonStyle="ButtonStyle.Light" />
+                </RadzenStack>
+            </div>
+
+            <!-- Text Styles -->
+            <div>
+                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-2">Typography</RadzenText>
+                <RadzenStack Gap="0.25rem">
+                    <RadzenText TextStyle="TextStyle.DisplayH3">Display H3</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H4">Heading H4</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H5">Heading H5</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H6">Heading H6</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Subtitle1">Subtitle 1</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Subtitle2">Subtitle 2</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1">Body 1 - Regular paragraph text for content.</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2">Body 2 - Smaller body text for secondary content.</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Caption">Caption - Small text for labels and hints.</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Overline">OVERLINE TEXT</RadzenText>
+                </RadzenStack>
+            </div>
+        </RadzenStack>
+    </RadzenCard>
+</div>
+
+<style>
+    .rz-theme-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        margin-top: 20px;
+    }
+
+    .rz-theme-card {
+        width: 320px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        border-radius: 12px;
+        padding: 16px;
+        transition: all 0.2s ease;
+        background: var(--rz-base-background-color, #1e1e2d);
+    }
+
+    .rz-theme-card:hover {
+        border-color: var(--rz-primary-light, #90caf9);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .rz-theme-card-selected {
+        border-color: var(--rz-primary, #1976d2);
+        box-shadow: 0 4px 16px rgba(25, 118, 210, 0.5);
+    }
+
+    .rz-theme-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--rz-primary, #42a5f5);
+        margin-bottom: 14px;
+    }
+
+    .rz-theme-svg {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        overflow: hidden;
+        display: block;
+    }
+
+    .rz-theme-preview-section {
+        margin-top: 40px;
+        padding-top: 24px;
+        border-top: 1px solid var(--rz-base-300, #e0e0e0);
+    }
+
+    .rz-theme-preview-section h5 {
+        color: var(--rz-text-color, #333);
+        margin-bottom: 16px;
+    }
+</style>
