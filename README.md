@@ -27,7 +27,7 @@ A modular file management system built as an **Oqtane CMS module** using modern 
 This project implements a modern, maintainable architecture using:
 
 ### Core Architecture
-- **Vertical Slice Architecture (VSA)**: Features are organized by business capability rather than technical layers. Each feature slice (Create, Update, Delete, Get, List) contains its own handlers, requests, responses, and mapping logic in a cohesive unit under `Server/Features/SampleModule/`.
+- **Vertical Slice Architecture (VSA)**: Features are organized by business capability rather than technical layers. Each feature slice (Create, Update, Delete, Get, List) contains its own handlers, requests, responses, and mapping logic.
 - **CQRS Pattern**: Clear separation between commands (Create, Update, Delete) and queries (Get, List) using MediatR handlers with dedicated base classes (`CommandHandlerBase`, `QueryHandlerBase`).
 - **MediatR**: Implements the mediator pattern for in-process messaging, decoupling request handling across feature slices and enabling clean separation of concerns.
 
