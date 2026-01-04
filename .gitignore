@@ -7,6 +7,6 @@ msbuild.binlog
 .vscode/
 *.binlog
 *.nupkg
-/Server/Content/Log
+/Server/Content
 /Server/Data
 /TestResults/
