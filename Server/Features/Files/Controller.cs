@@ -173,7 +173,6 @@ public class ICTAceFileHubFilesController(
             ImageName = dto.ImageName,
             Description = dto.Description,
             FileSize = dto.FileSize,
-            Downloads = dto.Downloads,
             CategoryIds = dto.CategoryIds
         };
 

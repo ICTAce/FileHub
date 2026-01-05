@@ -26,12 +26,10 @@ public partial class Edit
 
     private ElementReference form;
     private bool _validated;
-    private bool _isUploading;
-    private int _uploadProgress;
-    private string? _uploadedFileName;
-    private bool _isUploadingImage;
-    private int _imageUploadProgress;
-    private string? _uploadedImageName;
+    private bool _isSaving;
+    
+    private IBrowserFile? _selectedFile;
+    private IBrowserFile? _selectedImage;
 
     private int _id;
     private string _name = string.Empty;
@@ -55,7 +53,6 @@ public partial class Edit
     {
         try
         {
-            // Load categories
             await LoadCategories();
 
             if (string.Equals(PageState.Action, "Edit", StringComparison.Ordinal))
@@ -67,7 +64,6 @@ public partial class Edit
                     _name = file.Name;
                     _fileName = file.FileName;
                     _imageName = file.ImageName;
-                    _uploadedImageName = file.ImageName;
                     _description = file.Description;
                     _fileSize = file.FileSize;
                     _downloads = file.Downloads;
@@ -76,7 +72,6 @@ public partial class Edit
                     _modifiedby = file.ModifiedBy;
                     _modifiedon = file.ModifiedOn;
                     
-                    // Load selected categories
                     if (file.CategoryIds.Any())
                     {
                         var selectedCats = GetAllCategories().Where(c => file.CategoryIds.Contains(c.Id)).ToList();
@@ -92,126 +87,65 @@ public partial class Edit
         }
     }
 
-    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    private void OnFileSelected(InputFileChangeEventArgs e)
     {
         try
         {
-            _isUploading = true;
-            _uploadProgress = 0;
-            StateHasChanged();
-
             var file = e.File;
             
-            // Limit file size to 100MB
             const long maxFileSize = 100 * 1024 * 1024;
             if (file.Size > maxFileSize)
             {
                 AddModuleMessage("File size exceeds 100MB limit", MessageType.Error);
-                _isUploading = false;
+                _selectedFile = null;
                 return;
             }
 
-            // Simulate progress for better UX
-            _uploadProgress = 10;
-            StateHasChanged();
-
-            // Upload the file
-            using var stream = file.OpenReadStream(maxFileSize);
+            _selectedFile = file;
             
-            _uploadProgress = 30;
-            StateHasChanged();
-            
-            _uploadedFileName = await FileService.UploadFileAsync(ModuleState.ModuleId, stream, file.Name).ConfigureAwait(true);
-            
-            _uploadProgress = 90;
-            StateHasChanged();
-            
-            // Auto-fill form fields
-            if (string.IsNullOrEmpty(_fileName))
+            if (string.IsNullOrEmpty(_name))
             {
-                _fileName = _uploadedFileName;
+                _name = Path.GetFileNameWithoutExtension(file.Name);
             }
-            _fileSize = FormatFileSize(file.Size);
             
-            _uploadProgress = 100;
-            AddModuleMessage("File uploaded successfully", MessageType.Success);
+            StateHasChanged();
         }
         catch (Exception ex)
         {
-            await logger.LogError(ex, "Error Uploading File {Error}", ex.Message).ConfigureAwait(true);
-            AddModuleMessage("Error uploading file", MessageType.Error);
-        }
-        finally
-        {
-            _isUploading = false;
-            StateHasChanged();
+            AddModuleMessage("Error selecting file", MessageType.Error);
+            _selectedFile = null;
         }
     }
 
-    private async Task OnImageSelected(InputFileChangeEventArgs e)
+    private void OnImageSelected(InputFileChangeEventArgs e)
     {
         try
         {
-            _isUploadingImage = true;
-            _imageUploadProgress = 0;
-            StateHasChanged();
-
             var file = e.File;
             
-            // Limit image size to 10MB
             const long maxImageSize = 10 * 1024 * 1024;
             if (file.Size > maxImageSize)
             {
                 AddModuleMessage("Image size exceeds 10MB limit", MessageType.Error);
-                _isUploadingImage = false;
+                _selectedImage = null;
                 return;
             }
 
-            // Validate image type
             if (!file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
             {
                 AddModuleMessage("Please select a valid image file", MessageType.Error);
-                _isUploadingImage = false;
+                _selectedImage = null;
                 return;
             }
 
-            // Simulate progress for better UX
-            _imageUploadProgress = 10;
+            _selectedImage = file;
             StateHasChanged();
-
-            // Upload the image
-            using var stream = file.OpenReadStream(maxImageSize);
-            
-            _imageUploadProgress = 30;
-            StateHasChanged();
-            
-            _uploadedImageName = await FileService.UploadFileAsync(ModuleState.ModuleId, stream, file.Name).ConfigureAwait(true);
-            _imageName = _uploadedImageName;
-            
-            _imageUploadProgress = 100;
-            AddModuleMessage("Image uploaded successfully", MessageType.Success);
         }
         catch (Exception ex)
         {
-            await logger.LogError(ex, "Error Uploading Image {Error}", ex.Message).ConfigureAwait(true);
-            AddModuleMessage("Error uploading image", MessageType.Error);
+            AddModuleMessage("Error selecting image", MessageType.Error);
+            _selectedImage = null;
         }
-        finally
-        {
-            _isUploadingImage = false;
-            StateHasChanged();
-        }
-    }
-
-    private string GetImageUrl()
-    {
-        if (string.IsNullOrEmpty(_uploadedImageName))
-        {
-            return string.Empty;
-        }
-
-        // Use the serve endpoint for image display (no download counter increment)
-        return $"/api/ictace/fileHub/files/serve/{Uri.EscapeDataString(_uploadedImageName)}";
     }
 
     private static string FormatFileSize(long bytes)
@@ -225,6 +159,23 @@ public partial class Edit
             len = len / 1024;
         }
         return $"{len:0.##} {sizes[order]}";
+    }
+
+    private static string GetDisplayFileName(string fileName)
+    {
+        if (string.IsNullOrEmpty(fileName))
+        {
+            return string.Empty;
+        }
+
+        var parts = fileName.Split('_', 2);
+        
+        if (parts.Length >= 2 && parts[0].Length == 36 && Guid.TryParse(parts[0], out _))
+        {
+            return parts[1];
+        }
+
+        return fileName;
     }
 
     private async Task LoadCategories()
@@ -313,51 +264,91 @@ public partial class Edit
         }
     }
 
-        private async Task Save()
+    private async Task Save()
     {
         try
         {
             _validated = true;
             var interop = new Oqtane.UI.Interop(JSRuntime);
+            
+            if (PageState.Action == "Add" && _selectedFile == null)
+            {
+                AddModuleMessage("Please select a file to upload", MessageType.Warning);
+                return;
+            }
+            
             if (await interop.FormValid(form))
             {
-                var selectedCategoryIds = _selectedCategories?
-                    .OfType<ListCategoryDto>()
-                    .Where(c => c.Id > 0)
-                    .Select(c => c.Id)
-                    .ToList() ?? [];
+                _isSaving = true;
+                StateHasChanged();
 
-                if (string.Equals(PageState.Action, "Add", StringComparison.Ordinal))
+                string uploadedFileName = _fileName;
+                string uploadedImageName = _imageName;
+                string fileSize = _fileSize;
+
+                try
                 {
-                    var dto = new CreateAndUpdateFileDto
+                    if (_selectedFile != null)
                     {
-                        Name = _name,
-                        FileName = _fileName,
-                        ImageName = _imageName,
-                        Description = _description,
-                        FileSize = _fileSize,
-                        Downloads = _downloads,
-                        CategoryIds = selectedCategoryIds
-                    };
-                    var id = await FileService.CreateAsync(ModuleState.ModuleId, dto).ConfigureAwait(true);
-                    await logger.LogInformation("File Created {Id}", id).ConfigureAwait(true);
+                        const long maxFileSize = 100 * 1024 * 1024;
+                        using var stream = _selectedFile.OpenReadStream(maxFileSize);
+                        uploadedFileName = await FileService.UploadFileAsync(ModuleState.ModuleId, stream, _selectedFile.Name).ConfigureAwait(true);
+                        fileSize = FormatFileSize(_selectedFile.Size);
+                    }
+
+                    if (_selectedImage != null)
+                    {
+                        const long maxImageSize = 10 * 1024 * 1024;
+                        using var stream = _selectedImage.OpenReadStream(maxImageSize);
+                        uploadedImageName = await FileService.UploadFileAsync(ModuleState.ModuleId, stream, _selectedImage.Name).ConfigureAwait(true);
+                    }
+
+                    var selectedCategoryIds = _selectedCategories?
+                        .OfType<ListCategoryDto>()
+                        .Where(c => c.Id > 0)
+                        .Select(c => c.Id)
+                        .ToList() ?? [];
+
+                    if (string.Equals(PageState.Action, "Add", StringComparison.Ordinal))
+                    {
+                        var dto = new CreateAndUpdateFileDto
+                        {
+                            Name = _name,
+                            FileName = uploadedFileName,
+                            ImageName = uploadedImageName,
+                            Description = _description,
+                            FileSize = fileSize,
+                            Downloads = 0,
+                            CategoryIds = selectedCategoryIds
+                        };
+                        var id = await FileService.CreateAsync(ModuleState.ModuleId, dto).ConfigureAwait(true);
+                        await logger.LogInformation("File Created {Id}", id).ConfigureAwait(true);
+                        AddModuleMessage("File uploaded successfully", MessageType.Success);
+                    }
+                    else
+                    {
+                        var dto = new CreateAndUpdateFileDto
+                        {
+                            Name = _name,
+                            FileName = uploadedFileName,
+                            ImageName = uploadedImageName,
+                            Description = _description,
+                            FileSize = fileSize,
+                            Downloads = 0,
+                            CategoryIds = selectedCategoryIds
+                        };
+                        var id = await FileService.UpdateAsync(_id, ModuleState.ModuleId, dto).ConfigureAwait(true);
+                        await logger.LogInformation("File Updated {Id}", id).ConfigureAwait(true);
+                        AddModuleMessage("File updated successfully", MessageType.Success);
+                    }
+                    
+                    NavigationManager.NavigateTo(NavigateUrl());
                 }
-                else
+                catch (Exception uploadEx)
                 {
-                    var dto = new CreateAndUpdateFileDto
-                    {
-                        Name = _name,
-                        FileName = _fileName,
-                        ImageName = _imageName,
-                        Description = _description,
-                        FileSize = _fileSize,
-                        Downloads = _downloads,
-                        CategoryIds = selectedCategoryIds
-                    };
-                    var id = await FileService.UpdateAsync(_id, ModuleState.ModuleId, dto).ConfigureAwait(true);
-                    await logger.LogInformation("File Updated {Id}", id).ConfigureAwait(true);
+                    await logger.LogError(uploadEx, "Error Uploading File {Error}", uploadEx.Message).ConfigureAwait(true);
+                    AddModuleMessage("Error uploading file. Please try again.", MessageType.Error);
                 }
-                NavigationManager.NavigateTo(NavigateUrl());
             }
             else
             {
@@ -368,6 +359,11 @@ public partial class Edit
         {
             await logger.LogError(ex, "Error Saving File {Error}", ex.Message).ConfigureAwait(true);
             AddModuleMessage(Localizer["Message.SaveError"], MessageType.Error);
+        }
+        finally
+        {
+            _isSaving = false;
+            StateHasChanged();
         }
     }
 

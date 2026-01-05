@@ -53,7 +53,6 @@ public record CreateAndUpdateFileDto
     [StringLength(12, MinimumLength = 1, ErrorMessage = "FileSize must be between 1 and 12 characters")]
     public string FileSize { get; set; } = string.Empty;
 
-    [Range(0, int.MaxValue, ErrorMessage = "Downloads must be greater than or equal to 0")]
     public int Downloads { get; set; }
     
     public List<int> CategoryIds { get; set; } = [];

@@ -9,7 +9,6 @@ public record UpdateFileRequest : EntityRequestBase, IRequest<int>
     public required string ImageName { get; set; }
     public string? Description { get; set; }
     public required string FileSize { get; set; }
-    public int Downloads { get; set; }
     public List<int> CategoryIds { get; set; } = [];
 }
 
@@ -28,7 +27,7 @@ public class UpdateHandler(HandlerServices<ApplicationCommandContext> services)
 
         using var db = CreateDbContext();
 
-        // Update file properties
+        // Update file properties (excluding Downloads - managed by system via IncrementDownload)
         var rowsAffected = await db.Set<Persistence.Entities.File>()
             .Where(e => e.Id == request.Id && e.ModuleId == request.ModuleId)
             .ExecuteUpdateAsync(setter => setter
@@ -36,8 +35,7 @@ public class UpdateHandler(HandlerServices<ApplicationCommandContext> services)
                 .SetProperty(e => e.FileName, request.FileName)
                 .SetProperty(e => e.ImageName, request.ImageName)
                 .SetProperty(e => e.Description, request.Description)
-                .SetProperty(e => e.FileSize, request.FileSize)
-                .SetProperty(e => e.Downloads, request.Downloads),
+                .SetProperty(e => e.FileSize, request.FileSize),
                 cancellationToken)
             .ConfigureAwait(false);
 
