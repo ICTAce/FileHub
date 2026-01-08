@@ -101,8 +101,8 @@ public class MockModuleDefinitionService : IModuleDefinitionService
         {
             new ModuleDefinition
             {
-                ModuleDefinitionName = "ICTAce.FileHub.SampleModule",
-                Name = "Sample Module",
+                ModuleDefinitionName = "ICTAce.FileHub",
+                Name = "FileHub",
                 Version = "1.0.0"
             }
         });
@@ -113,8 +113,8 @@ public class MockModuleDefinitionService : IModuleDefinitionService
         return Task.FromResult(new ModuleDefinition
         {
             ModuleDefinitionId = moduleDefinitionId,
-            ModuleDefinitionName = "ICTAce.FileHub.SampleModule",
-            Name = "Sample Module",
+            ModuleDefinitionName = "ICTAce.FileHub",
+            Name = "FileHub",
             Version = "1.0.0"
         });
     }
@@ -124,7 +124,7 @@ public class MockModuleDefinitionService : IModuleDefinitionService
         return Task.FromResult(new ModuleDefinition
         {
             ModuleDefinitionName = moduleDefinitionName,
-            Name = "Sample Module",
+            Name = "FileHub",
             Version = "1.0.0"
         });
     }

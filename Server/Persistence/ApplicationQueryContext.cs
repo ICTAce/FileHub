@@ -14,6 +14,13 @@ public class ApplicationQueryContext(
         if (tenant != null)
         {
             var queryConnectionString = DBContextDependencies.Config.GetConnectionString(tenant.DBConnectionString + "_Query");
+            
+            // If query connection string is not available, fall back to regular connection string
+            if (string.IsNullOrEmpty(queryConnectionString))
+            {
+                queryConnectionString = DBContextDependencies.Config.GetConnectionString(tenant.DBConnectionString);
+            }
+
             if (!string.IsNullOrEmpty(queryConnectionString))
             {
                 queryConnectionString = queryConnectionString.Replace($"|{Constants.DataDirectory}|", AppDomain.CurrentDomain.GetData(Constants.DataDirectory)?.ToString());

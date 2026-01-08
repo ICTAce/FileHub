@@ -4,3 +4,68 @@
 .rz-popup {
     z-index: 99999 !important;
 }
+
+/* File Card Styling */
+.rz-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.rz-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* File thumbnail placeholder */
+.file-thumbnail-placeholder {
+    width: 150px;
+    height: 150px;
+    background-color: rgba(0, 0, 0, 0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 2px dashed rgba(0, 0, 0, 0.12);
+}
+
+/* File card content */
+.file-card-content h5 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.file-card-content .text-muted {
+    opacity: 0.7;
+    font-size: 0.9rem;
+}
+
+/* Badge spacing */
+.rz-badge {
+    margin-right: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+/* DataList pagination */
+.rz-datalist-pager {
+    margin-top: 1.5rem;
+}
+
+/* Image styling */
+.file-card-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .file-thumbnail-placeholder,
+    .file-card-image {
+        width: 100px !important;
+        height: 100px !important;
+    }
+}

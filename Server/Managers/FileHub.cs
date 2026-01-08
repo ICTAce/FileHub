@@ -2,7 +2,7 @@
 
 namespace ICTAce.FileHub.Managers;
 
-public class SampleModule(
+public class FileHub(
     IDbContextFactory<ApplicationCommandContext> contextFactory,
     IDBContextDependencies DBContextDependencies)
     : MigratableModuleBase, IInstallable, IPortable, ISearchable
@@ -26,32 +26,41 @@ public class SampleModule(
 
         // Direct data access - no repository layer
         using var db = _contextFactory.CreateDbContext();
-        var sampleModule = db.SampleModule
+        var files = db.File
             .Where(item => item.ModuleId == module.ModuleId)
             .ToList();
 
-        if (sampleModule != null)
+        if (files.Count > 0)
         {
-            content = JsonSerializer.Serialize(sampleModule);
+            content = JsonSerializer.Serialize(files);
         }
         return content;
     }
 
     public void ImportModule(Module module, string content, string version)
     {
-        List<Persistence.Entities.SampleModule> SampleModules = null;
+        List<Persistence.Entities.File>? files = null;
         if (!string.IsNullOrEmpty(content))
         {
-            SampleModules = JsonSerializer.Deserialize<List<Persistence.Entities.SampleModule>>(content);
+            files = JsonSerializer.Deserialize<List<Persistence.Entities.File>>(content);
         }
 
-        if (SampleModules is not null)
+        if (files is not null)
         {
             // Direct data access - no repository layer
             using var db = _contextFactory.CreateDbContext();
-            foreach (var task in SampleModules)
+            foreach (var file in files)
             {
-                db.SampleModule.Add(new Persistence.Entities.SampleModule { ModuleId = module.ModuleId, Name = task.Name });
+                db.File.Add(new Persistence.Entities.File 
+                { 
+                    ModuleId = module.ModuleId, 
+                    Name = file.Name,
+                    FileName = file.FileName,
+                    ImageName = file.ImageName,
+                    Description = file.Description,
+                    FileSize = file.FileSize,
+                    Downloads = file.Downloads
+                });
             }
             db.SaveChanges();
         }
@@ -63,18 +72,18 @@ public class SampleModule(
 
         // Direct data access - no repository layer
         using var db = _contextFactory.CreateDbContext();
-        foreach (var sampleModule in db.SampleModule.Where(item => item.ModuleId == pageModule.ModuleId))
+        foreach (var file in db.File.Where(item => item.ModuleId == pageModule.ModuleId))
         {
-            if (sampleModule.ModifiedOn >= lastIndexedOn)
+            if (file.ModifiedOn >= lastIndexedOn)
             {
                 searchContentList.Add(new SearchContent
                 {
-                    EntityName = "Company_SampleModule",
-                    EntityId = sampleModule.Id.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                    Title = sampleModule.Name,
-                    Body = sampleModule.Name,
-                    ContentModifiedBy = sampleModule.ModifiedBy,
-                    ContentModifiedOn = sampleModule.ModifiedOn
+                    EntityName = "ICTAce_FileHub_File",
+                    EntityId = file.Id.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                    Title = file.Name,
+                    Body = file.Description ?? string.Empty,
+                    ContentModifiedBy = file.ModifiedBy,
+                    ContentModifiedOn = file.ModifiedOn
                 });
             }
         }

@@ -1,7 +1,6 @@
 // Licensed to ICTAce under the MIT license.
 
 global using System.Security.Claims;
-global using ICTAce.FileHub.Features.SampleModule;
 global using ICTAce.FileHub.Persistence;
 global using ICTAce.FileHub.Server.Tests.Helpers;
 global using Microsoft.AspNetCore.Http;

@@ -108,7 +108,6 @@ public class TestApplicationCommandContext : ApplicationCommandContext
         // Instead, manually configure Identity entities
 
         // Configure our entities with simple table names (no tenant rewriting for tests)
-        builder.Entity<Persistence.Entities.SampleModule>().ToTable("Company_SampleModule");
         builder.Entity<Persistence.Entities.Category>().ToTable("ICTAce_FileHub_Category");
 
         // Ignore Identity entities that we don't need for these tests
@@ -187,7 +186,6 @@ public class TestApplicationQueryContext : ApplicationQueryContext
         // Instead, manually configure Identity entities
 
         // Configure our entities with simple table names (no tenant rewriting for tests)
-        builder.Entity<Persistence.Entities.SampleModule>().ToTable("Company_SampleModule");
         builder.Entity<Persistence.Entities.Category>().ToTable("ICTAce_FileHub_Category");
 
         // Ignore Identity entities that we don't need for these tests

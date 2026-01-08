@@ -62,8 +62,8 @@ public abstract class BaseTest : IDisposable
         TestContext.Services.AddLogging();
 
         TestContext.Services.AddScoped<ILogService, MockLogService>();
-        TestContext.Services.AddScoped<ISampleModuleService, MockSampleModuleService>();
         TestContext.Services.AddScoped<ICategoryService, MockCategoryService>();
+        TestContext.Services.AddScoped<Services.IFileService, MockFileService>();
         TestContext.Services.AddScoped<IUserService, MockUserService>();
         TestContext.Services.AddScoped<ISettingService, MockSettingService>();
         TestContext.Services.AddScoped<IModuleService, MockModuleService>();
@@ -156,7 +156,7 @@ public abstract class BaseTest : IDisposable
         PageId = pageId,
         Title = title,
         SiteId = 1,
-        ModuleDefinitionName = "ICTAce.FileHub.SampleModule",
+        ModuleDefinitionName = "ICTAce.FileHub",
         AllPages = false,
         IsDeleted = false,
         Pane = "Content",
@@ -164,8 +164,8 @@ public abstract class BaseTest : IDisposable
         ContainerType = string.Empty,
         ModuleDefinition = new ModuleDefinition
         {
-            ModuleDefinitionName = "ICTAce.FileHub.SampleModule",
-            Name = "Sample Module",
+            ModuleDefinitionName = "ICTAce.FileHub",
+            Name = "FileHub",
             Version = "1.0.0",
             ServerManagerType = string.Empty,
             ControlTypeTemplate = string.Empty,
