@@ -63,6 +63,7 @@ public abstract class BaseTest : IDisposable
 
         TestContext.Services.AddScoped<ILogService, MockLogService>();
         TestContext.Services.AddScoped<ICategoryService, MockCategoryService>();
+        TestContext.Services.AddScoped<Services.IFileService, MockFileService>();
         TestContext.Services.AddScoped<IUserService, MockUserService>();
         TestContext.Services.AddScoped<ISettingService, MockSettingService>();
         TestContext.Services.AddScoped<IModuleService, MockModuleService>();
