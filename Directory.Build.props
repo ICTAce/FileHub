@@ -20,7 +20,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <AspNetCoreVersion>[9.0.11,10.0.0)</AspNetCoreVersion>
+    <AspNetCoreVersion>[9.0.12, 10.0.0)</AspNetCoreVersion>
     <OqtaneVersion>[6.2.1,10.0.0)</OqtaneVersion>
   </PropertyGroup>
 
